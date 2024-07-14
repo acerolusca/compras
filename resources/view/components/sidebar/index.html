@@ -1,0 +1,61 @@
+<!-- Sidebar -->
+<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+  <!-- Sidebar - Brand -->
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/news">
+    <div class="sidebar-brand-icon small-img">
+      <img src="/sb-admin-2/img/map-compras.svg" width="50%">
+    </div>
+    <div class="sidebar-brand-text mx-1 large-img">
+      <img src="/sb-admin-2/img/logo-compras.svg" width="80%">
+    </div>
+  </a>
+
+
+
+  <!-- News -->
+  <li class="nav-item">
+    <a class="nav-link" href="/news">
+      <i class="fas fa-fw fa-newspaper" style="color: #FFFFFF;"></i>
+      <span style="color: #FFFFFF;">Notícias</span></a>
+  </li>
+
+  {{administratorItems}}
+
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-3">
+
+
+
+  <!-- Logout -->
+  <li class="nav-item">
+    <a class="nav-link" href="/logout" data-toggle="modal" data-target="#logoutModal">
+      <i class="fas fa-fw fa-sign-out-alt" style="color: #FFFFFF;"></i>
+      <span style="color: #FFFFFF;">Sair</span>
+    </a>
+  </li>
+
+
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline my-4">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  </div>
+
+
+</ul>
+<!-- End of Sidebar -->
+
+
+
+<!-- Toogle Sidebar Script-->
+<script>
+  $(document).ready(function () {
+    $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
+      $("body").toggleClass("sidebar-toggled");
+      $(".sidebar").toggleClass("toggled");
+      if ($(".sidebar").hasClass("toggled")) {
+        $('.sidebar .collapse').collapse('hide');
+      };
+    });
+  });
+</script>

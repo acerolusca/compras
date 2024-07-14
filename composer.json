@@ -1,0 +1,12 @@
+{
+    "name": "pds/imobile-on",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require": {
+        "phpmailer/phpmailer": "^6.9",
+        "larapack/dd": "^1.1"
+    }
+}

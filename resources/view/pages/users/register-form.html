@@ -1,0 +1,306 @@
+<!-- Register User Button  -->
+<button id="registerUserButton" type="button" data-placement="top" title="Cadastrar usuário"
+  class="btn  btn-light text-dark btn-circle" data-toggle="modal" data-target="#registerUserModal">
+  <i class="fas fa-user-plus"></i>
+</button>
+
+
+<!-- Register User Modal  -->
+<div class="modal fade" id="registerUserModal" tabindex="-1" role="dialog" aria-labelledby="registerUserModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-dark" id="registerUserModalLabel">Cadastrar usuário</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Modal Body -->
+        <form id="registerUserForm" class="px-4" enctype="multipart/form-data">
+
+
+          <div class="form-group d-flex flex-column align-items-start mb-4 text-dark">
+            <label for="registerFullname">Nome completo</label>
+            <input id="registerFullname" name="registerFullname" type="text" class="form-control" />
+          </div>
+
+
+          <div class="form-group d-flex flex-column align-items-start mb-4 text-dark">
+            <label for="registerUsername">Nome de usuário</label>
+            <input id="registerUsername" name="registerUsername" autocomplete="off" type="text" class="form-control" />
+          </div>
+
+
+          <div class="form-group d-flex flex-column align-items-start mb-4 text-dark">
+            <label for="registerEmail">Email</label>
+            <input id="registerEmail" name="registerEmail" autocomplete="off" type="text" class="form-control" />
+          </div>
+
+
+          <div class="form-group d-flex flex-column align-items-start mb-4 text-dark">
+            <label for="registerCpf">CPF</label>
+            <input id="registerCpf" name="registerCpf" type="text" class="form-control" />
+          </div>
+
+
+          <button id="registerUserSubmitButton" class="btn btn-primary container-fluid mt-4">
+            Cadastrar
+          </button>
+
+
+        </form>
+
+        <!-- End form Body -->
+      </div>
+
+      <div class="modal-footer px-4">
+
+        <button type="button" class="btn btn-danger mx-3 w-100" data-dismiss="modal">
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--Masks Functions-->
+<script>
+  //------------------ Last key pressed -------------------//
+  let lastKeyPressed = "";
+  document.addEventListener("keydown", function (e) {
+    lastKeyPressed = e.key;
+  });
+
+  //------------------- Fullname -------------------//
+  function fullnameMask(input) {
+    const cursorPosition = input.selectionStart;
+
+    const alphaRegex = /[^\sa-zA-ZàáâãéêíóôõúÀÁÂÃÉÊÍÓÔÕÚçÇ']|^\s+$|^'/g;
+
+    if (alphaRegex.test(input.value)) {
+      input.value = input.value.replace(alphaRegex, "");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/\s{2,}/g.test(input.value)) {
+      input.value = input.value.replace(/\s{2,}/g, " ");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/'{2,}/g.test(input.value)) {
+      input.value = input.value.replace(/'{2,}/g, "'");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+  }
+
+  //------------------- Username -------------------//
+  function usernameMask(input) {
+    const cursorPosition = input.selectionStart;
+
+    const alphaRegex = /[^a-zA-Z0-9_.]|^_|^\./g;
+
+    if (alphaRegex.test(input.value)) {
+      input.value = input.value.replace(alphaRegex, "");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/_{2,}/g.test(input.value)) {
+      input.value = input.value.replace(/_{2,}/g, "_");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/\.{2,}/g.test(input.value)) {
+      input.value = input.value.replace(/\.{2,}/g, ".");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/(_\.)/g.test(input.value)) {
+      input.value = input.value.replace(/(_\.)/g, "_");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+
+    if (/(\._)/g.test(input.value)) {
+      input.value = input.value.replace(/(\._)/g, ".");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    }
+  }
+
+  //-------------------- Email ---------------------//
+  function emailMask(input) {
+    const cursorPosition = input.selectionStart;
+    const emailRegex = /[^a-zA-Z0-9@_.-]/g;
+
+    if (emailRegex.test(input.value)) {
+      input.value = input.value.replace(emailRegex, "");
+      input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      return;
+    }
+    input.setSelectionRange(cursorPosition, cursorPosition);
+  }
+
+</script>
+
+
+<!--Apply Masks on Register User Form Fields-->
+<script>
+
+  //------------------- Fullname -------------------//
+  document.getElementById("registerFullname").addEventListener("input", function () {
+    if (this.value.length > 255) {
+      this.value = this.value.substring(0, 255);
+    }
+    fullnameMask(this);
+  });
+
+  //------------------- Username -------------------//
+  document.getElementById("registerUsername").addEventListener("input", function () {
+    if (this.value.length > 20) {
+      this.value = this.value.substring(0, 20);
+    }
+    usernameMask(this);
+  });
+
+  //-------------------- Email ---------------------//
+  document.getElementById("registerEmail").addEventListener("input", function () {
+    if (this.value.length > 255) {
+      this.value = this.value.substring(0, 255);
+    }
+    emailMask(this);
+  });
+
+  //----------------------- CPF -------------------//
+  var pasteRegisterCpf = false;
+
+  document.getElementById("registerCpf").addEventListener("paste", function () {
+    pasteRegisterCpf = true;
+  });
+
+  document.getElementById("registerCpf").addEventListener("input", function () {
+    let mask = "###.###.###-##";
+    let cursorPosition = this.selectionStart;
+    let beforeCriticalChars = cursorPosition === 3 || cursorPosition === 7 || cursorPosition === 11;
+    let afterCriticalChars = cursorPosition === 4 || cursorPosition === 8 || cursorPosition === 12;
+    let backspaceCodition = lastKeyPressed === "Backspace";
+    let criticalBackspaceCodition = beforeCriticalChars && backspaceCodition
+
+    let maskedArray = mask.split("");
+
+
+    let digitsOnly = criticalBackspaceCodition ?
+      (this.value.slice(0, cursorPosition - 1) + this.value.slice(cursorPosition)).replace(/[^0-9]/g, "") :
+      this.value.replace(/[^0-9]/g, "");
+
+
+    for (let i = 0; i < digitsOnly.length; i++) {
+      if (maskedArray.indexOf("#") !== -1) {
+        maskedArray.splice(maskedArray.indexOf("#"), 1, digitsOnly[i]);
+      }
+    }
+
+    let newValue = "";
+
+    if (maskedArray.indexOf("#") === -1) {
+      newValue = this.value = maskedArray.join("");
+    } else {
+      newValue = this.value = maskedArray.slice(0, maskedArray.indexOf("#")).join("");
+    }
+
+
+    if (pasteRegisterCpf) {
+      this.setSelectionRange(newValue.length, newValue.length);
+      return;
+    }
+    if (criticalBackspaceCodition) {
+      this.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      return;
+    }
+    if (backspaceCodition) {
+      this.setSelectionRange(cursorPosition, cursorPosition);
+      return;
+    }
+    if (beforeCriticalChars || afterCriticalChars) {
+      this.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+      return;
+    }
+    this.setSelectionRange(cursorPosition, cursorPosition);
+
+  });
+
+</script>
+
+
+<!-- Submit Register User Form -->
+<script>
+
+  const submitButton = document.querySelector("#registerUserSubmitButton");
+
+  submitButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: "Cadastrando usuário...",
+      didOpen: async () => {
+        Swal.showLoading();
+        document.getElementById("registerUserModal").style.display = "none";
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+
+
+    const response = await registerUser();
+
+    if (response.success) {
+
+      Swal.fire({
+        title: response.message,
+        icon: "success",
+      }).then(() => {
+        window.location.reload()
+      });
+
+    } else {
+      Swal.fire({
+        title: "Falha ao cadastrar usuário!",
+        html: response.message,
+        icon: "error",
+      }).then(() => {
+        document.getElementById("registerUserModal").style.display = "block";
+      });
+    }
+  });
+
+
+
+
+  async function registerUser() {
+    const form = document.querySelector("#registerUserForm");
+    const formData = new FormData(form);
+
+    const cleanedCpf = document.getElementById("registerCpf").value.replace(/[^0-9]/g, "");
+
+    formData.append("registerCpf", cleanedCpf);
+
+    try {
+      const response = await fetch("/user/register", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      return data;
+
+    } catch (error) {
+      const data = {
+        success: false,
+        message: "Erro na conexão. Tente novamente."
+      };
+      return data;
+    }
+  }
+
+</script>

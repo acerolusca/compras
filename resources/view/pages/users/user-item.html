@@ -1,0 +1,31 @@
+<!--No Administrators Users Table Body-->
+<tr>
+  <td style="text-align: center; box-sizing: border-box; vertical-align: middle;">
+    <img
+      class="img-profile rounded-circle"
+      style="width: 40px; height: 40px"
+      src="/image/user/{{imagePath}}"
+    />
+  </td>
+  <td style="text-align: center; vertical-align: middle;">{{fullname}}</td>
+  <td style="text-align: center; vertical-align: middle;">{{email}}</td>
+  <td style="text-align: center; vertical-align: middle;">{{cpf}}</td>
+  <td style="text-align: center; box-sizing: border-box;" class="vertical-align: middle;">
+    <div style="display: flex; justify-content: center; gap: 1vw">
+
+      <!-- Edit User Button  -->
+      <button type="button" class="edit-user-button btn" data-toggle="modal" data-placement="bottom"
+        title="Editar usuário" data-target="#editUserModal"
+        data-user-cpf="{{cpf}}">
+        <i class="fas fa-pencil-alt"></i>
+      </button>
+
+      <!-- Delete User Button  -->
+      <button type="button" class="delete-user-button btn" data-placement="bottom" title="Excluir usuário"
+        data-user-cpf="{{cpf}}">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+
+    </div>
+  </td>
+</tr>
