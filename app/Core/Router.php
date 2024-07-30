@@ -93,7 +93,7 @@ class Router {
      */
     private function addRoute($method, $route, $params = []) {
 
-        //VALIDAÇÂO DOS PARÂMETROS
+        //VALIDAÇÃO DOS PARÂMETROS
         foreach($params as $key => $value) {
             if ($value instanceof Closure) {
                 $params["controller"] = $value;
@@ -102,8 +102,8 @@ class Router {
         }
 
        
-        //DEFINIÇÃO OS MIDDLEWARES
-        $params["middlewares"] = $params["middlewares"] ?? [];
+        //DEFINIÇÃO DOS MIDDLEWARES
+        $params["middlewares"] ??= [];
 
         $params["variables"] = [];
 
@@ -127,7 +127,7 @@ class Router {
 
 
     /**
-     * Método responsável por a URI desconsiderando o prefixo
+     * Método responsável por retonar a URI desconsiderando o prefixo
      *
      * @return string
      */
@@ -180,6 +180,7 @@ class Router {
                     "code" => 405, 
                     "message" => "Método não permitido"
                 ]);
+                
                 throw new Exception( $notAllowedMethod, 405);
             }
 

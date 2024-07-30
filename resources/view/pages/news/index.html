@@ -1,0 +1,766 @@
+<!--News List Card-->
+<div class="card shadow my-4 mx-2 mx-md-5">
+
+    <!--News List Card Header-->
+    <div class="card-header py-2 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-light">Notícias</h6>
+        <!--Register News Button and Form-->
+        {{registerForm}}
+    </div>
+
+
+    <!--News List Card Body-->
+    <div class="card-body d-flex flex-column align-items-center border border-white position-relative">
+        <div id="newsCardOverlay" class="overlay card-overlay" style="display:grid;">
+            <div class="spinner-border text-light" role="status"><span class="sr-only"></span></div>
+        </div>
+        <!--News List Container-->
+        <div id="newsListContainer" class="w-100 px-3 d-flex flex-column"></div>
+        <h5 class="d-none error-message text-center"></h5>
+    </div>
+
+
+
+
+    <!--News List Card Footer-->
+    <div id="newsCardFooter" class="card-footer d-none">
+        <!--News List Pagination-->
+        <nav id="newsPagination" class="justify-content-center" aria-label="Page navigation example">
+            <ul class="pagination m-0 justify-content-center" style="cursor: pointer;"></ul>
+        </nav>
+    </div>
+
+</div>
+
+{{editForm}}
+
+
+<!--News Item Template-->
+<template id="newsItemTemplate">
+
+    <div class="card mb-4 p-0 news-card bg-white">
+
+        <div class="news-card-content d-flex flex-column flex-xl-row">
+
+            <img src="" class="news-image">
+
+            <div class="info d-flex flex-column w-100 justify-content-center px-3 my-3">
+                <h5 class="title text-dark w-100 pb-1"></h5>
+                <p class="author card-text  text-dark w-100"><i class="fas fa-user"></i> &nbsp;</p>
+                <p class="card-text w-100 text-dark">
+                    <i class="fas fa-calendar-days"></i>&nbsp;
+                    <small class="schedule text-dark"></small>
+                </p>
+            </div>
+
+            <div
+                class="d-flex align-items-start my-3 px-md-3 justify-content-center justify-content-xl-start flex-wrap flex-md-nowrap">
+
+                <button type="button" class="delete-news-button btn text-dark" data-placement="bottom"
+                    title="Excluir notícia">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+
+                <button type="button" class="edit-news-button btn text-dark" data-placement="bottom"
+                    title="Editar notícia" data-toggle="modal" data-target="#editNewsModal">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
+
+                <!--button type="button" class="preview-news-button btn text-dark" data-placement="bottom" title="Preview">
+                    <i class="fa-solid fa-arrow-up-right-from-envelope-open-text"></i>
+                </button-->
+
+                <button type="button" class="highlighted-news-button btn text-dark" data-placement="bottom">
+                    <i class="highlighted-news-icon fa-star"></i>
+                    <form class="highlighted-news-form" style="display: none;">
+                        <input class="highlighted-news-input" type="checkbox" />
+                    </form>
+                </button>
+
+                <button type="button" class="visible-news-button btn text-dark" data-placement="bottom">
+                    <i class="visible-news-icon fa-solid"></i>
+                    <form class="visible-news-form" style="display: none;">
+                        <input class="visible-news-input" type="checkbox" />
+                    </form>
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</template>
+
+
+
+<!-- News List Pagination Script-->
+<script>
+
+    var news = [];
+    const newsPerPage = 6;
+    const pageShowLimit = 2;
+
+
+
+    function renderInitialNewsPage(container) {
+        const totalPages = Math.ceil(news.length / newsPerPage);
+        var finalIndex = news.length < newsPerPage ? news.length : newsPerPage;
+        for (i = 0; i < finalIndex; i++) {
+            container.appendChild(news[i])
+        }
+
+        if (totalPages > 1) {
+            document.getElementById("newsCardFooter").classList.add("d-flex");
+            document.getElementById("newsCardFooter").classList.remove("d-none");
+        }
+    }
+
+
+
+    function renderNewsPage(initialIndex, finalIndex, container) {
+        container.innerHTML = '';
+        for (i = initialIndex; i < finalIndex; i++) {
+            container.appendChild(news[i]);
+        }
+    }
+
+
+
+    function pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages) {
+
+        //mostra apenas os itens de paginação no intervalo definido
+        document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber, index) => {
+            if (index >= initialShowPageNumber && index < finalShowPageNumber) {
+                pageNumber.classList.remove("d-none");
+            } else {
+                pageNumber.classList.add("d-none");
+            }
+        });
+
+
+
+        //mostra e esconde o botão "anterior"
+        if (initialShowPageNumber + 1 > pageShowLimit) {
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.add('d-flex');
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.remove('d-none');
+        } else {
+            if (!document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.contains('d-none')) {
+                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.add('d-none');
+                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.remove('d-flex');
+            }
+        }
+
+        //mostra e esconde o botão "próximo"
+        if (initialShowPageNumber + 1 <= totalPages - pageShowLimit) {
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.add('d-flex');
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.remove('d-none');
+        } else {
+            if (!document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.contains('d-none')) {
+                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.add('d-none');
+                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.remove('d-flex');
+            }
+        }
+    }
+
+
+
+    function addPaginationEvents() {
+
+        const totalPages = Math.ceil(news.length / newsPerPage);
+        const container = document.getElementById('newsListContainer');
+
+        document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageItem) => {
+
+            pageItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                //tira a classe selected de todos e coloca no item que foi clicado
+                document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber) => {
+                    if (pageNumber.querySelector('.page-link').classList.contains('page-link-selected')) {
+                        pageNumber.querySelector('.page-link').classList.remove('page-link-selected');
+                    }
+                });
+                pageItem.querySelector('.page-link').classList.add('page-link-selected');
+
+                //passa os parâmetros necessários para renderizar a página clicada
+                var initialIndex = newsPerPage * (parseInt(pageItem.innerText) - 1);
+                var calculateFinalIndex = newsPerPage * parseInt(pageItem.innerText);
+                var finalIndex = news.length < calculateFinalIndex ? news.length : calculateFinalIndex;
+                renderNewsPage(initialIndex, finalIndex, container)
+
+            });
+
+        });
+
+        //define os eventos de clique para os botões "anterior" e "próximo"
+        var initialShowPageNumber = 0
+        var finalShowPageNumber = pageShowLimit;
+
+        if (totalPages > pageShowLimit) {
+            //anterior
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].addEventListener('click', (event) => {
+                //console.log('ant');
+                event.preventDefault();
+                initialShowPageNumber = initialShowPageNumber - pageShowLimit;
+                finalShowPageNumber = finalShowPageNumber - pageShowLimit;
+                pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages)
+            });
+
+            //próximo
+            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].addEventListener('click', (event) => {
+                //console.log('prox');
+                event.preventDefault();
+                initialShowPageNumber = initialShowPageNumber + pageShowLimit;
+                finalShowPageNumber = finalShowPageNumber + pageShowLimit;
+
+                pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages)
+            });
+        }
+    }
+
+
+
+    function addPagination() {
+        const totalPages = Math.ceil(news.length / newsPerPage);
+
+        //cria o botão "anterior"
+        if (totalPages > pageShowLimit) {
+            var paginationItem = document.createElement('li');
+            paginationItem.classList.add("page-item");
+            paginationItem.classList.add("page-show-limit");
+
+            var paginationItemAnchor = document.createElement('a');
+            paginationItemAnchor.classList.add("page-link");
+            paginationItemAnchor.style.color = "var(--black)";
+            paginationItemAnchor.innerText = "Anterior";
+
+            paginationItem.appendChild(paginationItemAnchor);
+
+            paginationItem.classList.add('d-none');
+
+            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
+        }
+
+        //cria os números da paginação
+        for (i = 1; i <= totalPages; i++) {
+            var paginationItem = document.createElement('li');
+            paginationItem.classList.add("page-item");
+            paginationItem.classList.add("page-number");
+
+            var paginationItemAnchor = document.createElement('a');
+            paginationItemAnchor.classList.add("page-link");
+            paginationItemAnchor.style.color = "var(--black)";
+            paginationItemAnchor.innerText = i;
+
+            paginationItem.appendChild(paginationItemAnchor);
+
+            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
+        }
+
+        //cria o botão "próximo"
+        if (totalPages > pageShowLimit) {
+            var paginationItem = document.createElement('li');
+            paginationItem.classList.add("page-item");
+            paginationItem.classList.add("page-show-limit");
+
+            var paginationItemAnchor = document.createElement('a');
+            paginationItemAnchor.classList.add("page-link");
+            paginationItemAnchor.style.color = "var(--black)";
+            paginationItemAnchor.innerText = "Próximo";
+
+            paginationItem.appendChild(paginationItemAnchor);
+
+            paginationItem.classList.add('d-flex');
+
+            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
+        }
+
+        addPaginationEvents();
+        //define a página um como selecionada por padrão
+        document.getElementById("newsPagination").querySelector(".page-number").querySelector('.page-link').classList.add('page-link-selected');
+
+        //esconde as páginas que excedem o limite de paginação
+        if (document.getElementById("newsPagination").querySelectorAll(".page-number").length > pageShowLimit) {
+            document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber, index) => {
+                if (index >= pageShowLimit) {
+                    pageNumber.classList.add('d-none');
+                }
+            });
+        }
+    }
+
+
+
+    async function getAllNews() {
+
+        try {
+            let response = await fetch("/news/all", {
+                method: "GET"
+            });
+
+            return await response.json();
+
+        } catch (error) {
+            return {
+                success: false,
+                message: "Não foi possível carregar as notícias. Tente novamente mais tarde."
+            }
+        }
+    }
+
+
+
+    async function createCardsPage() {
+
+        modalOverlay("on", "newsCardOverlay");
+
+        const template = document.getElementById('newsItemTemplate');
+        const container = document.getElementById('newsListContainer');
+        let response = await getAllNews();
+
+        if (response.success) {
+
+            if (response.data.length > 0) {
+
+                response.data.forEach((item) => {
+
+                    const newsId = item.id;
+
+                    const clone = document.importNode(template.content, true);
+
+                    const newsCardContent = clone.querySelector('.news-card-content');
+
+                    newsCardContent.id = `newsCardContent${newsId}`;
+
+                    const image = clone.querySelector('.news-image');
+                    image.src = item.imagePath;
+                    //image.onclick = function () { window.location.href = `/news/edit/${newsId}` };
+
+
+
+                    const info = clone.querySelector('.info');
+                    //info.onclick = function () { window.location.href = `/news/edit/${newsId}` };
+                    info.querySelector('.title').innerHTML = item.title;
+                    info.querySelector('.author').innerHTML += item.author;
+                    info.querySelector('.schedule').innerHTML += item.schedulingDate;
+
+
+
+                    const deleteButton = clone.querySelector('.delete-news-button');
+                    deleteButton.addEventListener("click", async (event) => {
+                        event.preventDefault();
+                        createDeleteEvent(newsId);
+                    });
+                    $(deleteButton).tooltip();
+
+
+
+                    const editButton = clone.querySelector('.edit-news-button');
+                    //editButton.href = `/news/edit/${newsId}`;
+                    editButton.addEventListener("click", async (event) => {
+                        event.preventDefault();
+                        fillEditNewsForm(newsId);
+                    });
+                    $(editButton).tooltip();
+                    $(editButton).on('click', () => {
+                        $('body').css('overflow-y', 'hidden');
+                    });
+
+
+
+
+
+                    //CREATE HIGHLIGHTED CARD
+                    const highlightedButton = clone.querySelector('.highlighted-news-button');
+                    highlightedButton.title = item.highlightedButtonTitle;
+
+                    const highlightedIcon = highlightedButton.querySelector("i");
+                    highlightedIcon.classList.add(item.highlightedButtonClass);
+
+                    const newsHighlightedInput = highlightedButton.querySelector(".highlighted-news-input");
+                    newsHighlightedInput.name = "highlighted-input-" + newsId;
+                    newsHighlightedInput.checked = item.highlighted;
+
+                    highlightedButton.addEventListener("click", async (event) => {
+                        event.preventDefault();
+                        newsHighlightedInput.checked = !newsHighlightedInput.checked
+                        createHighlightedEvent(newsHighlightedInput, newsId);
+                    });
+                    $(highlightedButton).tooltip();
+
+
+
+                    const visibleButton = clone.querySelector('.visible-news-button');
+                    visibleButton.title = item.visibleButtonTitle;
+
+                    const visibleIcon = visibleButton.querySelector("i");
+                    visibleIcon.classList.add(item.visibleButtonClass);
+
+                    const newsVisibleInput = visibleButton.querySelector(".visible-news-input");
+                    newsVisibleInput.name = "visible-input-" + newsId;
+                    newsVisibleInput.checked = item.visible;
+
+                    visibleButton.addEventListener("click", async (event) => {
+                        event.preventDefault();
+                        newsVisibleInput.checked = !newsVisibleInput.checked;
+                        createVisibleEvent(newsVisibleInput, newsId);
+                    });
+
+                    $(visibleButton).tooltip();
+
+
+                    const element = clone.children[0];
+                    news.push(element);
+
+                });
+
+                renderInitialNewsPage(container);
+                addPagination();
+                modalOverlay("off", "newsCardOverlay");
+
+            } else {
+                console.log(response);
+                container.parentNode.querySelector(".error-message").innerHTML = response.message;
+                container.parentNode.querySelector(".error-message").classList.add("d-flex");
+                container.parentNode.querySelector(".error-message").classList.remove("d-none");
+                modalOverlay("off", "newsCardOverlay");
+            }
+
+        } else {
+            container.parentNode.querySelector(".error-message").innerHTML = response.message;
+            container.parentNode.querySelector(".error-message").classList.add("d-flex");
+            container.parentNode.querySelector(".error-message").classList.remove("d-none");
+            modalOverlay("off", "newsCardOverlay");
+        }
+
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        createCardsPage()
+    });
+
+
+</script>
+
+
+
+<!--Delete News Script-->
+<script>
+
+    function createDeleteEvent(newsId) {
+
+        Swal.fire({
+            text: "Você tem certeza que deseja excluir essa notícia?",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+            customClass: {
+                confirmButton: "btn-primary",
+                cancelButton: "btn-danger"
+            },
+        }).then(async (result) => {
+
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: "Exluindo notícia...",
+                    didOpen: async () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                });
+
+
+
+                const response = await deleteNews(newsId);
+
+
+                if (response.success) {
+
+                    Swal.fire({
+                        title: "<h3>Notícia excluída com sucesso!</h3>",
+                        icon: "success",
+                        iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    }).then(() => {
+                        window.location.reload()
+                    });
+
+                } else {
+                    Swal.fire({
+                        title: "<h3>Falha ao excluir notícia!</h3>",
+                        html: response.message,
+                        icon: "error",
+                        iconHtml: `<i class="fas fa-times-circle text-danger"></i>`,
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    }).then(() => {
+                        window.location.reload()
+                    });
+                }
+            }
+        });
+
+    }
+
+
+    async function deleteNews(newsId) {
+        try {
+            const response = await fetch("/news/delete/" + newsId, {
+                method: "POST",
+            });
+
+            return await response.json();
+
+        } catch (error) {
+            return {
+                success: false,
+                message: "Erro na conexão. Tente novamente."
+            };
+        }
+    }
+
+</script>
+
+
+
+<!-- News Highlighted Script-->
+<script>
+
+    function createHighlightedEvent(newsHighlightedInput, newsId) {
+
+        Swal.fire({
+            text: `Deseja ${newsHighlightedInput.checked ? "adicionar notícia aos" : "remover notícia dos"} destaques?`,
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+            customClass: {
+                confirmButton: "btn-primary",
+                cancelButton: "btn-danger"
+            }
+
+        }).then(async (result) => {
+
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: `${newsHighlightedInput.checked ? "Adicionando notícia aos" : "Removendo notícia dos"} destaques...`,
+                    didOpen: async () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                });
+
+
+                const response = await editHighlighted(newsHighlightedInput, newsId);
+
+
+                if (response.success) {
+
+                    Swal.fire({
+                        title: `<h3>Notícia ${newsHighlightedInput.checked ? "adicionada aos" : "removida dos"} destaques!</h3>`,
+                        icon: "success",
+                        iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    });
+
+                    //Updating Highlighted State
+                    const newsCardContent = document.querySelector(`#newsCardContent${newsId}`);
+                    const cardHighlightedButton = newsCardContent.querySelector(".highlighted-news-button");
+                    const cardHighlightedIcon = cardHighlightedButton.querySelector("i");
+                    const highlighted = newsHighlightedInput.checked;
+                    cardHighlightedIcon.classList = `highlighted-news-icon fa-star fa-${highlighted ? "solid" : "regular"}`;
+                    cardHighlightedButton.title = highlighted ? "Remover dos destaques" : "Colocar em destaque";
+                    $(cardHighlightedButton).tooltip('dispose').tooltip();
+
+                } else {
+                    Swal.fire({
+                        title: `<h3>Falha ao ${newsHighlightedInput.checked ? "adicionar notícia aos" : "remover notícia dos"} destaques!</h3>`,
+                        html: response.message,
+                        icon: "error",
+                        iconHtml: `<i class="fas fa-times-circle text-danger"></i>`,
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    }).then(() => {
+                        window.location.reload()
+                    });
+                }
+
+            } else {
+                newsHighlightedInput.checked = !newsHighlightedInput.checked;
+            }
+        });
+    }
+
+
+
+    async function editHighlighted(newsHighlightedInput, newsId) {
+
+        let highlighted = newsHighlightedInput.checked ? "yes" : "no";
+
+        const formData = new FormData();
+
+        formData.set("newsId", newsId);
+        formData.set("highlighted", highlighted);
+
+        try {
+
+            let response = await fetch("/news/change-highlighted", {
+                method: "POST",
+                body: formData,
+            });
+
+            return await response.json();
+        }
+
+        catch (error) {
+            return {
+                success: false,
+                message: "Erro na conexão. Tente novamente."
+            };
+        }
+    }
+
+</script>
+
+
+
+
+<!-- News Visible Script -->
+<script>
+
+    function createVisibleEvent(newsVisibleInput, newsId) {
+
+        Swal.fire({
+            text: `Deseja ${newsVisibleInput.checked ? "tornar notícia visível" : "ocultar notícia"}?`,
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+            customClass: {
+                confirmButton: "btn-primary",
+                cancelButton: "btn-danger"
+            }
+
+        }).then(async (result) => {
+
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: `${newsVisibleInput.checked ? "Tornando notícia visível" : "Ocultando notícia"}...`,
+                    didOpen: async () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                });
+
+
+                const response = await editVisible(newsVisibleInput, newsId);
+
+
+                if (response.success) {
+
+                    Swal.fire({
+                        title: `<h3>Notícia ${newsVisibleInput.checked ? "visibilizada" : "ocultada"} com sucesso!</h3>`,
+                        icon: "success",
+                        iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    });
+
+                    //Updating Visible State
+                    const newsCardContent = document.querySelector(`#newsCardContent${newsId}`);
+                    const cardVisibleButton = newsCardContent.querySelector(".visible-news-button");
+                    const cardVisibleIcon = cardVisibleButton.querySelector("i");
+                    const visible = newsVisibleInput.checked;
+                    cardVisibleIcon.classList = `visible-news-icon fa-solid fa-${visible ? "eye" : "eye-slash"}`;
+                    cardVisibleButton.title = visible ? "Ocultar" : "Tornar visível";
+                    $(cardVisibleButton).tooltip('dispose').tooltip();
+
+                } else {
+                    Swal.fire({
+                        title: `<h3>Falha ao ${newsVisibleInput.checked ? "tornar notícia visível" : "ocultar notícia"}!</h3>`,
+                        html: response.message,
+                        icon: "error",
+                        iconHtml: `<i class="fas fa-times-circle text-danger"></i>`,
+                        backdrop: "rgba(0,0,0,0.7)",
+                        background: "#f2f2f2",
+                        customClass: {
+                            icon: "custom-icon-class",
+                            confirmButton: "btn-primary"
+                        },
+                    }).then(() => {
+                        window.location.reload()
+                    });
+                }
+
+            } else {
+                newsVisibleInput.checked = !newsVisibleInput.checked;
+            }
+        });
+    }
+
+
+    async function editVisible(newsVisibleInput, newsId) {
+
+        let visible = newsVisibleInput.checked ? "yes" : "no";
+
+        const formData = new FormData();
+
+        formData.set("newsId", newsId);
+        formData.set("visible", visible);
+
+        try {
+
+            let response = await fetch("/news/change-visible", {
+                method: "POST",
+                body: formData,
+            });
+
+            return await response.json();
+        }
+
+        catch (error) {
+            return {
+                success: false,
+                message: "Erro na conexão. Tente novamente."
+            };
+        }
+    }
+
+</script>

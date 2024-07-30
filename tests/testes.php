@@ -1,15 +1,9 @@
 <?php
 
 
-$now = new DateTime();
+$schedulingDate = (new DateTime("")) ?? "";
 
-$birthDate = new DateTime("2002-01-25");
-
-
-echo $birthDate->diff($now)->y;
-
-
-
+var_dump($schedulingDate);
 
 
 

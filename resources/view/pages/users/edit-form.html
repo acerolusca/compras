@@ -1,70 +1,63 @@
-<!-- Edit Graduate Modal  -->
+<!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div id="editUserOverlay" class="overlay modal-overlay" style="display:grid;">
         <div class="spinner-border text-light" role="status"><span class="sr-only"></span></div>
       </div>
-
-      <div class="modal-header">
-        <h5 class="modal-title" id="editUserModalLabel">Editar usuário</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <!--Modal Header-->
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="modal-title text-light" id="editUserModalLabel">Editar usuário</h6>
+        <button type="button" class="close btn text-light btn-secondary btn-circle" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body border border-white">
         <!-- Modal Body -->
-        <form id="editUserForm" class="px-4" enctype="multipart/form-data">
-
+        <form id="editUserForm" class="px-1 px-lg-4" enctype="multipart/form-data">
           <input id="editLastCpf" name="editLastCpf" type="hidden" value="" />
-
-          <div class="form-group d-flex flex-column align-items-start mb-4">
-            <label for="editFullname">Nome completo</label>
-            <input id="editFullname" name="editFullname" type="text" class="form-control" />
+          <div class="row">
+            <div class="col-sm-12 col-lg-6 form-group mb-4 text-dark">
+              <label for="editFullname">Nome completo</label>
+              <input id="editFullname" name="editFullname" type="text" class="form-control" />
+            </div>
+            <div class="col-sm-12 col-lg-6 form-group mb-4 text-dark">
+              <label for="editUsername">Nome de usuário</label>
+              <input id="editUsername" name="editUsername" autocomplete="off" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-lg-6 form-group mb-4 text-dark">
+              <label for="editEmail">Email</label>
+              <input id="editEmail" name="editEmail" autocomplete="off" type="text" class="form-control" />
+            </div>
+            <div class="col-sm-12 col-lg-6 form-group mb-4 text-dark">
+              <label for="editCpf">CPF</label>
+              <input id="editCpf" name="editCpf" autocomplete="off" type="text" class="form-control" />
+            </div>
           </div>
 
-
-          <div class="form-group d-flex flex-column align-items-start mb-4">
-            <label for="editUsername">Nome de usuário</label>
-            <input id="editUsername" name="editUsername" autocomplete="off" type="text" class="form-control" />
-          </div>
-
-
-          <div class="form-group d-flex flex-column align-items-start mb-4">
-            <label for="editEmail">Email</label>
-            <input id="editEmail" name="editEmail" autocomplete="off" type="text" class="form-control" />
-          </div>
-
-
-          <div class="form-group d-flex flex-column align-items-start">
-            <label for="editCpf">CPF</label>
-            <input id="editCpf" name="editCpf" autocomplete="off" type="text" class="form-control" />
-          </div>
-
-
-
-          <button id="editUserSubmitButton" class="btn btn-primary container-fluid mt-4">
+          <button id="editUserSubmitButton" class="btn btn-primary container-fluid mt-2">
             Editar
           </button>
 
-
+          <button id="generateNewPasswordButton" class="btn btn-warning container-fluid mt-4">
+            Gerar nova senha
+          </button>
+  
         </form>
-
         <!-- End form Body -->
       </div>
-
-      <div class="modal-footer px-4">
-
+      <div class="modal-footer px-1 px-lg-4">
         <button type="button" class="btn btn-danger mx-3 w-100" data-dismiss="modal">
           Cancelar
         </button>
-
       </div>
-
     </div>
   </div>
 </div>
+
 
 
 <!--Fill Edit Form On Click Edit Button-->
@@ -78,15 +71,24 @@
       const response = await getUserInfo(button.dataset.userCpf);
 
       if (!response.success) {
+
+        document.getElementById("editUserModal").style.display = "none";
+
         await Swal.fire({
-          title: data.message,
+          title: "<h3>Usuário não encontrado!</h3>",
+          html: response.message,
           icon: "error",
-          position: "center",
+          iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+          backdrop: "rgba(0,0,0,0.7)",
+          background: "#f2f2f2",
+          customClass: {
+            icon: "custom-icon-class",
+          },
         }).then(() => {
           window.location.reload()
         });
       } else {
-        await updateEditForm(response.data);
+        await updateEditUserForm(response.data);
         modalOverlay("off", "editUserOverlay");
       }
 
@@ -98,12 +100,12 @@
 
   async function getUserInfo(userCpf) {
     try {
-      const response = await fetch("/api/user/" + userCpf, {
+      const response = await fetch("/user/" + userCpf, {
         method: "GET"
-
       });
-      const data = await response.json();
-      return data;
+
+      return await response.json();
+
     } catch (error) {
       return {
         success: false,
@@ -114,13 +116,14 @@
 
 
 
-  function updateEditForm(data) {
+  function updateEditUserForm(data) {
 
     const lastCpf = document.querySelector("#editLastCpf");
-    const fullname = document.querySelector("#editFullName");
+    const fullname = document.querySelector("#editFullname");
     const username = document.querySelector("#editUsername");
     const email = document.querySelector("#editEmail");
     const cpf = document.querySelector("#editCpf");
+    const generateNewPasswordButton = document.querySelector("#generateNewPasswordButton");
 
 
     let cpfMask = "###.###.###-##";
@@ -139,13 +142,14 @@
     username.value = data.username;
     email.value = data.email
     cpf.value = cpfmaskedArray.join("");
+    generateNewPasswordButton.dataset.userCpf = data.cpf;
 
   }
 
 </script>
 
 
-<!--Apply Masks on Register User Form Fields-->
+<!--Apply Masks on Edit User Form Fields-->
 <script>
 
   //------------------- Fullname -------------------//
@@ -248,22 +252,38 @@
         document.getElementById("editUserModal").style.display = "none";
       },
       allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: "rgba(0,0,0,0.7)",
+      background: "#f2f2f2",
     });
 
     const response = await editUser();
 
     if (response.success) {
       Swal.fire({
-        title: response.message,
+        title: "<h3>Usuário editado com sucesso!</h3>",
         icon: "success",
+        iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+          confirmButton: "btn-primary"
+        },
       }).then(() => {
         window.location.reload();
       });
     } else {
       Swal.fire({
-        title: "Falha ao editar usuário!",
+        title: "<h3>Falha ao editar usuário!</h3>",
         html: response.message,
         icon: "error",
+        iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+          confirmButton: "btn-primary"
+        },
       }).then(() => {
         document.getElementById("editUserModal").style.display = "block";
       });
@@ -279,9 +299,9 @@
 
       const cleanedCpf = document.getElementById("editCpf").value.replace(/[^0-9]/g, "");
 
-      formData.append("editCpf", cleanedCpf);
+      formData.set("editCpf", cleanedCpf);
 
-      const response = await fetch("/api/user/edit", {
+      const response = await fetch("/user/edit", {
         method: "POST",
         body: formData,
       });
@@ -298,3 +318,157 @@
   }
 
 </script>
+
+
+
+<!-- Generate New Password -->
+<script>
+
+  const generateNewPasswordButton = document.querySelector("#generateNewPasswordButton");
+
+  generateNewPasswordButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      text: "Você tem certeza que deseja gerar uma nova senha para esse usuário?",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Confirmar",
+      backdrop: "rgba(0,0,0,0.7)",
+      background: "#f2f2f2",
+      customClass: {
+        confirmButton: "btn-primary",
+        cancelButton: "btn-danger"
+      },
+    }).then(async (result) => {
+
+      if (result.isConfirmed) {
+
+        Swal.fire({
+          title: "Gerando nova senha...",
+          didOpen: async () => {
+            Swal.showLoading();
+            document.getElementById("editUserModal").style.display = "none";
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+          backdrop: "rgba(0,0,0,0.7)",
+          background: "#f2f2f2",
+        });
+    
+        const response = await generateNewPassword(generateNewPasswordButton.dataset.userCpf);
+    
+        if (response.success) {
+          const clipboardHtml = `
+            <div class="d-flex justify-content-center align-items-center px-5"> 
+              <input 
+                id="temp-pass" 
+                class="message form-control border-secondary text-center mr-1" 
+                style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"
+                type="disable" 
+                value="${response.password}"
+              >
+              <button   
+                id="copy-pass-edit" 
+                type="button"
+                class="copy-button btn btn-outline-secondary"
+              >
+                <i 
+                  class="fas fa-copy"
+                >
+                </i>
+              </button>
+            </div>
+          `;
+    
+          Swal.fire({
+            title: "<h3>Nova senha gerada com sucesso!</h3>",
+            icon: "success",
+            html: clipboardHtml,
+            iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+            customClass: {
+              icon: "custom-icon-class",
+              confirmButton: "btn-primary"
+            },
+          }).then(() =>  {
+            window.location.reload()
+          });
+    
+    
+          const alert = Swal.getPopup();
+          const copyButton = alert.querySelector(".copy-button");
+          const message = alert.querySelector(".message");
+    
+          copyButton.addEventListener("click", () => {
+            message.select();
+            message.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(message.value);
+          });
+    
+        } else {
+          Swal.fire({
+            title: "Falha ao gerar nova senha!",
+            html: response.message,
+            icon: "error",
+            iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+            customClass: {
+              icon: "custom-icon-class",
+              confirmButton: "btn-primary"
+            },
+          }).then(() => {
+            document.getElementById("editUserModal").style.display = "block";
+          });
+        };
+      } 
+    });
+
+  });
+
+
+  async function generateNewPassword(cpf) {
+    try {
+
+      const response = await fetch("/user/generate-new-password/" + cpf, {
+        method: "POST",
+      });
+
+      return await response.json();
+
+    } catch (error) {
+      return {
+        success: false,
+        message: "Erro na conexão. Tente novamente."
+      }
+    }
+  }
+
+</script>
+
+
+
+<!--Set Edit User Buttons Tooltip and Modal Reset-->
+<script>
+
+  $(document).ready(() => {
+
+    $(".edit-user-button").tooltip();
+
+    $('.edit-user-button').on('click', () => {
+      $('body').css('overflow-y', 'hidden');
+    });
+
+
+    $("#editUserModal").on("hidden.bs.modal", () => {
+      $("#editFullname").val("");
+      $("#editUsername").val("");
+      $("#editEmail").val("");
+      $("#editCpf").val("");
+    });
+  });
+
+</script>
+
+

@@ -1,0 +1,807 @@
+<!-- Edit Informations Card-->
+<div class="card shadow mt-4 mb-5 mx-2 mx-md-5">
+    <div class="card-header py-2 px-4 d-flex justify-content-center justify-content-md-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-white">Informações pessoais</h6>
+
+        <button type="button" data-placement="top" title="Alterar informações"
+            class="edit-informations-button btn btn-light text-dark btn-circle d-none d-md-flex">
+            <i class="fas fa-pencil"></i>
+        </button>
+    </div>
+
+
+    <div class="card-body px-md-5 px-lg-5 flex-column border border-white">
+
+        <form id="profileForm" class="row align-items-center justify-content-between" enctype="multipart/form-data">
+
+            <input name="profileLastCpf" id="profileLastCpf" type="hidden" value="{{cpf}}" />
+
+            <div id="profile-picture-component" class="col-12 my-3 col-md-12 col-lg-6 d-flex justify-content-center">
+                <div id="photoContainer"
+                    class="position-relative overflow-hidden d-flex justify-content-center text-center"
+                    style="width: 65%; padding-bottom: 65%; cursor: pointer;">
+
+                    <img id="photoElement" class="img-profile border border-white shadow-sm position-absolute top-50 start-50 translate-middle 
+                        w-100 h-100 rounded-circle" src="/image/user/{{imagePath}}" alt="Profile Image"
+                        style="object-fit: cover;">
+
+                    <span id="photoOverlay" class="overlay position-absolute top-50 start-50 
+                translate-middle w-100 h-100 rounded-circle text-light 
+                d-flex align-items-center justify-content-center"
+                        style="background-color: rgba(0 ,0 , 0, 0.5); visibility: hidden;">
+                        Alterar foto de perfil
+                    </span>
+                    <input name="photoInput" id="photoInput" type="file" style="display: none" />
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-12 col-lg-6 my-3">
+
+
+                <div class="form-group">
+                    <label for="profileFullname">Nome completo</label>
+                    <input id="profileFullname" name="profileFullname" type="text" class="form-control"
+                        value="{{fullname}}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="profileUsername">Nome de Usuário</label>
+                    <input id="profileUsername" name="profileUsername" type="text" autocomplete="off"
+                        class="form-control" value="{{username}}" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="profileEmail">Email</label>
+                    <input id="profileEmail" name="profileEmail" type="text" autocomplete="off" class="form-control"
+                        value="{{email}}" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="profileCpf">CPF</label>
+                    <input id="profileCpf" name="profileCpf" type="text" class="form-control" value="{{cpf}}" />
+                </div>
+
+                <button type="button" class="edit-informations-button btn text-white d-sm-none btn w-100  font-weight-bold mt-4"
+                    style="background-color: #143169">
+                    Alterar informações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Edit Password Card-->
+<div class="card shadow mt-5 mb-4 mx-2 mx-md-5">
+    <div class="card-header py-2 px-4 d-flex justify-content-center justify-content-md-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-white">Nova senha</h6>
+        <button type="button" data-placement="top" title="Alterar senha"
+            class="edit-password-button btn btn-light text-dark btn-circle d-none d-md-flex">
+            <i class="fas fa-key"></i>
+        </button>
+    </div>
+
+
+    <div class="card-body px-md-5 px-lg-5 flex-column border border-white" style="background-color: #f2f2f2;">
+
+        <form id="profilePasswordForm" class="mx-auto" enctype="multipart/form-data" style="max-width: 500px">
+
+            <input name="profileLastCpfForPassword" id="profileLastCpfForPassword" type="hidden" value="{{cpf}}" />
+
+            <div class="form-group position-relative">
+                <label for="profilePassword">Senha atual</label>
+                <div class="d-flex align-items-center position-relative">
+                    <input id="profilePassword" name="profilePassword" type="password" class="form-control" />
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                        style="right: 15px; cursor: pointer;" title="Mostrar"
+                        onclick="togglePasswordVisibility('profilePassword', this)">
+                    </i>
+                </div>
+
+            </div>
+
+            <div class="form-group position-relative">
+                <label for="profileNewPassword">Nova senha</label>
+                <div class="d-flex align-items-center position-relative" >
+                    <input id="profileNewPassword" name="profileNewPassword" type="password" class="form-control" />
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                        style="right: 15px; cursor: pointer;" title="Mostrar"
+                        onclick="togglePasswordVisibility('profileNewPassword', this)">
+                    </i>
+                </div>
+            </div>
+
+            <div class="form-group position-relative">
+                <label for="profileConfirmNewPassword">Confirmar nova senha</label>
+                <div class="d-flex align-items-center position-relative">
+                    <input id="profileConfirmNewPassword" name="profileConfirmNewPassword" type="password" class="form-control"/>
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                        style="right: 15px; cursor: pointer;" title="Mostrar"
+                        onclick="togglePasswordVisibility('profileConfirmNewPassword', this)">
+                    </i>
+                </div>
+            </div>
+
+            <button class="edit-password-button d-sm-none w-100 btn btn-light text-white font-weight-bold mt-4 mb-3"
+                style="background-color: #143169">
+                Alterar senha
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+
+<!--Alter Passwords Visibility-->
+<script>
+    function togglePasswordVisibility(passwordFieldId, toggleIcon) {
+        const passwordField = document.getElementById(passwordFieldId);
+        const isPasswordVisible = passwordField.type === 'text';
+    
+        if (isPasswordVisible) {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove("fa-eye"); 
+            toggleIcon.classList.add("fa-eye-slash"); 
+            toggleIcon.title = "Mostrar";
+
+        } else {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove("fa-eye-slash"); 
+            toggleIcon.classList.add("fa-eye"); 
+            toggleIcon.title = "Ocultar";
+        }
+
+        $(toggleIcon).tooltip('dispose').tooltip();
+    }
+</script>
+
+
+
+<!--Format CPF -->
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const cpf = document.querySelector("#profileCpf");
+        var cpfValue = cpf.value;
+
+        let cpfMask = "###.###.###-##";
+        let cpfmaskedArray = cpfMask.split("");
+    
+    
+        for (let i = 0; i < cpfValue.length; i++) {
+          if (cpfmaskedArray.indexOf("#") !== -1) {
+            cpfmaskedArray.splice(cpfmaskedArray.indexOf("#"), 1, cpfValue[i]);
+          }
+        }
+        cpf.value = cpfmaskedArray.join("");
+    });
+
+</script>
+
+
+
+<!--Masks Functions-->
+<script>
+    //------------------ Last key pressed -------------------//
+    let lastKeyPressed = "";
+    document.addEventListener("keydown", function (e) {
+        lastKeyPressed = e.key;
+    });
+
+    //------------------- Fullname -------------------//
+    function fullnameMask(input) {
+        const cursorPosition = input.selectionStart;
+
+        const alphaRegex = /[^\sa-zA-ZàáâãéêíóôõúÀÁÂÃÉÊÍÓÔÕÚçÇ']|^\s+$|^'/g;
+
+        if (alphaRegex.test(input.value)) {
+            input.value = input.value.replace(alphaRegex, "");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/\s{2,}/g.test(input.value)) {
+            input.value = input.value.replace(/\s{2,}/g, " ");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/'{2,}/g.test(input.value)) {
+            input.value = input.value.replace(/'{2,}/g, "'");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+    }
+
+    //------------------- Username -------------------//
+    function usernameMask(input) {
+        const cursorPosition = input.selectionStart;
+
+        const alphaRegex = /[^a-z0-9_.]|^_|^\./g;
+
+        if (alphaRegex.test(input.value)) {
+            input.value = input.value.replace(alphaRegex, "");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/_{2,}/g.test(input.value)) {
+            input.value = input.value.replace(/_{2,}/g, "_");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/\.{2,}/g.test(input.value)) {
+            input.value = input.value.replace(/\.{2,}/g, ".");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/(_\.)/g.test(input.value)) {
+            input.value = input.value.replace(/(_\.)/g, "_");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+
+        if (/(\._)/g.test(input.value)) {
+            input.value = input.value.replace(/(\._)/g, ".");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        }
+    }
+
+    //-------------------- Email ---------------------//
+    function emailMask(input) {
+        const cursorPosition = input.selectionStart;
+        const emailRegex = /[^a-zA-Z0-9@_.-]/g;
+
+        if (emailRegex.test(input.value)) {
+            input.value = input.value.replace(emailRegex, "");
+            input.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+            return;
+        }
+        input.setSelectionRange(cursorPosition, cursorPosition);
+    }
+
+</script>
+
+
+
+<!--Apply Masks on Register User Form Fields-->
+<script>
+
+    //------------------- Fullname -------------------//
+    document.getElementById("profileFullname").addEventListener("input", function () {
+        if (this.value.length > 255) {
+            this.value = this.value.substring(0, 255);
+        }
+        fullnameMask(this);
+    });
+
+    //------------------- Username -------------------//
+    document.getElementById("profileUsername").addEventListener("input", function () {
+        if (this.value.length > 20) {
+            this.value = this.value.substring(0, 20);
+        }
+        usernameMask(this);
+    });
+
+    //-------------------- Email ---------------------//
+    document.getElementById("profileEmail").addEventListener("input", function () {
+        if (this.value.length > 255) {
+            this.value = this.value.substring(0, 255);
+        }
+        emailMask(this);
+    });
+
+    //----------------------- CPF -------------------//
+    var pasteProfileCpf = false;
+
+    document.getElementById("profileCpf").addEventListener("paste", function () {
+        pasteProfileCpf = true;
+    });
+
+    document.getElementById("profileCpf").addEventListener("input", function () {
+        let mask = "###.###.###-##";
+        let cursorPosition = this.selectionStart;
+        let beforeCriticalChars = cursorPosition === 3 || cursorPosition === 7 || cursorPosition === 11;
+        let afterCriticalChars = cursorPosition === 4 || cursorPosition === 8 || cursorPosition === 12;
+        let backspaceCodition = lastKeyPressed === "Backspace";
+        let criticalBackspaceCodition = beforeCriticalChars && backspaceCodition
+
+        let maskedArray = mask.split("");
+
+
+        let digitsOnly = criticalBackspaceCodition ?
+            (this.value.slice(0, cursorPosition - 1) + this.value.slice(cursorPosition)).replace(/[^0-9]/g, "") :
+            this.value.replace(/[^0-9]/g, "");
+
+
+        for (let i = 0; i < digitsOnly.length; i++) {
+            if (maskedArray.indexOf("#") !== -1) {
+                maskedArray.splice(maskedArray.indexOf("#"), 1, digitsOnly[i]);
+            }
+        }
+
+        let newValue = "";
+
+        if (maskedArray.indexOf("#") === -1) {
+            newValue = this.value = maskedArray.join("");
+        } else {
+            newValue = this.value = maskedArray.slice(0, maskedArray.indexOf("#")).join("");
+        }
+
+
+        if (pasteProfileCpf) {
+            this.setSelectionRange(newValue.length, newValue.length);
+            return;
+        }
+        if (criticalBackspaceCodition) {
+            this.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+            return;
+        }
+        if (backspaceCodition) {
+            this.setSelectionRange(cursorPosition, cursorPosition);
+            return;
+        }
+        if (beforeCriticalChars || afterCriticalChars) {
+            this.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+            return;
+        }
+        this.setSelectionRange(cursorPosition, cursorPosition);
+
+    });
+
+</script>
+
+
+
+<!--Change Photo Profile Script-->
+<script>
+    const photoContainer = document.getElementById("photoContainer");
+    const photoElement = photoContainer.querySelector("img");
+    const photoOverlay = photoContainer.querySelector("span");
+    const photoInput = photoContainer.querySelector("input");
+
+    photoContainer.addEventListener("mouseover", () => {
+        photoOverlay.style.visibility = "visible";
+    });
+
+    photoContainer.addEventListener("mouseout", () => {
+        photoOverlay.style.visibility = "hidden";
+    });
+
+    photoContainer.addEventListener("click", () => {
+        photoInput.click();
+    });
+
+
+    var lastPhotoFile;
+
+    photoInput.addEventListener('change', async (event) => {
+
+        const file = event.target.files[0];
+
+        if (file) {
+
+            let validPhotoNewsObject = await validPhotoProfile(photoInput);
+
+            if (!validPhotoNewsObject.success) {
+
+                photoInput.value = "";
+
+                Swal.fire({
+                    title: "<h3>Ocorreu um problema!</h3>",
+                    html: validPhotoNewsObject.message,
+                    icon: "error",
+                    iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    }
+                });
+
+            } else {
+
+                lastPhotoFile = file;
+
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    const photoUrl = event.target.result;
+                    photoElement.src = photoUrl;
+                    //profilePhoto.style.backgroundImage = "url('" + photoUrl + "')";
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+        } else {
+
+            if (lastPhotoFile) {
+                const fileList = new DataTransfer();
+                fileList.items.add(new File([lastPhotoFile], lastPhotoFile.name));
+                PhotoInput.files = fileList.files;
+            }
+        }
+    });
+</script>
+
+
+
+<!--Photo News Validation-->
+<script>
+
+    async function validPhotoProfile(input) {
+
+        let file = input.files[0];
+
+        if (file.size > 5000000) {
+            return {
+                success: false,
+                message: "Tamanho máximo de 5MB excedido para <strong>imagem de perfil</strong>."
+            };
+        }
+
+
+        try {
+
+            const arrayBuffer = await readFileAsArrayBuffer(file);
+
+            const text = await readFileAsText(file);
+            const svgPattern = /<svg[^>]*xmlns="http:\/\/www\.w3\.org\/2000\/svg"[^>]*>/;
+            const isSVG = svgPattern.test(text);
+
+            const isValidFormat = (IsOtherFileFormat(arrayBuffer) || isSVG);
+
+
+            if (!isValidFormat) {
+                return {
+                    success: false,
+                    message: "Tipo de arquivo inválido para <strong>imagem de perfil</strong>."
+                };
+            }
+
+
+
+
+            return {
+                success: true,
+                message: "Imagem de perfil válida."
+            };
+
+
+        } catch (error) {
+            return {
+                success: false,
+                message: "Erro ao carregar <strong>imagem de perfil</strong>. Tente novamente."
+            };
+        }
+    }
+
+
+
+    function readFileAsArrayBuffer(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                resolve(new Uint8Array(event.target.result));
+            };
+
+            reader.onerror = function (event) {
+                reject(event);
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+
+    function readFileAsText(file) {
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                resolve(event.target.result);
+            };
+
+            reader.onerror = function (event) {
+                reject(event);
+            };
+
+            reader.readAsText(file);
+        });
+
+    }
+
+
+    function IsOtherFileFormat(arrayBuffer) {
+
+        let fileCodes = ["89504e47", "ffd8ffdb", "ffd8ffe0", "ffd8ffee", "ffd8ffe1", "0000000c", "ff4fff51", "52494646"];
+
+        var arr = arrayBuffer.subarray(0, 4);
+        var header = "";
+        for (var i = 0; i < arr.length; i++) {
+            header += arr[i].toString(16);
+        }
+
+        if (!fileCodes.includes(header)) {
+            return false;
+        }
+        return true;
+    }
+
+
+</script>
+
+
+
+<!--Submit Change Informations Form-->
+<script>
+    const editButtons = document.querySelectorAll(".edit-informations-button");
+
+    editButtons.forEach((editButton) => {
+        editButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            Swal.fire({
+                title: "Alterando informações...",
+                didOpen: async () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+            });
+
+            const response = await editInformations();
+
+            if (response.success) {
+                //console.log(response.stayLoggedIn);
+                Swal.fire({
+                    title: "<h3>Alterações efetuadas com sucesso!</h3>",
+                    text: response.stayLoggedIn ?
+                    "" :
+                    "Para continuar, por favor, faça login novamente utilizando suas novas credenciais.",
+                    icon: "success",
+                    iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    }
+                }).then(() => {
+                    window.location.href = response.stayLoggedIn ? "/profile" : "/logout";
+                });
+
+            } else {
+                Swal.fire({
+                    title: "<h3>Falha ao alterar informações!</h3>",
+                    html: response.message,
+                    icon: "error",
+                    iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    }
+                });
+            }
+        });
+    });
+
+
+
+
+
+    async function editInformations() {
+
+        var photoInput = document.getElementById("photoInput");
+
+        if (photoInput.files.length != 0) {
+
+            var validPhotoProfileObject = await validPhotoProfile(photoInput);
+
+            if (await !validPhotoProfileObject.success) {
+                return await new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(
+                            validPhotoProfileObject
+                        );
+                    });
+                });
+            }
+        }
+
+
+        try {
+            const form = document.querySelector("#profileForm");
+            const formData = new FormData(form);
+
+            const cleanedCpf = document.getElementById("profileCpf").value.replace(/[^0-9]/g, "");
+
+            formData.set("profileCpf", cleanedCpf);
+
+
+            const response = await fetch("/user/profile/edit", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            return data;
+
+        } catch (error) {
+            const data = {
+                success: false,
+                message: "Erro na conexão. Tente novamente."
+            };
+            return data;
+        }
+    }
+
+</script>
+
+
+
+<!--Submit Edit Password Form-->
+<script>
+
+    const passwordButtons = document.querySelectorAll(".edit-password-button");
+
+
+    passwordButtons.forEach((passwordButton) => {
+        passwordButton.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Alterando senha...",
+                didOpen: async () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+            });
+
+            const response = await editPassword();
+
+            if (response.success) {
+                Swal.fire({
+                    title: "<h3>Senha alterada com sucesso!</h3>",
+                    text: "Para continuar, por favor, faça login novamente utilizando sua nova senha.",
+                    icon: "success",
+                    iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    }
+                }).then(() => {
+                    window.location.href = "/logout"
+                });
+            } else {
+                Swal.fire({
+                    title: "<h3>Falha ao alterar senha!</h3>",
+                    html: response.message,
+                    icon: "error",
+                    iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    }
+                });
+            }
+        });
+
+    });
+
+
+    async function editPassword() {
+
+        const password = document.querySelector("#profilePassword");
+        const newPassword = document.querySelector("#profileNewPassword");
+        const confirmPassword = document.querySelector("#profileConfirmNewPassword");
+
+
+
+        if (password.value == "") {
+            return await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve({
+                        success: false,
+                        message: "Informe a sua senha atual."
+                    });
+                })
+            })
+        }
+
+
+        if (newPassword.value == "") {
+            return await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve({
+                        success: false,
+                        message: "Informe a nova senha."
+                    });
+                })
+            })
+        }
+
+
+
+        if (password.value == newPassword.value) {
+            return await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve({
+                        success: false,
+                        message: "A senha atual e a nova senha não devem coincidir."
+                    });
+                })
+            })
+        }
+
+
+
+
+        if (newPassword.value != confirmPassword.value) {
+            return await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve({
+                        success: false,
+                        message: "Verifique a confirmação de nova senha. Senhas não coincidem."
+                    });
+                })
+            })
+        }
+
+
+
+        try {
+
+            const form = document.querySelector("#profilePasswordForm");
+            const formData = new FormData(form);
+
+            const response = await fetch("/user/profile/edit-password", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            return data;
+
+        } catch (error) {
+            return {
+                success: false,
+                message: "Falha na conexão. Tente novamente",
+            };
+        }
+    }
+
+
+    function clearFields(fields) {
+        fields.forEach((id) => {
+            document.querySelector("#" + id).value = "";
+        });
+    }
+
+</script>
+
+
+
+<!--Set Buttons Tooltip-->
+<script>
+
+    $(document).ready(() => {
+      $(".edit-informations-button").tooltip();
+      $(".edit-password-button").tooltip();
+      $(".password-visibility").tooltip();
+    });
+  
+</script>

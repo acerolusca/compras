@@ -32,6 +32,7 @@ Queue::setMap([
 
 Queue::setDefault([]);
 
+
 //IMPRIME O RESPONSE DA ROTA
 $obRouter->run()->sendResponse();
 

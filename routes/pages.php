@@ -18,7 +18,20 @@ $obRouter->get("/",[
 
 
 
-//ROTA PARA LOGIN DE USUÁRIO
+
+//ROTA PARA VIEW DE NOTÍCIAS
+$obRouter->get("/news",  [
+    "middlewares" => [
+        "requireLogin",
+    ],
+    function (){
+    return new Response(200, Pages\News::render());
+}]);
+
+
+
+
+//ROTA PARA VIEW DE USUÁRIOS
 $obRouter->get("/users",[
     "middlewares" => [
         "requireLogin",
@@ -28,6 +41,43 @@ $obRouter->get("/users",[
         return new Response(200, Pages\Users::render());
     }
 ]);
+
+
+
+
+//ROTA PARA VIEW DE PERFIL DE USUÁRIO
+$obRouter->get("/profile",[
+    "middlewares" => [
+        "requireLogin",
+    ],
+    function(){
+        return new Response(200, Pages\Profile::render());
+    }
+]);
+
+
+
+
+//ROTA PARA LOGOUT DE USUÁRIO
+$obRouter->get("/logout",[
+    "middlewares" => [
+        "requireLogin",
+    ],
+    function($request){
+        return new Response(200, Pages\Logout::render($request));
+    }
+]);
+
+
+
+
+//ROTA PARA PÁGINA NÃO ENCONTRADA
+$obRouter->get("/not-found",  [
+    function () {
+        return new Response(200, Pages\NotFound::render());
+    }
+]);
+
 
 
 

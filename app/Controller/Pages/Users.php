@@ -79,7 +79,7 @@ class Users extends Page {
         try{
             self::initialize();
 
-            return self::$userService->getNoAdministratorsUsersTableBody();
+            return self::$userService->getNoAdministratorUsersTableBody();
             
         }catch(Exception $e){
             return "";
@@ -96,7 +96,7 @@ class Users extends Page {
      */
     public static function render(){
 
-        //VIEW DE ADMINISTRADORES
+        //VIEW DE USUÁRIOS
         $content = View::render("pages/users/index", [
             "noAdministratorsUsersTableBody" => self::getNoAdministratorsUsersTableBody(),
             "registerForm" => self::getRegisterForm(),

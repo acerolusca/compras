@@ -1,0 +1,583 @@
+<!-- Edit News Modal  -->
+<div class="modal fade" id="editNewsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="false" data-backdrop="static">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div id="editNewsOverlay" class="overlay modal-overlay" style="display:grid;">
+        <div class="spinner-border text-light" role="status"><span class="sr-only"></span></div>
+      </div>
+      <!-- Modal Header-->
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="modal-title text-light" id="exampleModalLabel">Editar Notícia</h6>
+        <button type="button" class="close btn text-light btn-secondary btn-circle" data-dismiss="modal"
+          aria-label="Close">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body border border-white">
+
+        <form id="editNewsForm" class="d-flex flex-column justify-content-around position-relative px-1 px-md-5 py-3">
+
+          <input id="editNewsId" name="editNewsId" type="hidden" value="">
+
+          <div id="editImageContainer" class="w-100 position-relative rounded overflow-hidden mb-1">
+            <img id="editImagePreview" class="w-100 h-100 shadow-sm" src="" alt="Imagem da notícia"
+              style="object-fit: cover;" />
+            <span
+              class="overlay news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
+              Alterar imagem da notícia
+            </span>
+            <input id="editImage" name="editImage" type="file" style="display: none" />
+          </div>
+
+
+          <div class="d-flex flex-column align-items-center mt-5 w-100">
+
+            <div class="form-group w-100 mb-0">
+              <label for="editTitle" class="text-dark">Titulo da notícia</label>
+              <input id="editTitle" name="editTitle" type="text"
+                class="container-fluid text-dark px-2 py-3 form-control w-100" style="font-size: 16px;"
+                placeholder="Por favor, insira um título para a notícia que contenha entre 10 e 100 caracteres." />
+            </div>
+
+            <div class="mt-1 mb-0 d-flex w-100 justify-content-between">
+              <p id="editTitleMessage" class="text-danger" style="font-size: 14px; visibility: hidden;">Mínimo de
+                10 caracteres</p>
+              <p class="text-dark" style="font-size: 14px;"><span class="text-dark" id="editTitleCounter">0</span>/100
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="d-flex flex-column align-items-center my-4 w-100">
+
+            <div class="form-group w-100 mb-0">
+              <label for="editSummary" class="text-dark">Resumo da notícia</label>
+              <textarea id="editSummary" name="editSummary"
+                class="container-fluid text-dark px-2 py-2 form-control w-100" style="resize: none; font-size: 16px;"
+                placeholder="Agora, escreva um resumo sobre a notícia contendo entre 100 e 150 caracteres."></textarea>
+            </div>
+
+
+            <div class="mt-1 mb-0 w-100 d-flex justify-content-between">
+              <p id="editSummaryMessage" class="text-danger" style="font-size: 14px; visibility: hidden;">Mínimo
+                de 100 caracteres</p>
+              <p class="text-dark" style="font-size: 14px;"><span class="text-dark" id="editSummaryCounter">0</span>/150
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="form-group w-100 mb-0">
+            <label for="editBody" class="text-dark">Corpo da notícia</label>
+            <textarea id="editBody" name="editBody"
+              placeholder="Aqui você pode escrever o conteúdo principal da notícia.">
+            </textarea>
+          </div>
+
+          <p class="mt-5 text-dark mb-1">Ações ao publicar</p>
+          <div
+            class="d-flex flex-column flex-lg-row justify-content-around align-items-lg-center bg-white rounded p-3 w-100"
+            style="border:solid 1px #d1d3e2 ">
+
+            <div class="mb-2 mb-md-0">
+              <input id="editHighlighted" name="editHighlighted" type="checkbox" class="mr-1" />
+              <label class="text-dark mb-0" for="editHighlighted">Colocar em destaque</label>
+            </div>
+
+            <div class="mb-2 mb-md-0 text-dark">
+              <input id="editVisible" name="editVisible" type="checkbox" class="mr-1" />
+              <label class="text-dark mb-0" for="editVisible">Tornar visível</label>
+            </div>
+
+            <div class="mb-1 mb-md-0 text-dark">
+              <input id="editSchedulingDateCheckbox" type="checkbox" class="mr-1" />
+              <label class="text-dark mb-0" for="editSchedulingDateCheckbox">Agendar</label>
+            </div>
+
+            <div id="editSchedulingDateContainer" style="display: none;">
+              <input class="text-dark form-control" id="editSchedulingDate" name="editSchedulingDate"
+                type="datetime-local" />
+            </div>
+
+          </div>
+
+          <button id="editNewsSubmitButton" class="btn btn-primary container-fluid mt-4">Editar notícia</button>
+
+        </form>
+
+        <!-- End form Body -->
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--Create Edit News CK Editor-->
+<script type="module" async>
+
+  const editEditor = await createEditCkEditor("editBody");
+
+
+  async function createEditCkEditor(id) {
+    const element = document.getElementById(id);
+    const editor = await ClassicEditor.create(element, {
+      simpleUpload: {
+        uploadUrl: "/editor/uploader",
+      },
+      image: {
+        upload: {
+          types: ["jpeg", "jpg", "png", "webp", "svg"]
+        }
+      }
+    });
+
+    window.editEditor = editor;
+    return editor;
+  }
+
+</script>
+
+
+
+<!--Apply Masks on Edit News Form Fields-->
+<script>
+  //--------------------- Title --------------------//
+  document.getElementById("editTitle").addEventListener("input", function () {
+    if (this.value.length > 100) {
+      this.value = this.value.substring(0, 100);
+    }
+    if (this.value.length < 10 && this.value.length > 0) {
+      document.getElementById("editTitleMessage").style.visibility = "visible";
+    } else {
+      document.getElementById("editTitleMessage").style.visibility = "hidden";
+    }
+
+    document.getElementById("editTitleCounter").innerHTML = this.value.length;
+    alphanumericSymbolMask(this)
+  });
+
+  //-------------------- Summary --------------------//
+  document.getElementById("editSummary").addEventListener("input", function () {
+    if (this.value.length > 150) {
+      this.value = this.value.substring(0, 150);
+    }
+
+    if (this.value.length < 100 && this.value.length > 0) {
+      document.getElementById("editSummaryMessage").style.visibility = "visible";
+    } else {
+      document.getElementById("editSummaryMessage").style.visibility = "hidden";
+    }
+    document.getElementById("editSummaryCounter").innerHTML = this.value.length;
+    alphanumericSymbolMask(this)
+  });
+
+</script>
+
+
+
+<!--Logic of Edit News Scheduling Date Display-->
+<script>
+
+  const editSchedulingDateCheckbox = document.querySelector("#editSchedulingDateCheckbox");
+  const editSchedulingDateContainer = document.querySelector("#editSchedulingDateContainer");
+
+
+  changeScheduleDisplay(editSchedulingDateCheckbox, editSchedulingDateContainer);
+
+</script>
+
+
+
+<!--Change Edit News Image Script-->
+<script>
+  const editImageContainer = document.getElementById("editImageContainer");
+  const editImageElement = editImageContainer.querySelector("img");
+  const editImageOverlay = editImageContainer.querySelector("span");
+  const editImageInput = editImageContainer.querySelector("input");
+
+  editImageContainer.addEventListener("mouseover", () => {
+    editImageOverlay.style.visibility = "visible";
+  });
+
+  editImageContainer.addEventListener("mouseout", () => {
+    editImageOverlay.style.visibility = "hidden";
+  });
+
+  editImageContainer.addEventListener("click", () => {
+    editImageInput.click();
+  });
+
+
+  var lastEditNewsImageFile;
+
+  editImageInput.addEventListener('change', async (event) => {
+
+    const file = event.target.files[0];
+
+    if (file) {
+
+      let validNewsImageObject = await validNewsImage(editImageInput);
+
+      if (!validNewsImageObject.success) {
+
+        editImageInput.value = "";
+
+        document.getElementById("editNewsModal").style.display = "none";
+
+        Swal.fire({
+          title: "<h3>Ocorreu um problema!</h3>",
+          html: validNewsImageObject.message,
+          icon: "error",
+          iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+          backdrop: "rgba(0,0,0,0.7)",
+          background: "#f2f2f2",
+          customClass: {
+            icon: "custom-icon-class",
+            confirmButton: "btn-primary"
+          }
+        }).then(() => {
+          document.getElementById("editNewsModal").style.display = "block";
+        });
+
+      } else {
+
+        lastEditNewsImageFile = file;
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          const imageUrl = event.target.result;
+          editImageElement.src = imageUrl;
+          //profilePhoto.style.backgroundImage = "url('" + imageUrl + "')";
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+    } else {
+
+      if (lastEditNewsImageFile) {
+        const fileList = new DataTransfer();
+        fileList.items.add(new File([lastEditNewsImageFile], lastEditNewsImageFile.name));
+        editImageInput.files = fileList.files;
+      }
+    }
+  });
+</script>
+
+
+
+<!-- Fill Edit News Form -->
+<script>
+
+  async function fillEditNewsForm(newsId) {
+
+    modalOverlay("on", "editNewsOverlay");
+
+    const response = await getNewsInfo(newsId);
+
+    if (!response.success) {
+
+      document.getElementById("editNewsModal").style.display = "none";
+
+      await Swal.fire({
+        title: "<h3>Notícia não encontrada!</h3>",
+        html: response.message,
+        icon: "error",
+        iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+        },
+      }).then(() => {
+        window.location.reload()
+      });
+
+    } else {
+      await updateEditNewsForm(response.data);
+      modalOverlay("off", "editNewsOverlay");
+    }
+
+  }
+
+
+
+  async function getNewsInfo(newsId) {
+    try {
+      const response = await fetch("/news/" + newsId, {
+        method: "GET"
+      });
+
+      return await response.json();
+
+    } catch (error) {
+      return {
+        success: false,
+        message: "Erro na conexão. Tente novamente.",
+      }
+    }
+  }
+
+
+
+  function updateEditNewsForm(data) {
+
+    const id = document.querySelector("#editNewsId");
+    const image = document.querySelector("#editImagePreview");
+    const title = document.querySelector("#editTitle");
+    const summary = document.querySelector("#editSummary");
+    const body = editEditor;
+    const highlighted = document.querySelector("#editHighlighted");
+    const schedulingDateCheckbox = document.querySelector("#editSchedulingDateCheckbox");
+    const schedulingDateContainer = document.querySelector("#editSchedulingDateContainer");
+    const schedulingDate = document.querySelector("#editSchedulingDate");
+    const visible = document.querySelector("#editVisible");
+
+
+    id.value = data.id;
+    image.src = data.imagePath
+    title.value = data.title;
+    summary.value = data.summary;
+    body.setData(data.body);
+    highlighted.checked = data.highlighted;
+    schedulingDateCheckbox.checked = data.schedulingDateCheckbox;
+    schedulingDateContainer.style.display = data.schedulingDateContainer;
+    schedulingDate.value = data.schedulingDate;
+    visible.checked = data.visible;
+
+    const titleCounter = document.getElementById("editTitleCounter");
+    const summaryCounter = document.getElementById("editSummaryCounter");
+    titleCounter.innerHTML = title.value.length;
+    summaryCounter.innerHTML = summary.value.length;
+  }
+
+</script>
+
+
+
+<!--Submit Edit News Form-->
+<script>
+
+  const editNewsSubmitButton = document.querySelector("#editNewsSubmitButton");
+
+  editNewsSubmitButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: "Editando notícia...",
+      didOpen: async () => {
+        Swal.showLoading();
+        document.getElementById("editNewsModal").style.display = "none";
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: "rgba(0,0,0,0.7)",
+      background: "#f2f2f2",
+    });
+
+    const response = await editNews();
+
+    if (response.success) {
+
+      Swal.fire({
+        title: "<h3>Notícia editada com sucesso!</h3>",
+        icon: "success",
+        iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+          confirmButton: "btn-primary"
+        },
+      }).then(() => {
+        const editModal = document.getElementById("editNewsModal");
+        $(editModal).modal("hide");
+      });
+
+
+      const newsId = document.querySelector("#editNewsId").value;
+      const newsCardContent = document.querySelector(`#newsCardContent${newsId}`);
+      const cardImage = newsCardContent.querySelector(".news-image");
+      const cardTitle = newsCardContent.querySelector(".title");
+      const cardSchedulingDate = newsCardContent.querySelector(".schedule");
+      const cardHighlightedButton = newsCardContent.querySelector(".highlighted-news-button");
+      const cardHighlightedIcon = cardHighlightedButton.querySelector("i");
+      const cardVisibleButton = newsCardContent.querySelector(".visible-news-button");
+      const cardVisibleIcon = cardVisibleButton.querySelector("i");
+
+
+      //Updating Image
+      const image = document.querySelector("#editImage");
+      if (image.files.length > 0) {
+        const imageFile = image.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          cardImage.src = e.target.result;
+        }
+
+        reader.readAsDataURL(imageFile);
+      }
+
+
+
+      //Updating Title
+      const title = document.querySelector("#editTitle").value;
+      cardTitle.innerHTML = title;
+
+
+
+      //Updating SchedulingDate 
+      var schedulingDate = document.querySelector("#editSchedulingDate").value;
+
+      if (schedulingDate != "") {
+        schedulingDate = schedulingDate.replace(/\T/g, " ") + ":00";
+
+        const [schedulingDatePart, schedulingTimePart] = schedulingDate.split(" ");
+        const [year, month, day] = schedulingDatePart.split("-");
+        cardSchedulingDate.innerHTML = `${day}/${month}/${year} ${schedulingTimePart}`;
+      }
+
+
+
+      //Updating Highlighted State
+      const highlighted = document.querySelector("#editHighlighted").checked;
+      cardHighlightedIcon.classList = `highlighted-news-icon fa-star fa-${highlighted ? "solid" : "regular"}`;
+      cardHighlightedButton.title = highlighted ? "Remover dos destaques" : "Colocar em destaque";
+      $(cardHighlightedButton).tooltip('dispose').tooltip();
+
+
+
+      //Updating Visible State
+      const visible = document.querySelector("#editVisible").checked;
+      cardVisibleIcon.classList = `visible-news-icon fa-solid fa-${visible ? "eye" : "eye-slash"}`;
+      cardVisibleButton.title = visible ? "Ocultar" : "Tornar visível";
+      $(cardVisibleButton).tooltip('dispose').tooltip();
+
+
+    } else {
+      Swal.fire({
+        title: "<h3>Falha ao editar notícia!</h3>",
+        html: response.message,
+        icon: "error",
+        iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+          confirmButton: "btn-primary"
+        },
+      }).then(() => {
+        document.getElementById("editNewsModal").style.display = "block";
+      });
+    }
+  });
+
+
+
+
+  async function editNews() {
+
+    var imageInput = document.getElementById("editImage");
+
+    if (imageInput.files.length != 0) {
+      var validNewsImageObject = await validNewsImage(imageInput);
+
+      if (await !validNewsImageObject.success) {
+        return await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(
+              validNewsImageObject
+            );
+          });
+        });
+      }
+    }
+
+
+    const form = document.querySelector("#editNewsForm");
+    const formData = new FormData(form);
+
+    let body = editEditor.getData({ trim: "empty" });
+    //let body = decodeHtmlEntities(editEditor.getData({trim: "empty"}));
+    //body = body.replace(/style="[^"]*"/, "");
+    //body = body.replace(/class="[^"]*"/, "");
+    //body = body.replace(/width="[^"]*"/, "");
+    //body = body.replace(/height="[^"]*"/, "");
+
+
+    formData.set("editBody", body);
+
+    const editHighlighted = document.querySelector("#editHighlighted");
+    const editHighlightedValue = editHighlighted.checked ? "yes" : "no";
+    formData.set("editHighlighted", editHighlightedValue);
+
+
+    const editVisible = document.querySelector("#editVisible");
+    const editVisibleValue = editVisible.checked ? "yes" : "no";
+    formData.set("editVisible", editVisibleValue);
+
+
+    const schedulingDateCheckbox = document.getElementById("editSchedulingDateCheckbox");
+    const schedulingDateCheckboxValue = schedulingDateCheckbox.checked ? "yes" : "no";
+    formData.set("editSchedulingDateCheckbox", schedulingDateCheckboxValue);
+
+    var schedulingDate = document.getElementById("editSchedulingDate");
+    formData.set("editSchedulingDate", schedulingDate.value == "" ? schedulingDate.value : schedulingDate.value.replace(/\T/g, " ") + ":00");
+
+    try {
+      const response = await fetch("/news/edit", {
+        method: "POST",
+        body: formData,
+      });
+
+      return await response.json();
+
+    } catch (error) {
+      return {
+        success: false,
+        message: "Erro na conexão. Tente novamente."
+      };
+    }
+  }
+
+</script>
+
+
+
+<!--Set Edit News Buttons Tooltip and Modal Reset-->
+<script>
+
+  $(document).ready(() => {
+
+    $('#editNewsModal').on('hidden.bs.modal', () => {
+
+      $('body').css('overflow-y', 'scroll');
+      $('#editTitleMessage').css('visibility', 'hidden');
+      $('#editSummaryMessage').css('visibility', 'hidden');
+
+      $('#editTitleCounter').html("0");
+      $('#editSummaryCounter').html("0");
+
+
+      $('#editImage').val('');
+      $('#editImagePreview').attr('src', '/image/news/default-image-path.svg');
+      $('#editTitle').val('');
+      $('#editSummary').val('');
+      editEditor.setData('');
+      $('#editHighlighted').prop('checked', false);
+      $('#editSchedulingDateCheckbox').prop('checked', false);
+
+      $('#editSchedulingDateContainer').css('display', 'none');
+      $('#editSchedulingDate').val('');
+
+    });
+
+  });
+
+</script>

@@ -3,7 +3,7 @@
 
 namespace App\Communication;
 
-require_once __DIR__ . "/../../includes/app.php";
+//require_once __DIR__ . "/../../includes/app.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;

@@ -42,6 +42,17 @@ class Request {
      */
     private $postVars = [];
 
+    
+
+
+    /**
+     * Variáveis recebidas no corpo da requisição
+     *
+     * @var array
+     */
+    private $bodyVars = [];
+
+
 
     /**
      * Cabeçalhos da requisição
@@ -59,12 +70,6 @@ class Request {
     private $router;
 
 
-    /**
-     * Variáveis recebidas no corpo da requisição
-     *
-     * @var array
-     */
-    private $bodyVars = [];
 
 
 
@@ -75,12 +80,11 @@ class Request {
      */
     public function __construct($router) {
 
-        # Verificando se foram recebidas e intanciando as variaveis
         $this->router = $router;
         $this->queryParams = $_GET ?? []; 
         $this->postVars = $_POST ?? []; 
-        $this->headers = getallheaders(); # Metodo nativo do php que retorna os headers da requisicao
-        $this->httpMethod = $_SERVER["REQUEST_METHOD"] ?? ""; # Variavel que recebe o metodo da requisicao do server
+        $this->headers = getallheaders(); 
+        $this->httpMethod = $_SERVER["REQUEST_METHOD"] ?? "";
         $this->setUri();
         $this->setBodyVars();
     }

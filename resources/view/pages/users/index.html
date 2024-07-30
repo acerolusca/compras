@@ -1,16 +1,15 @@
 
 <!-- Users Datatable -->
-
-<div class="card shadow my-4 mx-md-5">
+<div class="card shadow my-4 mx-2 mx-md-5">
   <div class="card-header py-2 px-4 d-flex justify-content-between align-items-center">
     <h6 class="m-0 font-weight-bold text-light">Usuários</h6>
     {{registerForm}}
   </div>
 
-  <div class="card-body">
+  <div class="card-body border border-white">
     <div class="table-responsive">
-      <table class="table table-bordered" id="usersTable" width="100%" cellspacing="0">
-        <thead>
+      <table class="table table-bordered table-striped bg-white shadow-sm" id="usersTable" width="100%" cellspacing="0">
+        <thead class="text-white" style="background-color: #c0c0c0">
           <tr>
             <th style="text-align: center">Foto</th>
             <th style="text-align: center">Nome</th>
@@ -19,7 +18,7 @@
             <th style="text-align: center">Ações</th>
           </tr>
         </thead>
-        <tfoot>
+        <!--tfoot class="text-white" style="background-color: #858796">
           <tr>
             <th style="text-align: center">Foto</th>
             <th style="text-align: center">Nome</th>
@@ -27,7 +26,7 @@
             <th style="text-align: center">CPF</th>
             <th style="text-align: center">Ações</th>
           </tr>
-        </tfoot>
+        </tfoot-->
         <tbody>
           {{noAdministratorsUsersTableBody}}
         </tbody>
@@ -38,6 +37,7 @@
 
 
 {{editForm}}
+
 
 
 <!-- Delete User Script -->
@@ -52,8 +52,14 @@
         showCancelButton: true,
         cancelButtonText: "Cancelar",
         confirmButtonText: "Confirmar",
-        position: "center"
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          confirmButton: "btn-primary",
+          cancelButton: "btn-danger"
+        },
       }).then(async (result) => {
+
         if (result.isConfirmed) {
 
           Swal.fire({
@@ -62,20 +68,45 @@
                 Swal.showLoading();
             },
             allowOutsideClick: () => !Swal.isLoading(),
-        });
-
-          const data = await deleteUser(button.dataset.userCpf);
-
-          Swal.fire({
-            title: data.message,
-            text: "",
-            icon: `${data.success == true ? "success" : "error"}`,
-            position: "center",
-          }).then((result) => {
-            if(result.isConfirmed) {
-              window.location.reload();
-            }
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
           });
+
+          const response = await deleteUser(button.dataset.userCpf);
+
+
+          if (response.success) {
+
+            Swal.fire({
+              title: "<h3>Usuário excluído com sucesso!</h3>",
+              icon: "success",
+              iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+              backdrop: "rgba(0,0,0,0.7)",
+              background: "#f2f2f2",
+              customClass: {
+                icon: "custom-icon-class",
+                confirmButton: "btn-primary"
+              },
+            }).then(() => {
+              window.location.reload()
+            });
+      
+          } else {
+            Swal.fire({
+              title: "<h3>Falha ao excluir usuário!</h3>",
+              html: response.message,
+              icon: "error",
+              iconHtml: `<i class="fas fa-times-circle text-danger"></i>`,
+              backdrop: "rgba(0,0,0,0.7)",
+              background: "#f2f2f2",
+              customClass: {
+                icon: "custom-icon-class",
+                confirmButton: "btn-primary"
+              },
+            }).then(() => {
+              window.location.reload()
+            });
+          }
         } 
       });
     })
@@ -84,19 +115,17 @@
 
   async function deleteUser(userCpf) {
     try {
-        const response = await fetch("/api/user/delete/" + userCpf, {
+        const response = await fetch("/user/delete/" + userCpf, {
           method: "POST",
         });
 
-        const data = await response.json();
-        return data;
+         return await response.json();
 
     } catch(error) {
-      const data = {
+      return {
         success: false,
          message: "Erro na conexão. Tente novamente."
       };
-      return data;
     }
   }
 
@@ -104,31 +133,11 @@
 
 
 
-
-
-<!--Set Buttons Tooltip-->
+<!--Set Delete Buttons Tooltip-->
 <script>
 
   $(document).ready(() => {
-    $("#registerUserButton").tooltip();
-    $(".edit-user-button").tooltip();
     $(".delete-user-button").tooltip();
-
-
-    $("#registerUserModal").on("hidden.bs.modal", () => {
-      //$("#registerCpf").val("");
-      //$("#registerBirthDate").val("");
-    });
-    
-
-    $("#editUserModal").on("hidden.bs.modal", () => {
-      //$("#editLastCpf").val("");
-      //$("#editCpf").val("");
-      //$("#editBirthDate").val("");
-    });
-
-
-
   });
 
 </script>

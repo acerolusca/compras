@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+
 use \App\Session\UserSession;
 use \Exception;
 
@@ -82,8 +83,8 @@ class User
 
 
 
-  //------------------------------------ Geterss and Setters ----------------------------------------//
- 
+  //------------------------------------ Getters and Setters ----------------------------------------//
+
 
 
   /**
@@ -126,7 +127,29 @@ class User
    */
   public function setFullname(string $fullname): void
   {
-    $this->fullname = $fullname;
+    try {
+      if(trim($fullname) == ""){
+        throw new Exception("<strong>Nome completo</strong> é obrigatório.", 400);
+      }
+
+      $fullnameRegex = "/[^\sa-zA-ZàáâãéêíóôõúÀÁÂÃÉÊÍÓÔÕÚçÇ']|\s{2,}|'{2,}|^\s+|^'/";
+      if (preg_match($fullnameRegex, $fullname)) {
+        throw new Exception("<strong>Nome completo </strong> inválido.", 400);
+      }
+
+      if (strlen($fullname) <= 3) {
+        throw new Exception("É necessário que o <strong>nome completo</strong> tenha pelo menos 3 caracteres.", 400);
+      }
+
+      if (strlen($fullname) > 255) {
+        throw new Exception("O <strong>nome completo</strong> não deve ultrapassar 255 caracteres.", 400);
+      }
+
+      $this->fullname = ucwords(mb_strtolower($fullname));
+
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
   }
 
 
@@ -142,13 +165,27 @@ class User
   }
 
   /**
-   * Método responsável por atribuir um cpf ao usuário
+   * Método responsável por atribuir um CPF ao usuário
    * @param string $cpf
    * @return void
    */
   public function setCpf(string $cpf): void
   {
-    $this->cpf = $cpf;
+    try {
+
+      if(trim($cpf) == ""){
+        throw new Exception("<strong>CPF</strong> é obrigatório.", 400);
+      }
+
+      if (!$this->validateCpfDigits($cpf)) {
+        throw new Exception("<strong>CPF</strong> inválido", 400);
+      }
+
+      $this->cpf = $cpf;
+
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
   }
 
 
@@ -171,9 +208,39 @@ class User
    */
   public function setUsername(string $username): void
   {
-    $this->username = $username;
-  }
+    try {
+
+      if(trim($username) == ""){
+        throw new Exception("<strong>Nome de usuário</strong> é obrigatório.", 400);
+      }
+
   
+      $usernameRegex = "/^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$/";
+
+      if (!preg_match($usernameRegex, $username)) {
+        throw new Exception(
+          '
+              <p class="text-left"><strong>Nome de usuário</strong> inválido! As seguintes regras devem ser obedecidas:</p>
+              <ul class="text-left">
+                <li >Deve ter entre 5 e 20 caracteres;</li>
+                <li>Pode conter apenas letras minúsculas (a-z), dígitos (0-9), ponto (.) e underscore (_);</li>
+                <li>Não pode começar ou terminar com ponto ou underscore e nem conter esses caracteres de forma consecutiva.</li>
+              </ul>
+            ',
+          400
+        );
+      }
+
+      $this->username = $username;
+
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+
+
+
+  }
+
 
 
 
@@ -194,10 +261,26 @@ class User
    */
   public function setEmail(string $email): void
   {
-    $this->email = $email;
+    try {
+
+      if(trim($email) == ""){
+        throw new Exception("<strong>Email</strong> é obrigatório.", 400);
+      }
+      
+      $emailRegex = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+$/";
+
+      if (!preg_match($emailRegex, $email)) {
+        throw new Exception("<strong>Email</strong> inválido.", 400);
+      }
+
+      $this->email = $email;
+
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
   }
 
-    
+
 
 
 
@@ -218,7 +301,30 @@ class User
    */
   public function setPassword(string $password): void
   {
-    $this->password = $password;
+    try {
+      $passwordRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\.])[A-Za-z\d@$!%*?&\.]{8,}$/";
+
+      if (!preg_match($passwordRegex, $password)) {
+        throw new Exception(
+          '
+              <p class="text-left"><strong>Senha</strong> não é forte o suficiente. As seguintes regras devem ser obedecidas:</p>
+              <ul class="text-left">
+                <li>Deve ter no mínimo 8 caracteres;</li>
+                <li>Pelo menos 1 letra minúscula;</li>
+                <li>Pelo menos 1 letra maiúscula;</li>
+                <li>Pelo menos 1 dígito (0-9);</li>
+                <li>Pelo menos 1 caractere especial dentre <strong>@$!%*?&\.</strong>.</li>
+              </ul>
+            ',
+          400
+        );
+      }
+
+      $this->password = password_hash($password, PASSWORD_ARGON2ID);
+      
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
   }
 
   /**
@@ -231,8 +337,8 @@ class User
     $this->password = password_hash($randomPassword, PASSWORD_ARGON2ID);
     return $randomPassword;
   }
-  
-    
+
+
 
 
 
@@ -256,20 +362,6 @@ class User
     $this->imagePath = $imagePath;
   }
 
-  /**
-   * Método responsável por atribuir um caminho padrão de imagem de perfil ao usuário
-   * @return void
-   */
-  public function setDefaultImagePath(): void
-  {
-    $this->imagePath = "default-image-path.svg";
-  }
-
-
-
-
-
-
 
 
   /**
@@ -289,9 +381,20 @@ class User
    */
   public function setPrivilege(string $privilege): void
   {
-    $this->privilege = $privilege;
+    try {
+      $validPrivileges = ["editor", "administrator"];
+
+      if (!in_array($privilege, $validPrivileges)) {
+        throw new Exception("Privilégio de usuário inválido", 400);
+      }
+
+
+      $this->privilege = $privilege;
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
   }
-  
+
 
 
 
@@ -323,7 +426,7 @@ class User
 
 
 
-//-------------------------------------------- Session Methods ---------------------------------------------//
+  //-------------------------------------------- Session Methods ---------------------------------------------//
 
 
   /**
@@ -366,15 +469,14 @@ class User
    */
   public function getLoggedInfo()
   {
-    try{
+    try {
 
-      if($this->isLogged()){
+      if ($this->isLogged()) {
         return $_SESSION["user"];
       }
 
       throw new Exception("Sessão Expirada", 403);
-
-    } catch (Exception $e){
+    } catch (Exception $e) {
       throw new Exception($e->getMessage(), $e->getCode());
     }
   }
@@ -389,7 +491,7 @@ class User
   {
 
     try {
-      if($this->isLogged()){
+      if ($this->isLogged()) {
         $this->id = $_SESSION["user"]["id"] ?? "";
         $this->fullname = $_SESSION["user"]["fullname"] ?? "";
         $this->cpf = $_SESSION["user"]["cpf"] ?? "";
@@ -400,26 +502,129 @@ class User
       } else {
         throw new Exception("Sessão Expirada", 403);
       }
-    } catch (Exception $e){
+    } catch (Exception $e) {
       throw new Exception($e->getMessage(), $e->getCode());
     }
-
-
-
   }
+
+
+
+  /**
+   * Método responsável por atualizar o nome completo nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionFullname()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["fullname"] = $this->fullname;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+
+  /**
+   * Método responsável por atualizar o cpf nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionCpf()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["cpf"] = $this->cpf;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+
+  /**
+   * Método responsável por atualizar o nome de usuário nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionUsername()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["username"] = $this->username;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+
+  /**
+   * Método responsável por atualizar o email nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionEmail()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["email"] = $this->email;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+
+  /**
+   * Método responsável por atualizar o caminho da imagem de perfil nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionImagePath()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["imagePath"] = $this->imagePath;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
 
 
   /**
    * Método responsável por retornar o privilégio do usuário
    * @return string
    */
-  public function getSessionPrivilege(): string {
-    try{
+  public function getSessionPrivilege(): string
+  {
+    try {
       return $this->getLoggedInfo()["privilege"];
-    } catch(Exception $e){
+    } catch (Exception $e) {
       throw new Exception($e->getMessage(), $e->getCode());
     }
-
   }
 
 
@@ -447,11 +652,129 @@ class User
    */
   private function generateRandomString(int $length = 64): string
   {
-      $length = ($length < 4) ? 4 : $length;
-      return bin2hex(random_bytes(($length - ($length % 2)) / 2));
+    $length = ($length < 4) ? 4 : $length;
+    return bin2hex(random_bytes(($length - ($length % 2)) / 2));
   }
 
 
 
+  /**
+   * Método responsável por validar CPF, verificando a quantidade de caracteres e a observância das regras que o torna válido. 
+   * @param string $cpf
+   * @return boolean
+   */
+  private function validateCpfDigits(string $cpf): bool
+  {
+    // VERIFICA O FORMATO DO CPF
+    if (!preg_match("/[0-9]{11}/", $cpf)) {
+      return false;
+    }
 
+    // GARANTE QUE O CPF NÃO TENHA TODOS OS DIGITOS IGUAIS
+    if (str_replace($cpf[0], "", $cpf) == "") {
+      return false;
+    }
+
+    $cpfSequence = substr($cpf, 0, 9);
+    $firstDigit = $this->calculateCpfDigits($cpfSequence);
+
+    $secondSequence = $cpfSequence . $firstDigit;
+    $secondSequence = substr($secondSequence, 1);
+    $secondDigit = $this->calculateCpfDigits($secondSequence);
+
+    $cpfCheckDigits = substr($cpf, -2);
+
+    return  $cpfCheckDigits == $firstDigit . $secondDigit;
+  }
+
+
+
+  /**
+   * Método responsável por calcular os dígitos de verificação de um CPF a partir dos dígitos precedentes
+   * @param string $parcialCpf
+   * @return string
+   */
+  private function calculateCpfDigits(string $parcialCpf): string
+  {
+    $sum = 0;
+    $j = 2;
+    for ($i = 8; $i >= 0; $i--) {
+      $sum += intval($parcialCpf[$i]) * $j;
+      $j++;
+    }
+    $rest = $sum % 11;
+    $digit = ($rest < 2) ? 0 : (11 - $rest);
+    return strval($digit);
+  }
+
+
+
+  /**
+   * Método responsável por validar a foto de perfil do usuário
+   * @param string $tmpName
+   * @return void
+   */
+  public function validateProfileImage(string $tmpName)
+  {
+
+    $validTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"];
+
+    try {
+
+      if (!file_exists($tmpName)) {
+        throw new Exception("Problema ao carregar </strong>foto de perfil<strong>.", 400);
+      }
+
+      if (filesize($tmpName) > 5000000) {
+        throw new Exception("Tamanho máximo de 5MB excedido para <strong>foto de perfil</strong>.", 400);
+      }
+
+      if (!in_array(mime_content_type($tmpName), $validTypes)) {
+        throw new Exception("Tipo de arquivo inválido para <strong>foto de perfil</strong>.", 400);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+  /**
+   * Método responsável por salvar a imagem de perfil do usuário, retornando o nome do arquivo
+   * @param string $tmpName
+   * @param string $currentName
+   * @return string
+   */
+  public function saveProfileImage(string $tmpName, string $currentName): string
+  {
+
+    $path = __DIR__ . "/../../resources/images/users";
+
+    try {
+
+      //EXCLUI A IMAGEM ATUAL, SE EXISTIR
+      if ($currentName != "default-image-path.svg" && file_exists("$path/$currentName")) {
+        unlink("$path/$currentName");
+      }
+      //GERA UM NOME RANDÔMICO PARA A IMAGEM
+      $newName = $this->generateRandomString(64);
+
+
+      //SETA A EXTENSÃO DA IMAGEM DE ACORDO COM O MIME TYPE
+      $validTypes = ["image/jpeg" => "jpeg", "image/png" => "png", "image/webp" => "webp", "image/svg+xml" => "svg"];
+      $mimeType = mime_content_type($tmpName);
+      $extension = $validTypes[$mimeType];
+
+      //CONCATENA O NOME ALEATÓRIO À EXTENSÃO
+      $newName .= ".$extension";
+
+      if(!move_uploaded_file($tmpName, "$path/$newName")){
+        throw new Exception("Problema ao salvar <strong>foto de perfil</strong>", 400);
+      };
+
+      return $newName;
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
 }

@@ -12,7 +12,7 @@ class UserImage {
 
         $relativeImagePath = "users/$relativeImagePath";
         
-        list($imageContent, $imageMimeType) = Image::getImage($relativeImagePath);
+        [$imageContent, $imageMimeType] = Image::getImage($relativeImagePath);
 
         return new Response(200, $imageContent, $imageMimeType);
     }

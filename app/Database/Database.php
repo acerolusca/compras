@@ -229,7 +229,7 @@ class Database
             if (count($where) > 0) {
                 $whereKeys = array_keys($where);
                 $whereKeys = array_map(function ($key) {
-                    return $key . "?";
+                    return "$key?";
                 }, $whereKeys);
 
                 $binds = array_values($where);
@@ -352,7 +352,7 @@ class Database
             //RETORNA UM BOOLEANO QUE INDICA SE A ATUALIZAÇÂO FOI REALIZADA
             return $this->execute($query, array_values($binds))->rowCount() > 0;
         } catch (PDOException $e) {
-            throw new Exception("Erro na exclusão!", $e->getCode());
+            throw new Exception($e->getMessage(), $e->getCode());
         }
     }
 }

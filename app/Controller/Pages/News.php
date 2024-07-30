@@ -63,28 +63,6 @@ class News extends Page {
 
 
 
-
-
-
-    /**
-     * Método responsável por retornar a lista de todos os usuários
-     * @return string
-     */
-    private static function getUsersList() {
-
-        try{
-            self::initialize();
-
-            return self::$userService->getAll();
-            
-        }catch(Exception $e){
-            return "";
-        }
-    }
-
-
-
-
     /**
      * Método responável por retornar a view de usuários
      *
@@ -92,14 +70,14 @@ class News extends Page {
      */
     public static function render(){
 
-        //VIEW DE ADMINISTRADORES
-        $content = View::render("pages/users/index", [
-            "usersList" => self::getUsersList(),
-            "registerForm" => self::getRegisterForm()
+        //VIEW DE NOTÍCIAS
+        $content = View::render("pages/news/index", [
+            "registerForm" => self::getRegisterForm(),
+            "editForm" => self::getEditForm()
         ]);
 
         //VIEW DA PÁGINA
-        return parent::getPage("Usuários", $content);
+        return parent::getPage("Notícias", $content);
 
 }
 
