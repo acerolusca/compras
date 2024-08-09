@@ -23,9 +23,9 @@
 
 
     <!--News List Card Footer-->
-    <div id="newsCardFooter" class="card-footer d-none">
+    <div id="newsCardFooter" class="card-footer">
         <!--News List Pagination-->
-        <nav id="newsPagination" class="justify-content-center" aria-label="Page navigation example">
+        <nav id="newsPaginationContainer" class="justify-content-center" aria-label="Page navigation example">
             <ul class="pagination m-0 justify-content-center" style="cursor: pointer;"></ul>
         </nav>
     </div>
@@ -40,21 +40,28 @@
 
     <div class="card mb-4 p-0 news-card bg-white">
 
-        <div class="news-card-content d-flex flex-column flex-xl-row">
+        <div class="news-card-content d-flex flex-column flex-lg-row">
 
-            <img src="" class="news-image">
+            <img src="" class="news-image col-12 col-lg-4 p-0">
 
-            <div class="info d-flex flex-column w-100 justify-content-center px-3 my-3">
-                <h5 class="title text-dark w-100 pb-1"></h5>
-                <p class="author card-text  text-dark w-100"><i class="fas fa-user"></i> &nbsp;</p>
-                <p class="card-text w-100 text-dark">
+            <div class="d-flex flex-column justify-content-center col-12 col-lg-5 p-3">
+                <h5 class="news-title text-dark w-100 pb-1" 
+                    style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                </h5>
+                <p class="news-author card-text text-dark w-100"><i class="fas fa-user"></i>&nbsp;
+                </p>
+                <p class="news-scheduling-date card-text text-dark w-100 ">
                     <i class="fas fa-calendar-days"></i>&nbsp;
-                    <small class="schedule text-dark"></small>
+                    <small class="text-dark"></small>
+                </p>
+                <p class="news-scheduling-time card-text text-dark w-100 ">
+                    <i class="fas fa-clock"></i>&nbsp;
+                    <small class="text-dark"></small>
                 </p>
             </div>
 
             <div
-                class="d-flex align-items-start my-3 px-md-3 justify-content-center justify-content-xl-start flex-wrap flex-md-nowrap">
+                class="d-flex flex-wrap flex-lg-nowrap justify-content-center col-12 col-lg-3 p-3 align-items-lg-start">
 
                 <button type="button" class="delete-news-button btn text-dark" data-placement="bottom"
                     title="Excluir notícia">
@@ -65,10 +72,6 @@
                     title="Editar notícia" data-toggle="modal" data-target="#editNewsModal">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
-
-                <!--button type="button" class="preview-news-button btn text-dark" data-placement="bottom" title="Preview">
-                    <i class="fa-solid fa-arrow-up-right-from-envelope-open-text"></i>
-                </button-->
 
                 <button type="button" class="highlighted-news-button btn text-dark" data-placement="bottom">
                     <i class="highlighted-news-icon fa-star"></i>
@@ -95,202 +98,14 @@
 <!-- News List Pagination Script-->
 <script>
 
-    var news = [];
     const newsPerPage = 6;
-    const pageShowLimit = 2;
+    const shownPaginationItemLimit = 3;
+    const newsItemTemplate = document.getElementById('newsItemTemplate');
+    const newsListContainer = document.getElementById('newsListContainer');
+    const newsPaginationContainer = document.getElementById('newsPaginationContainer');
 
 
-
-    function renderInitialNewsPage(container) {
-        const totalPages = Math.ceil(news.length / newsPerPage);
-        var finalIndex = news.length < newsPerPage ? news.length : newsPerPage;
-        for (i = 0; i < finalIndex; i++) {
-            container.appendChild(news[i])
-        }
-
-        if (totalPages > 1) {
-            document.getElementById("newsCardFooter").classList.add("d-flex");
-            document.getElementById("newsCardFooter").classList.remove("d-none");
-        }
-    }
-
-
-
-    function renderNewsPage(initialIndex, finalIndex, container) {
-        container.innerHTML = '';
-        for (i = initialIndex; i < finalIndex; i++) {
-            container.appendChild(news[i]);
-        }
-    }
-
-
-
-    function pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages) {
-
-        //mostra apenas os itens de paginação no intervalo definido
-        document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber, index) => {
-            if (index >= initialShowPageNumber && index < finalShowPageNumber) {
-                pageNumber.classList.remove("d-none");
-            } else {
-                pageNumber.classList.add("d-none");
-            }
-        });
-
-
-
-        //mostra e esconde o botão "anterior"
-        if (initialShowPageNumber + 1 > pageShowLimit) {
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.add('d-flex');
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.remove('d-none');
-        } else {
-            if (!document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.contains('d-none')) {
-                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.add('d-none');
-                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].classList.remove('d-flex');
-            }
-        }
-
-        //mostra e esconde o botão "próximo"
-        if (initialShowPageNumber + 1 <= totalPages - pageShowLimit) {
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.add('d-flex');
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.remove('d-none');
-        } else {
-            if (!document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.contains('d-none')) {
-                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.add('d-none');
-                document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].classList.remove('d-flex');
-            }
-        }
-    }
-
-
-
-    function addPaginationEvents() {
-
-        const totalPages = Math.ceil(news.length / newsPerPage);
-        const container = document.getElementById('newsListContainer');
-
-        document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageItem) => {
-
-            pageItem.addEventListener('click', (event) => {
-                event.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                //tira a classe selected de todos e coloca no item que foi clicado
-                document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber) => {
-                    if (pageNumber.querySelector('.page-link').classList.contains('page-link-selected')) {
-                        pageNumber.querySelector('.page-link').classList.remove('page-link-selected');
-                    }
-                });
-                pageItem.querySelector('.page-link').classList.add('page-link-selected');
-
-                //passa os parâmetros necessários para renderizar a página clicada
-                var initialIndex = newsPerPage * (parseInt(pageItem.innerText) - 1);
-                var calculateFinalIndex = newsPerPage * parseInt(pageItem.innerText);
-                var finalIndex = news.length < calculateFinalIndex ? news.length : calculateFinalIndex;
-                renderNewsPage(initialIndex, finalIndex, container)
-
-            });
-
-        });
-
-        //define os eventos de clique para os botões "anterior" e "próximo"
-        var initialShowPageNumber = 0
-        var finalShowPageNumber = pageShowLimit;
-
-        if (totalPages > pageShowLimit) {
-            //anterior
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[0].addEventListener('click', (event) => {
-                //console.log('ant');
-                event.preventDefault();
-                initialShowPageNumber = initialShowPageNumber - pageShowLimit;
-                finalShowPageNumber = finalShowPageNumber - pageShowLimit;
-                pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages)
-            });
-
-            //próximo
-            document.getElementById("newsPagination").querySelectorAll(".page-show-limit")[1].addEventListener('click', (event) => {
-                //console.log('prox');
-                event.preventDefault();
-                initialShowPageNumber = initialShowPageNumber + pageShowLimit;
-                finalShowPageNumber = finalShowPageNumber + pageShowLimit;
-
-                pageShowLimitEvents(initialShowPageNumber, finalShowPageNumber, totalPages)
-            });
-        }
-    }
-
-
-
-    function addPagination() {
-        const totalPages = Math.ceil(news.length / newsPerPage);
-
-        //cria o botão "anterior"
-        if (totalPages > pageShowLimit) {
-            var paginationItem = document.createElement('li');
-            paginationItem.classList.add("page-item");
-            paginationItem.classList.add("page-show-limit");
-
-            var paginationItemAnchor = document.createElement('a');
-            paginationItemAnchor.classList.add("page-link");
-            paginationItemAnchor.style.color = "var(--black)";
-            paginationItemAnchor.innerText = "Anterior";
-
-            paginationItem.appendChild(paginationItemAnchor);
-
-            paginationItem.classList.add('d-none');
-
-            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
-        }
-
-        //cria os números da paginação
-        for (i = 1; i <= totalPages; i++) {
-            var paginationItem = document.createElement('li');
-            paginationItem.classList.add("page-item");
-            paginationItem.classList.add("page-number");
-
-            var paginationItemAnchor = document.createElement('a');
-            paginationItemAnchor.classList.add("page-link");
-            paginationItemAnchor.style.color = "var(--black)";
-            paginationItemAnchor.innerText = i;
-
-            paginationItem.appendChild(paginationItemAnchor);
-
-            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
-        }
-
-        //cria o botão "próximo"
-        if (totalPages > pageShowLimit) {
-            var paginationItem = document.createElement('li');
-            paginationItem.classList.add("page-item");
-            paginationItem.classList.add("page-show-limit");
-
-            var paginationItemAnchor = document.createElement('a');
-            paginationItemAnchor.classList.add("page-link");
-            paginationItemAnchor.style.color = "var(--black)";
-            paginationItemAnchor.innerText = "Próximo";
-
-            paginationItem.appendChild(paginationItemAnchor);
-
-            paginationItem.classList.add('d-flex');
-
-            document.getElementById("newsPagination").querySelector(".pagination").appendChild(paginationItem);
-        }
-
-        addPaginationEvents();
-        //define a página um como selecionada por padrão
-        document.getElementById("newsPagination").querySelector(".page-number").querySelector('.page-link').classList.add('page-link-selected');
-
-        //esconde as páginas que excedem o limite de paginação
-        if (document.getElementById("newsPagination").querySelectorAll(".page-number").length > pageShowLimit) {
-            document.getElementById("newsPagination").querySelectorAll(".page-number").forEach((pageNumber, index) => {
-                if (index >= pageShowLimit) {
-                    pageNumber.classList.add('d-none');
-                }
-            });
-        }
-    }
-
-
-
+    //FUNÇÃO PARA BUSCAR NOTÍCIAS CADASTRADAS
     async function getAllNews() {
 
         try {
@@ -309,136 +124,394 @@
     }
 
 
+    //FUNÇÃO PARA PREENCHER OS CARDS DE NOTÍCIA A PARTIR DE UM TEMPLATE
+    async function fillNewsCards() {
 
-    async function createCardsPage() {
-
-        modalOverlay("on", "newsCardOverlay");
-
-        const template = document.getElementById('newsItemTemplate');
-        const container = document.getElementById('newsListContainer');
+        //BUSCANDO NOTÍCIAS
         let response = await getAllNews();
 
-        if (response.success) {
+        //SE A BUSCA FOR EXITOSA E HOUVER NOTÍCIAS CADASTRADAS
+        if (response.success && response.data.length > 0) {
 
-            if (response.data.length > 0) {
+            //ITERA SOBRE O OBJETO DE NOTÍCIAS
+            response.data.forEach((news) => {
 
-                response.data.forEach((item) => {
-
-                    const newsId = item.id;
-
-                    const clone = document.importNode(template.content, true);
-
-                    const newsCardContent = clone.querySelector('.news-card-content');
-
-                    newsCardContent.id = `newsCardContent${newsId}`;
-
-                    const image = clone.querySelector('.news-image');
-                    image.src = item.imagePath;
-                    //image.onclick = function () { window.location.href = `/news/edit/${newsId}` };
+                //CARD DE NOTÍCIA
+                const newsId = news.id;
+                const clone = document.importNode(newsItemTemplate.content, true);
+                const newsCardContent = clone.querySelector('.news-card-content');
+                newsCardContent.id = `newsCardContent${newsId}`;
 
 
-
-                    const info = clone.querySelector('.info');
-                    //info.onclick = function () { window.location.href = `/news/edit/${newsId}` };
-                    info.querySelector('.title').innerHTML = item.title;
-                    info.querySelector('.author').innerHTML += item.author;
-                    info.querySelector('.schedule').innerHTML += item.schedulingDate;
+                //IMAGEM
+                const newsImage = clone.querySelector('.news-image');
+                newsImage.src = news.imagePath;
 
 
-
-                    const deleteButton = clone.querySelector('.delete-news-button');
-                    deleteButton.addEventListener("click", async (event) => {
-                        event.preventDefault();
-                        createDeleteEvent(newsId);
-                    });
-                    $(deleteButton).tooltip();
+                //TÍTULO, AUTOR E DATA DE REGISTRO/AGENDAMENTO
+                clone.querySelector(".news-title").innerHTML = news.title;
+                clone.querySelector(".news-author").innerHTML += news.author;
+                clone.querySelector(".news-scheduling-date").querySelector("small").innerHTML += news.schedulingDate;
+                clone.querySelector(".news-scheduling-time").querySelector("small").innerHTML += news.schedulingTime;
 
 
-
-                    const editButton = clone.querySelector('.edit-news-button');
-                    //editButton.href = `/news/edit/${newsId}`;
-                    editButton.addEventListener("click", async (event) => {
-                        event.preventDefault();
-                        fillEditNewsForm(newsId);
-                    });
-                    $(editButton).tooltip();
-                    $(editButton).on('click', () => {
-                        $('body').css('overflow-y', 'hidden');
-                    });
+                //BOTÃO DE DELEÇÃO
+                const deleteButton = clone.querySelector(".delete-news-button");
+                deleteButton.addEventListener("click", async (event) => {
+                    event.preventDefault();
+                    createDeleteEvent(newsId);
+                });
+                $(deleteButton).tooltip();
 
 
-
-
-
-                    //CREATE HIGHLIGHTED CARD
-                    const highlightedButton = clone.querySelector('.highlighted-news-button');
-                    highlightedButton.title = item.highlightedButtonTitle;
-
-                    const highlightedIcon = highlightedButton.querySelector("i");
-                    highlightedIcon.classList.add(item.highlightedButtonClass);
-
-                    const newsHighlightedInput = highlightedButton.querySelector(".highlighted-news-input");
-                    newsHighlightedInput.name = "highlighted-input-" + newsId;
-                    newsHighlightedInput.checked = item.highlighted;
-
-                    highlightedButton.addEventListener("click", async (event) => {
-                        event.preventDefault();
-                        newsHighlightedInput.checked = !newsHighlightedInput.checked
-                        createHighlightedEvent(newsHighlightedInput, newsId);
-                    });
-                    $(highlightedButton).tooltip();
-
-
-
-                    const visibleButton = clone.querySelector('.visible-news-button');
-                    visibleButton.title = item.visibleButtonTitle;
-
-                    const visibleIcon = visibleButton.querySelector("i");
-                    visibleIcon.classList.add(item.visibleButtonClass);
-
-                    const newsVisibleInput = visibleButton.querySelector(".visible-news-input");
-                    newsVisibleInput.name = "visible-input-" + newsId;
-                    newsVisibleInput.checked = item.visible;
-
-                    visibleButton.addEventListener("click", async (event) => {
-                        event.preventDefault();
-                        newsVisibleInput.checked = !newsVisibleInput.checked;
-                        createVisibleEvent(newsVisibleInput, newsId);
-                    });
-
-                    $(visibleButton).tooltip();
-
-
-                    const element = clone.children[0];
-                    news.push(element);
+                //BOTÃO DE EDIÇÃO
+                const editButton = clone.querySelector(".edit-news-button");
+                editButton.addEventListener("click", async (event) => {
+                    event.preventDefault();
+                    fillEditNewsForm(newsId);
 
                 });
+                $(editButton).tooltip();
+                $(editButton).on("click", () => {
+                    $("body").css("overflow-y", "hidden");
+                    $('#editNewsModal').modal({
+                        focus: false
+                    });
+                });
 
-                renderInitialNewsPage(container);
-                addPagination();
-                modalOverlay("off", "newsCardOverlay");
 
-            } else {
-                console.log(response);
-                container.parentNode.querySelector(".error-message").innerHTML = response.message;
-                container.parentNode.querySelector(".error-message").classList.add("d-flex");
-                container.parentNode.querySelector(".error-message").classList.remove("d-none");
-                modalOverlay("off", "newsCardOverlay");
-            }
+                //BOTÃO DE MUDANÇA DE STATUS DE DESTAQUE
+                const highlightedButton = clone.querySelector(".highlighted-news-button");
+                highlightedButton.title = news.highlightedButtonTitle;
+
+                const highlightedIcon = highlightedButton.querySelector("i");
+                highlightedIcon.classList.add(news.highlightedButtonClass);
+
+                const newsHighlightedInput = highlightedButton.querySelector(".highlighted-news-input");
+                newsHighlightedInput.name = "highlighted-input-" + newsId;
+                newsHighlightedInput.checked = news.highlighted;
+
+                highlightedButton.addEventListener("click", async (event) => {
+                    event.preventDefault();
+                    newsHighlightedInput.checked = !newsHighlightedInput.checked
+                    createHighlightedEvent(newsHighlightedInput, newsId);
+                });
+                $(highlightedButton).tooltip();
+
+
+                //BOTÃO DE MUDANÇA DE STATUS DE VISIBILIDADE
+                const visibleButton = clone.querySelector(".visible-news-button");
+                visibleButton.title = news.visibleButtonTitle;
+
+                const visibleIcon = visibleButton.querySelector("i");
+                visibleIcon.classList.add(news.visibleButtonClass);
+
+                const newsVisibleInput = visibleButton.querySelector(".visible-news-input");
+                newsVisibleInput.name = "visible-input-" + newsId;
+                newsVisibleInput.checked = news.visible;
+
+                visibleButton.addEventListener("click", async (event) => {
+                    event.preventDefault();
+                    newsVisibleInput.checked = !newsVisibleInput.checked;
+                    createVisibleEvent(newsVisibleInput, newsId);
+                });
+                $(visibleButton).tooltip();
+
+
+                //ADICIONA CARD AO CONTEINER NOTÍCIA
+                const element = clone.children[0];
+                newsListContainer.appendChild(element);
+            });
+
 
         } else {
-            container.parentNode.querySelector(".error-message").innerHTML = response.message;
-            container.parentNode.querySelector(".error-message").classList.add("d-flex");
-            container.parentNode.querySelector(".error-message").classList.remove("d-none");
-            modalOverlay("off", "newsCardOverlay");
+
+            //MENSAGEM DE ERRO
+            var newsListContainerErrorMessage = newsListContainer.parentNode.querySelector(".error-message")
+            newsListContainerErrorMessage.innerHTML = response.message;
+            newsListContainerErrorMessage.classList.add("d-flex");
+            newsListContainerErrorMessage.classList.remove("d-none");
+        }
+    }
+
+
+
+    //FUNÇÃO PARA RENDERIZAR UMA PÁGINA DE NOTÍCIAS
+    function renderNewsPage(page) {
+
+        const newsCards = newsListContainer.querySelectorAll(".news-card");
+
+        //PRIMEIRO ÍNDICE (INCLUSIVO) PARA ITERAÇÃO NA RENDERIZAÇÃO DE UMA PÁGINA DE NOTÍCIAS
+        const firstIndex = (page - 1) * newsPerPage
+
+        //ÚLTIMO ÍNDICE (EXCLUSIVO) APARENTE PARA ITERAÇÃO NA RENDERIZAÇÃO DE UMA PÁGINA DE NOTÍCIAS
+        const defaultLastIndex = newsPerPage * page;
+
+        //ÚLTIMO ÍNDICE (EXCLUSIVO) REAL PARA ITERAÇÃO NA RENDERIZAÇÃO DE UMA PÁGINA DE NOTÍCIAS
+        const lastIndex = (newsCards.length < defaultLastIndex) ? newsCards.length : defaultLastIndex;
+
+
+        newsCards.forEach((card, index) => {
+            if (!card.classList.contains("d-none")) {
+                card.classList.add("d-none");
+            }
+
+            if (index >= firstIndex && index < lastIndex) {
+                card.classList.remove("d-none");
+            }
+        });
+
+
+        renderPaginationItems(newsCards.length, page)
+
+
+        //RETIRA O DESTAQUE DO ITEM DE PAGINAÇÃO EM DESTAQUE, SE HOUVER
+        newsPaginationContainer.querySelectorAll(".active").forEach((selectedItem) => {
+            selectedItem.classList.remove("active");
+        });
+
+
+        newsPaginationContainer.querySelectorAll(".page-link").forEach((item) => {
+            if (item.innerText == page) {
+                item.parentElement.classList.add("active");
+            }
+        });
+    }
+
+
+
+    //FUNÇÃO PARA RENDERIZAR OS ITENS DA PAGINAÇÃO
+    function renderPaginationItems(newsQuantity, page) {
+
+        const totalPages = newsQuantity == 0 ? 1 : Math.ceil(newsQuantity / newsPerPage);
+        const lastInterval = Math.ceil(totalPages / shownPaginationItemLimit);
+        const shownInterval = Math.ceil(page / shownPaginationItemLimit);
+        const lastIndex = shownInterval * shownPaginationItemLimit;
+        const firstIndex = lastIndex - shownPaginationItemLimit + 1;
+
+        var paginationList = newsPaginationContainer.querySelector(".pagination");
+        paginationList.innerHTML = "";
+
+
+        //BOTÃO "ANTERIOR"
+        var previousItem = document.createElement("li");
+        previousItem.classList.add("page-item");
+        if(shownInterval == 1){
+            if(!previousItem.classList.contains("d-none")){
+                previousItem.classList.add("d-none");
+            }
+        } else {
+            if(previousItem.classList.contains("d-none")){
+                previousItem.classList.remove("d-none");
+            }
+        }
+        previousItem.id = "paginationPreviousItem";
+        previousItem.title = "Páginas anteriores"
+        $(previousItem).tooltip();
+
+
+        var previousItemAnchor = document.createElement("a");
+        previousItemAnchor.classList.add("page-link");
+        previousItemAnchor.style.color = "var(--black)";
+        previousItemAnchor.innerText = "<<";
+
+        previousItem.appendChild(previousItemAnchor);
+        previousItem.addEventListener("click", () => {
+            onClickPreviousPaginationItem(totalPages)
+        });
+        paginationList.appendChild(previousItem);
+
+
+
+
+
+        //BOTÕES NUMÉRICOS DAS PÁGINAS
+        for (let i = 1; i <= totalPages; i++) {
+
+            var paginationItem = document.createElement("li");
+            paginationItem.classList.add("page-item");
+            paginationItem.classList.add("page-number");
+            if (i < firstIndex || i > lastIndex) {
+                paginationItem.classList.add("d-none");
+            }
+
+            var paginationItemAnchor = document.createElement("a");
+            paginationItemAnchor.classList.add("page-link");
+            paginationItemAnchor.style.color = "var(--black)";
+            paginationItemAnchor.innerText = i;
+
+            paginationItem.appendChild(paginationItemAnchor);
+
+            paginationItem.addEventListener("click", (event) => {
+                event.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+
+                renderNewsPage(i)
+            });
+
+            paginationList.appendChild(paginationItem);
+        }
+
+
+        //BOTÃO "PRÓXIMO"
+        var nextItem = document.createElement("li");
+        nextItem.classList.add("page-item");
+        if(shownInterval == lastInterval){
+            if(!nextItem.classList.contains("d-none")){
+                nextItem.classList.add("d-none");
+            }
+        } else {
+            if(nextItem.classList.contains("d-none")){
+                nextItem.classList.remove("d-none");
+            }
+        }
+
+        if (totalPages <= shownPaginationItemLimit) {
+            nextItem.classList.add("d-none");
+        }
+        nextItem.id = "paginationNextItem";
+        nextItem.title = "Próximas páginas"
+        $(nextItem).tooltip();
+
+        var nextItemAnchor = document.createElement("a");
+        nextItemAnchor.classList.add("page-link");
+        nextItemAnchor.style.color = "var(--black)";
+        nextItemAnchor.innerText = ">>";
+
+        nextItem.appendChild(nextItemAnchor);
+
+        //AO CLICAR NO BOTÃO PRÓXIMO
+        nextItem.addEventListener("click", (event) => {
+            event.preventDefault();
+            onClickNextPaginationItem(totalPages)
+        });
+
+        paginationList.appendChild(nextItem);
+
+
+
+        //SE HOUVER APENAS UMA PÁGINA, ESCONDE O FOOTER DO CARD
+        let newsCardFooter = document.querySelector("#newsCardFooter");
+        if(totalPages == 1){
+            if(!newsCardFooter.classList.contains("d-none")){
+                newsCardFooter.classList.add("d-none");
+            }
+        } else {
+            if(newsCardFooter.classList.contains("d-none")){
+                newsCardFooter.classList.remove("d-none");
+            }
+        }
+    }
+
+    
+
+    //FUNÇÃO CHAMADA QUANDO O BOTÃO DE PÁGINAS ANTERIORES É CLICADO
+    function onClickPreviousPaginationItem(totalPages) {
+
+        //CAPTURA TODOS OS ITENS NUMÉRICOS DE PAGINAÇÃO ATUALMENTE MOSTRADOS
+        var paginationList = newsPaginationContainer.querySelector(".pagination");
+        let shownPaginationItems = paginationList.querySelectorAll(".page-number:not(.d-none)");
+
+        //SE HOUVER ALGUM ITEM NUMÉRICO DE PAGINAÇÃO MOSTRADO
+        if (shownPaginationItems.length > 0) {
+
+            //CAPTURA O NÚMERO DO PRIMEIRO ITEM DE PAGINAÇÃO MOSTRADO
+            let fisrtShownPaginationItem = shownPaginationItems[0];
+            let firstShownPage = parseInt(fisrtShownPaginationItem.querySelector(".page-link").innerText, 10);
+
+            //CAPTURA TODOS OS ELEMENTOS NUMÉRICOS DE PAGINAÇÃO
+            let paginationItems = paginationList.querySelectorAll(".page-number");
+            //ITERA SOBRE OS ELEMENTOS CAPTURADOS
+            paginationItems.forEach((item, index) => {
+                //ESCONDE TODOS OS ELEMENTOS
+                if (!item.classList.contains("d-none")) {
+                    item.classList.add("d-none");
+                }
+
+                //MOSTRA APENAS OS ELEMENTOS DO INTERVALO ANTERIOR A SER MOSTRADO
+                if (index >= firstShownPage - shownPaginationItemLimit - 1  && index < firstShownPage - 1) {
+                    item.classList.remove("d-none");
+                }
+            });
+
+            var previousItem = document.querySelector("#paginationPreviousItem");
+
+            //ESCONDE O BOTÃO "ANTERIOR" SE ESTIVER NA PRIMEIRA PÁGINA
+            if (firstShownPage == shownPaginationItemLimit + 1) {
+                if (!previousItem.classList.contains("d-none")) {
+                    previousItem.classList.add("d-none");
+                }
+            } 
+
+            var nextItem = document.querySelector("#paginationNextItem");
+
+            //MOSTRA O BOTÃO "PRÓXIMO"
+            if (nextItem.classList.contains("d-none")) {
+                nextItem.classList.remove("d-none");
+            }
+        }
+
+
+    }
+
+
+    
+    //FUNÇÃO CHAMADA QUANDO O BOTÃO DE PÁGINAS POSTERIORES É CLICADO
+    function onClickNextPaginationItem(totalPages) {
+
+        //CAPTURA TODOS OS ITENS NUMÉRICOS DE PAGINAÇÃO ATUALMENTE MOSTRADOS
+        var paginationList = newsPaginationContainer.querySelector(".pagination");
+        let shownPaginationItems = paginationList.querySelectorAll(".page-number:not(.d-none)");
+
+        //SE HOUVER ALGUM ITEM NUMÉRICO DE PAGINAÇÃO MOSTRADO
+        if (shownPaginationItems.length > 0) {
+
+            //CAPTURA O NÚMERO DO ÚLTIMO ITEM DE PAGINAÇÃO MOSTRADO
+            let lastShownPaginationItem = shownPaginationItems[shownPaginationItems.length - 1];
+            let lastShownPage = parseInt(lastShownPaginationItem.querySelector(".page-link").innerText, 10);
+
+            //CAPTURA TODOS OS ELEMENTOS NUMÉRICOS DE PAGINAÇÃO
+            let paginationItems = paginationList.querySelectorAll(".page-number");
+            //ITERA SOBRE OS ELEMENTOS CAPTURADOS
+            paginationItems.forEach((item, index) => {
+                //ESCONDE TODOS OS ELEMENTOS
+                if (!item.classList.contains("d-none")) {
+                    item.classList.add("d-none");
+                }
+
+                //MOSTRA APENAS OS ELEMENTOS DO PRÓXIMO INTERVALO A SER MOSTRADO
+                if (index >= lastShownPage && index < lastShownPage + shownPaginationItemLimit) {
+                    item.classList.remove("d-none");
+                }
+            });
+
+            var previousItem = document.querySelector("#paginationPreviousItem");
+
+            //MOSTRA O BOTÃO "ANTERIOR"
+                if (previousItem.classList.contains("d-none")) {
+                    previousItem.classList.remove("d-none");
+                }
+
+            var nextItem = document.querySelector("#paginationNextItem");
+
+            //ESCONDE O BOTÃO "PRÓXIMO" SE ESTIVER NA ÚLTIMA PÁGINA
+            if (lastShownPage + shownPaginationItemLimit >= totalPages) {
+                if (!nextItem.classList.contains("d-none")) {
+                    nextItem.classList.add("d-none");
+                }
+            }
         }
 
     }
 
 
 
-    document.addEventListener("DOMContentLoaded", () => {
-        createCardsPage()
+    //QUANDO O DOCUMENTO ESTIVER CARREGADO
+    document.addEventListener("DOMContentLoaded", async () => {
+        modalOverlay("on", "newsCardOverlay");
+        await fillNewsCards();
+        await renderNewsPage(1);
+        modalOverlay("off", "newsCardOverlay");
     });
 
 
@@ -492,9 +565,24 @@
                         customClass: {
                             icon: "custom-icon-class",
                             confirmButton: "btn-primary"
-                        },
+                        }
                     }).then(() => {
-                        window.location.reload()
+                        const newsCardContent = document.querySelector(`#newsCardContent${newsId}`);
+                        newsCardContent.parentElement.remove();
+    
+    
+                        let pageNumber = parseInt(newsPaginationContainer.querySelector(".active").querySelector(".page-link").innerText, 10);
+                        let shownNewsCards = newsListContainer.querySelectorAll(".news-card:not(.d-none)"); 
+                        if(shownNewsCards.length == 0){
+                            if(pageNumber == 1){
+                                window.location.reload();
+                            } else {
+                                renderNewsPage(pageNumber - 1);
+                            }
+                        } else {
+                            renderNewsPage(pageNumber);
+                        }
+
                     });
 
                 } else {
@@ -650,7 +738,6 @@
     }
 
 </script>
-
 
 
 

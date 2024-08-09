@@ -11,3 +11,245 @@
     
 </body>
 </html>
+
+
+
+
+
+//FUNÇÃO PARA BUSCAR NOTÍCIAS CADASTRADAS
+async function getAllNews() {
+
+    try {
+        let response = await fetch("/news/all", {
+            method: "GET"
+        });
+
+        return await response.json();
+
+    } catch (error) {
+        return {
+            success: false,
+            message: "Não foi possível carregar as notícias. Tente novamente mais tarde."
+        }
+    }
+}
+
+//FUNÇÂO PARA PREENCHER OS CARDS DE NOTÍCIA A PARTIR DE UM TEMPLATE
+async function fillNewsCards() {
+    
+    //BUSCANDO NOTÍCIAS
+    let response = await getAllNews();
+    
+    //SE A BUSCA FOR EXITOSA E HOUVER NOTÍCIAS CADASTRADAS
+    if (response.success && response.data.length > 0) {
+
+        //ITERA SOBRE O OBEJTO DE NOTÍCIAS
+        response.data.forEach((news) => {
+            
+            //CARD DE NOTÍCIA
+            const newsId = news.id;
+            const clone = document.importNode(newsItemTemplate.content, true);
+            const newsCardContent = clone.querySelector('.news-card-content');
+            newsCardContent.id = `newsCardContent${newsId}`;
+
+
+            //IMAGEM
+            const newsImage = clone.querySelector('.news-image');
+            newsImage.src = news.imagePath;
+
+
+            //TÍTULO, AUTOR E DATA DE REGISTRO/AGENDAMENTO
+            clone.querySelector('.news-title').innerHTML = news.title;
+            clone.querySelector('.news-author').innerHTML += news.author;
+            clone.querySelector('.news-scheduling-date').innerHTML += news.schedulingDate;
+
+
+            //BOTÃO DE DELEÇÂO
+            const deleteButton = clone.querySelector('.delete-news-button');
+            deleteButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                createDeleteEvent(newsId);
+            });
+            $(deleteButton).tooltip();
+
+
+            //BOTÃO DE EDIçÂO
+            const editButton = clone.querySelector('.edit-news-button');
+            editButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                fillEditNewsForm(newsId);
+            });
+            $(editButton).tooltip();
+            $(editButton).on('click', () => {
+                $('body').css('overflow-y', 'hidden');
+            });
+
+
+            //BOTÂO DE MUDANÇA DE STATUS DE DESTAQUE
+            const highlightedButton = clone.querySelector('.highlighted-news-button');
+            highlightedButton.title = news.highlightedButtonTitle;
+
+            const highlightedIcon = highlightedButton.querySelector("i");
+            highlightedIcon.classList.add(news.highlightedButtonClass);
+
+            const newsHighlightedInput = highlightedButton.querySelector(".highlighted-news-input");
+            newsHighlightedInput.name = "highlighted-input-" + newsId;
+            newsHighlightedInput.checked = news.highlighted;
+
+            highlightedButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                newsHighlightedInput.checked = !newsHighlightedInput.checked
+                createHighlightedEvent(newsHighlightedInput, newsId);
+            });
+            $(highlightedButton).tooltip();
+
+
+            //BOTÃO DE MUDANÇA DE STATUS DE VISIBILIDADE
+            const visibleButton = clone.querySelector('.visible-news-button');
+            visibleButton.title = news.visibleButtonTitle;
+
+            const visibleIcon = visibleButton.querySelector("i");
+            visibleIcon.classList.add(news.visibleButtonClass);
+
+            const newsVisibleInput = visibleButton.querySelector(".visible-news-input");
+            newsVisibleInput.name = "visible-input-" + newsId;
+            newsVisibleInput.checked = news.visible;
+
+            visibleButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                newsVisibleInput.checked = !newsVisibleInput.checked;
+                createVisibleEvent(newsVisibleInput, newsId);
+            });
+            $(visibleButton).tooltip();
+
+
+            //ADICIONA CARD À LISTA DE CARDS DE NOTÍCIA
+            const element = clone.children[0];
+            newsCards.push(element);
+        });
+
+
+    } else {
+
+        //MENSAGEM DE ERRO
+        var newsListContainerErrorMessage = newsListContainer.parentNode.querySelector(".error-message")
+        newsListContainerErrorMessage.innerHTML = response.message;
+        newsListContainerErrorMessage.classList.add("d-flex");
+        newsListContainerErrorMessage.classList.remove("d-none");
+    }
+
+    totalPages = newsCards.length == 0 ? 1 : Math.ceil(newsCards.length / newsPerPage);
+}
+
+
+//FUNÇÃO PARA RENDERIZAR UMA PÁGINA DE NOTÍCIAS
+function renderNewsPage(page) {
+
+    newsListContainer.innerHTML = "";
+
+    //PRIMEIRO ÍNDICE (INCLUSIVO) PARA ITERAÇÂO NA RENDERIZAÇÃO DE UMA PÁGINA DE NOTÍCIAS
+    const firstIndex = (page - 1) * newsPerPage
+
+    //ÚLTIMO ÍNDICE (EXCLUSIVO) APARENTE PARA ITERAÇÂO NA RENDERIZAÇÂO DE UMA PÁGINA DE NOTÍCIAS
+    const defaultLastIndex = newsPerPage * page;
+
+    //ÚLTIMO ÍNDICE (EXCLUSIVO) REAL PARA ITERAÇÃO NA RENDERIZAÇÃO DE UMA PÁGINA DE NOTÍCIAS
+    const lastIndex = (newsCards.length < defaultLastIndex) ? newsCards.length : defaultLastIndex;
+
+    for (i = firstIndex; i < lastIndex; i++) {
+        newsListContainer.appendChild(newsCards[i]);
+    }
+}
+
+
+//FUNÇÃO PARA CRIAR OS BOTÕES (LINKS) DA PAGINAÇÃO
+function createPaginationLinks() {
+
+    var paginationList =  newsPaginationContainer.querySelector(".pagination");
+
+    //BOTÃO "ANTERIOR"
+    var previousItem = document.createElement("li");
+    previousItem.classList.add("pagination-item");
+    previousItem.classList.add('d-none');
+    previousItem.id = "paginationPreviousItem";
+
+    var previousItemAnchor = document.createElement('a');
+    previousItemAnchor.classList.add("pagination-link");
+    previousItemAnchor.style.color = "var(--black)";
+    previousItemAnchor.innerText = "Anterior";
+
+    previousItem.appendChild(previousItemAnchor);
+    paginationList.appendChild(previousItem);
+
+
+
+    //BOTÕES NUMÉRICOS DAS PÁGINAS
+    for (i = 1; i <= totalPages; i++) {
+
+        var paginationItem = document.createElement('li');
+        paginationItem.classList.add("pagination-item");
+        paginationItem.classList.add("pagination-number");
+        if (i > shownPaginationItemLimit) {
+            pageNumber.classList.add('d-none');
+        }
+
+        var paginationItemAnchor = document.createElement('a');
+        paginationItemAnchor.classList.add("pagination-link");
+        paginationItemAnchor.style.color = "var(--black)";
+        paginationItemAnchor.innerText = i;
+        
+        paginationItem.appendChild(paginationItemAnchor);
+
+        paginationItem.addEventListener("click", (event) => {
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            //RETIRA O DESTAQUE DO ITEM DE PAGINAÇÃO EM DESTAQUE, SE HOUVER
+            newsPaginationContainer.querySelectorAll(".pagination-link-selected").forEach((selectedItem) => {
+                selectedItem.classList.remove(".pagination-link-selected");
+            });
+
+            //COLOCA DESTAQUE NO ITEM DE PAGINAÇÃO RECÉM-CLICADO
+            paginationItem.querySelector(".pagination-link").classList.add("pagination-link-selected");
+
+            renderNewsPage(i)
+        });
+
+        paginationList.appendChild(paginationItem);
+    }
+
+
+
+    //BOTÃO "PRÓXIMO"
+    var nextItem = document.createElement("li");
+    nextItem.classList.add("pagination-item");
+    if(totalPages <= shownPaginationItemLimit){
+        nextItem.classList.add('d-none');
+    }
+    nextItem.id = "paginationNextItem";
+
+    var nextItemAnchor = document.createElement('a');
+    nextItemAnchor.classList.add("pagination-link");
+    nextItemAnchor.style.color = "var(--black)";
+    nextItemAnchor.innerText = "Próximo";
+
+    nextItem.appendChild(nextItemAnchor);
+    paginationList.appendChild(nextItem);
+
+
+    if (totalPages > 1) {
+        document.getElementById("newsCardFooter").classList.remove("d-none");
+    }
+
+}
+
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+    modalOverlay("on", "newsCardOverlay");
+    await fillNewsCards();
+    renderNewsPage(1);
+    console.log(totalPages)
+    createPaginationLinks();
+    modalOverlay("off", "newsCardOverlay");
+});

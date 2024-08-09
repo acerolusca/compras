@@ -4,9 +4,10 @@ namespace App\Controller\Api;
 
 use App\Service\NewsService;
 use App\Repository\NewsRepository;
-
 use \App\Core\Request;
 use App\Database\Database;
+
+use OpenApi\Attributes as OA;
 
 use \Exception;
 
@@ -43,28 +44,27 @@ class NewsApi
      * Método responsável por retornar as informações de todas as notícias cadastradas no sistema
      * @return string
      */
-    public static function getAll(): string {
+    public static function getAll(): string
+    {
         try {
 
             self::initialize();
 
             $data = self::$newsService->getAll();
 
-            $message = count($data) == 0 ? "Ainda não há notícias cadastradas" : "Notícias cadastradas";
+            $message = count($data) == 0 ? "Ainda não há notícias cadastradas" : "";
 
             return json_encode([
                 "success" => true,
                 "data" =>  $data,
                 "message" => $message
-            ]); 
-
-        } catch(Exception $e) {
+            ]);
+        } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getMessage(),
             ]);
         }
-
     }
 
 
@@ -90,7 +90,6 @@ class NewsApi
                 "success" => true,
                 "message" => "Notícia cadastrada com sucesso!",
             ]);
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
@@ -107,7 +106,8 @@ class NewsApi
      * @param string $id
      * @return string
      */
-    public static function getInfo(string $id): string {
+    public static function getInfo(string $id): string
+    {
 
         try {
 
@@ -121,15 +121,12 @@ class NewsApi
                 "data" => $data,
                 "message" => "Notícia encontrada!"
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getMessage(),
             ]);
         }
-
     }
 
 
@@ -157,8 +154,6 @@ class NewsApi
                 "success" => true,
                 "message" => "Notícia editada com sucesso!"
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
@@ -189,8 +184,6 @@ class NewsApi
                 "success" => true,
                 "message" => "Notícia excluída com sucesso!"
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
@@ -222,8 +215,6 @@ class NewsApi
                 "success" => true,
                 "message" => "Sucesso ao alterar status de destaque da notícia!"
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
@@ -255,8 +246,6 @@ class NewsApi
                 "success" => true,
                 "message" => "Sucesso ao alterar status de visibilidade da notícia!"
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
@@ -286,8 +275,6 @@ class NewsApi
             return json_encode([
                 "url" => $url
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "error" => [
@@ -299,11 +286,61 @@ class NewsApi
 
 
 
+
     /**
+     * @OA\Get(
+     *      path="/news/available/all",
+     *      operationId="getAllAvailableNews",
+     *      tags={"News"},
+     *      summary="Retorna todas as notícias disponíveis",
+     *      description="Essa API retorna todas as notícias disponíveis. Se ocorrer um erro, uma mensagem de erro será retornada.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Operação bem-sucedida",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="success",
+     *                  type="boolean",
+     *                  example=true
+     *              ),
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      type="object",
+     *                      @OA\Property(property="id", type="integer", example=1),
+     *                      @OA\Property(property="title", type="string", example="Notícia de Exemplo"),
+     *                      @OA\Property(property="content", type="string", example="Conteúdo da notícia...")
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Erro ao encontrar notícias no servidor",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="success",
+     *                  type="boolean",
+     *                  example=false
+     *              ),
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="integer",
+     *                  example=500
+     *              )
+     *          )
+     *      )
+     * )
+     * 
+     * 
      * Método responsável por processar a busca  das informações de todas as notícias disponíveis
      * @return string
      */
-    public static function getAllAvailable(): string {
+    public static function getAllAvailable(): string
+    {
         try {
 
             self::initialize();
@@ -314,15 +351,12 @@ class NewsApi
                 "success" => true,
                 "data" => $data
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getCode()
             ]);
         }
-
     }
 
 
@@ -331,7 +365,8 @@ class NewsApi
      * Metódo reponsável por processar a busca das informações de todas as notícias em destaque disponíveis
      * @return string
      */
-    public static function getHighlightedAvailable(): string {
+    public static function getHighlightedAvailable(): string
+    {
         try {
 
             self::initialize();
@@ -342,15 +377,12 @@ class NewsApi
                 "success" => true,
                 "data" => $data
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getCode()
             ]);
         }
-
     }
 
 
@@ -359,7 +391,8 @@ class NewsApi
      * Método responsável por processar a busca das informações de todas as notícias regulares disponíveis
      * @return string
      */
-    public static function getRegularAvailable(): string {
+    public static function getRegularAvailable(): string
+    {
         try {
 
             self::initialize();
@@ -370,15 +403,12 @@ class NewsApi
                 "success" => true,
                 "data" => $data
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getCode()
             ]);
         }
-
     }
 
 
@@ -389,7 +419,8 @@ class NewsApi
      * @param string $id
      * @return string
      */
-    public static function getInfoAvailable(string $id): string {
+    public static function getInfoAvailable(string $id): string
+    {
         try {
 
             self::initialize();
@@ -400,15 +431,12 @@ class NewsApi
                 "success" => true,
                 "data" => $data
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getCode()
             ]);
         }
-
     }
 
 
@@ -418,7 +446,8 @@ class NewsApi
      * @param Request $request
      * @return string
      */
-    public static function search(Request $request): string {
+    public static function search(Request $request): string
+    {
         try {
 
             self::initialize();
@@ -431,19 +460,11 @@ class NewsApi
                 "success" => true,
                 "data" => $data
             ]);
-
-
         } catch (Exception $e) {
             return json_encode([
                 "success" => false,
                 "message" => $e->getCode()
             ]);
         }
-
     }
-
-
-
-
-
 }

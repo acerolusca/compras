@@ -1,12 +1,12 @@
 <!-- Edit Informations Card-->
 <div class="card shadow mt-4 mb-5 mx-2 mx-md-5">
-    <div class="card-header py-2 px-4 d-flex justify-content-center justify-content-md-between align-items-center">
+    <div class="card-header py-2 px-4 d-flex  justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-white">Informações pessoais</h6>
-
-        <button type="button" data-placement="top" title="Alterar informações"
-            class="edit-informations-button btn btn-light text-dark btn-circle d-none d-md-flex">
-            <i class="fas fa-pencil"></i>
-        </button>
+        <div class="bg-light text-dark text-center align-middle rounded-circle d-inline-flex 
+            justify-content-center align-items-center font-weight-normal"
+            style="height: 2.5rem; width: 2.5rem; font-size: 1rem">
+            <i class="fas fa-user"></i>
+        </div>
     </div>
 
 
@@ -29,7 +29,7 @@
                 translate-middle w-100 h-100 rounded-circle text-light 
                 d-flex align-items-center justify-content-center"
                         style="background-color: rgba(0 ,0 , 0, 0.5); visibility: hidden;">
-                        Alterar foto de perfil
+                        Escolher foto de perfil
                     </span>
                     <input name="photoInput" id="photoInput" type="file" style="display: none" />
                 </div>
@@ -37,8 +37,6 @@
 
 
             <div class="col-12 col-md-12 col-lg-6 my-3">
-
-
                 <div class="form-group">
                     <label for="profileFullname">Nome completo</label>
                     <input id="profileFullname" name="profileFullname" type="text" class="form-control"
@@ -64,11 +62,11 @@
                     <input id="profileCpf" name="profileCpf" type="text" class="form-control" value="{{cpf}}" />
                 </div>
 
-                <button type="button" class="edit-informations-button btn text-white d-sm-none btn w-100  font-weight-bold mt-4"
-                    style="background-color: #143169">
+                <button id="editInformationsButton" type="button" class="w-100 btn btn-primary text-white mt-4">
                     Alterar informações
                 </button>
             </div>
+
         </form>
     </div>
 </div>
@@ -77,12 +75,13 @@
 
 <!-- Edit Password Card-->
 <div class="card shadow mt-5 mb-4 mx-2 mx-md-5">
-    <div class="card-header py-2 px-4 d-flex justify-content-center justify-content-md-between align-items-center">
+    <div class="card-header py-2 px-4 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-white">Nova senha</h6>
-        <button type="button" data-placement="top" title="Alterar senha"
-            class="edit-password-button btn btn-light text-dark btn-circle d-none d-md-flex">
-            <i class="fas fa-key"></i>
-        </button>
+        <div class="bg-light text-dark text-center align-middle rounded-circle d-inline-flex 
+        justify-content-center align-items-center font-weight-normal"
+        style="height: 2.5rem; width: 2.5rem; font-size: 1rem">
+        <i class="fas fa-key"></i>
+    </div>
     </div>
 
 
@@ -96,7 +95,7 @@
                 <label for="profilePassword">Senha atual</label>
                 <div class="d-flex align-items-center position-relative">
                     <input id="profilePassword" name="profilePassword" type="password" class="form-control" />
-                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility"
                         style="right: 15px; cursor: pointer;" title="Mostrar"
                         onclick="togglePasswordVisibility('profilePassword', this)">
                     </i>
@@ -106,9 +105,9 @@
 
             <div class="form-group position-relative">
                 <label for="profileNewPassword">Nova senha</label>
-                <div class="d-flex align-items-center position-relative" >
+                <div class="d-flex align-items-center position-relative">
                     <input id="profileNewPassword" name="profileNewPassword" type="password" class="form-control" />
-                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility"
                         style="right: 15px; cursor: pointer;" title="Mostrar"
                         onclick="togglePasswordVisibility('profileNewPassword', this)">
                     </i>
@@ -118,16 +117,17 @@
             <div class="form-group position-relative">
                 <label for="profileConfirmNewPassword">Confirmar nova senha</label>
                 <div class="d-flex align-items-center position-relative">
-                    <input id="profileConfirmNewPassword" name="profileConfirmNewPassword" type="password" class="form-control"/>
-                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility" 
+                    <input id="profileConfirmNewPassword" name="profileConfirmNewPassword" type="password"
+                        class="form-control" />
+                    <i class="fa-solid fa-eye-slash position-absolute top-50 translate-middle password-visibility"
                         style="right: 15px; cursor: pointer;" title="Mostrar"
                         onclick="togglePasswordVisibility('profileConfirmNewPassword', this)">
                     </i>
                 </div>
             </div>
 
-            <button class="edit-password-button d-sm-none w-100 btn btn-light text-white font-weight-bold mt-4 mb-3"
-                style="background-color: #143169">
+            <button id="editPasswordButton" type="button"
+                class="w-100 btn btn-primary text-white mt-4 mb-3">
                 Alterar senha
             </button>
 
@@ -144,17 +144,17 @@
     function togglePasswordVisibility(passwordFieldId, toggleIcon) {
         const passwordField = document.getElementById(passwordFieldId);
         const isPasswordVisible = passwordField.type === 'text';
-    
+
         if (isPasswordVisible) {
             passwordField.type = 'password';
-            toggleIcon.classList.remove("fa-eye"); 
-            toggleIcon.classList.add("fa-eye-slash"); 
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
             toggleIcon.title = "Mostrar";
 
         } else {
             passwordField.type = 'text';
-            toggleIcon.classList.remove("fa-eye-slash"); 
-            toggleIcon.classList.add("fa-eye"); 
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
             toggleIcon.title = "Ocultar";
         }
 
@@ -166,18 +166,18 @@
 
 <!--Format CPF -->
 <script>
-    document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function () {
         const cpf = document.querySelector("#profileCpf");
         var cpfValue = cpf.value;
 
         let cpfMask = "###.###.###-##";
         let cpfmaskedArray = cpfMask.split("");
-    
-    
+
+
         for (let i = 0; i < cpfValue.length; i++) {
-          if (cpfmaskedArray.indexOf("#") !== -1) {
-            cpfmaskedArray.splice(cpfmaskedArray.indexOf("#"), 1, cpfValue[i]);
-          }
+            if (cpfmaskedArray.indexOf("#") !== -1) {
+                cpfmaskedArray.splice(cpfmaskedArray.indexOf("#"), 1, cpfValue[i]);
+            }
         }
         cpf.value = cpfmaskedArray.join("");
     });
@@ -396,8 +396,8 @@
                     backdrop: "rgba(0,0,0,0.7)",
                     background: "#f2f2f2",
                     customClass: {
-                      icon: "custom-icon-class",
-                      confirmButton: "btn-primary"
+                        icon: "custom-icon-class",
+                        confirmButton: "btn-primary"
                     }
                 });
 
@@ -540,57 +540,55 @@
 
 <!--Submit Change Informations Form-->
 <script>
-    const editButtons = document.querySelectorAll(".edit-informations-button");
+    const editButton = document.querySelector("#editInformationsButton");
 
-    editButtons.forEach((editButton) => {
-        editButton.addEventListener("click", async (event) => {
-            event.preventDefault();
+    editButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+        Swal.fire({
+            title: "Alterando informações...",
+            didOpen: async () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
+        });
+
+        const response = await editInformations();
+
+        if (response.success) {
+            //console.log(response.stayLoggedIn);
             Swal.fire({
-                title: "Alterando informações...",
-                didOpen: async () => {
-                    Swal.showLoading();
-                },
-                allowOutsideClick: () => !Swal.isLoading(),
-                backdrop: "rgba(0,0,0,0.7)",
-                background: "#f2f2f2",
-            });
-
-            const response = await editInformations();
-
-            if (response.success) {
-                //console.log(response.stayLoggedIn);
-                Swal.fire({
-                    title: "<h3>Alterações efetuadas com sucesso!</h3>",
-                    text: response.stayLoggedIn ?
+                title: "<h3>Alterações efetuadas com sucesso!</h3>",
+                text: response.stayLoggedIn ?
                     "" :
                     "Para continuar, por favor, faça login novamente utilizando suas novas credenciais.",
-                    icon: "success",
-                    iconHtml: '<i class="fas fa-check-circle text-success"></i>',
-                    backdrop: "rgba(0,0,0,0.7)",
-                    background: "#f2f2f2",
-                    customClass: {
-                      icon: "custom-icon-class",
-                      confirmButton: "btn-primary"
-                    }
-                }).then(() => {
-                    window.location.href = response.stayLoggedIn ? "/profile" : "/logout";
-                });
+                icon: "success",
+                iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+                customClass: {
+                    icon: "custom-icon-class",
+                    confirmButton: "btn-primary"
+                }
+            }).then(() => {
+                window.location.href = response.stayLoggedIn ? "/profile" : "/logout";
+            });
 
-            } else {
-                Swal.fire({
-                    title: "<h3>Falha ao alterar informações!</h3>",
-                    html: response.message,
-                    icon: "error",
-                    iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
-                    backdrop: "rgba(0,0,0,0.7)",
-                    background: "#f2f2f2",
-                    customClass: {
-                      icon: "custom-icon-class",
-                      confirmButton: "btn-primary"
-                    }
-                });
-            }
-        });
+        } else {
+            Swal.fire({
+                title: "<h3>Falha ao alterar informações!</h3>",
+                html: response.message,
+                icon: "error",
+                iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+                customClass: {
+                    icon: "custom-icon-class",
+                    confirmButton: "btn-primary"
+                }
+            });
+        }
     });
 
 
@@ -650,57 +648,55 @@
 <!--Submit Edit Password Form-->
 <script>
 
-    const passwordButtons = document.querySelectorAll(".edit-password-button");
+    const passwordButton = document.querySelector("#editPasswordButton");
 
 
-    passwordButtons.forEach((passwordButton) => {
-        passwordButton.addEventListener("click", async (e) => {
-            e.preventDefault();
+    passwordButton.addEventListener("click", async (e) => {
+        e.preventDefault();
 
-            Swal.fire({
-                title: "Alterando senha...",
-                didOpen: async () => {
-                    Swal.showLoading();
-                },
-                allowOutsideClick: () => !Swal.isLoading(),
-                backdrop: "rgba(0,0,0,0.7)",
-                background: "#f2f2f2",
-            });
-
-            const response = await editPassword();
-
-            if (response.success) {
-                Swal.fire({
-                    title: "<h3>Senha alterada com sucesso!</h3>",
-                    text: "Para continuar, por favor, faça login novamente utilizando sua nova senha.",
-                    icon: "success",
-                    iconHtml: '<i class="fas fa-check-circle text-success"></i>',
-                    backdrop: "rgba(0,0,0,0.7)",
-                    background: "#f2f2f2",
-                    customClass: {
-                      icon: "custom-icon-class",
-                      confirmButton: "btn-primary"
-                    }
-                }).then(() => {
-                    window.location.href = "/logout"
-                });
-            } else {
-                Swal.fire({
-                    title: "<h3>Falha ao alterar senha!</h3>",
-                    html: response.message,
-                    icon: "error",
-                    iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
-                    backdrop: "rgba(0,0,0,0.7)",
-                    background: "#f2f2f2",
-                    customClass: {
-                      icon: "custom-icon-class",
-                      confirmButton: "btn-primary"
-                    }
-                });
-            }
+        Swal.fire({
+            title: "Alterando senha...",
+            didOpen: async () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+            backdrop: "rgba(0,0,0,0.7)",
+            background: "#f2f2f2",
         });
 
+        const response = await editPassword();
+
+        if (response.success) {
+            Swal.fire({
+                title: "<h3>Senha alterada com sucesso!</h3>",
+                text: "Para continuar, por favor, faça login novamente utilizando sua nova senha.",
+                icon: "success",
+                iconHtml: '<i class="fas fa-check-circle text-success"></i>',
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+                customClass: {
+                    icon: "custom-icon-class",
+                    confirmButton: "btn-primary"
+                }
+            }).then(() => {
+                window.location.href = "/logout"
+            });
+        } else {
+            Swal.fire({
+                title: "<h3>Falha ao alterar senha!</h3>",
+                html: response.message,
+                icon: "error",
+                iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
+                customClass: {
+                    icon: "custom-icon-class",
+                    confirmButton: "btn-primary"
+                }
+            });
+        }
     });
+
 
 
     async function editPassword() {
@@ -773,8 +769,7 @@
                 body: formData
             });
 
-            const data = await response.json();
-            return data;
+            return await response.json();
 
         } catch (error) {
             return {
@@ -799,9 +794,7 @@
 <script>
 
     $(document).ready(() => {
-      $(".edit-informations-button").tooltip();
-      $(".edit-password-button").tooltip();
-      $(".password-visibility").tooltip();
+        $(".password-visibility").tooltip();
     });
-  
+
 </script>

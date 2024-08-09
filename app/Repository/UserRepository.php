@@ -51,7 +51,8 @@ class UserRepository
                 "password" => $user->getPassword(),
                 "imagePath" => $user->getImagePath(),
                 "privilege" => $user->getPrivilege(),
-                "registerDate" => $user->getRegisterDate()
+                "registerDate" => $user->getRegisterDate(),
+                "firstAccess" => $user->getFirstAccess()
             ];
 
             return $this->db->insert($fields);
@@ -141,7 +142,8 @@ class UserRepository
                 "password" => $userEdited->getPassword(),
                 "imagePath" => $userEdited->getImagePath(),
                 //"privilege" => $userEdited->getPrivilege(),
-                //"registerDate" => $userEdited->getRegisterDate()
+                //"registerDate" => $userEdited->getRegisterDate(),
+                "firstAccess" => $userEdited->getFirstAccess()
             ];
 
             $where = ["cpf = " => $lastCpf];

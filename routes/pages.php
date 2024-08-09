@@ -6,6 +6,11 @@ use \App\Core\Response;
 
 
 
+/**
+ * @var \App\Core\Router $obRouter
+ */
+
+
 //ROTA PARA LOGIN DE USUÁRIO
 $obRouter->get("/",[
     "middlewares" => [
@@ -13,6 +18,19 @@ $obRouter->get("/",[
     ],
     function(){
         return new Response(200, Pages\Login::render());
+    }
+]);
+
+
+
+
+//ROTA PARA HOME DO SISTEMA
+$obRouter->get("/home",[
+    "middlewares" => [
+        "requireLogin",
+    ],
+    function(){
+        return new Response(200, Pages\Home::render());
     }
 ]);
 

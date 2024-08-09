@@ -78,6 +78,14 @@ class User
 
 
 
+  /**
+   * Status de primeiro acesso do usuário
+   * @var string
+   */
+  private string $firstAccess;
+
+
+
 
 
 
@@ -155,6 +163,7 @@ class User
 
 
 
+
   /**
    * Método responsável por retornar o cpf do usuário
    * @return string
@@ -187,6 +196,7 @@ class User
       throw new Exception($e->getMessage(), $e->getCode());
     }
   }
+
 
 
 
@@ -244,6 +254,7 @@ class User
 
 
 
+
   /**
    * Método responsável por retornar o email do usuário
    *
@@ -284,6 +295,7 @@ class User
 
 
 
+
   /**
    * Método responsável por retornar a senha do usuário
    *
@@ -307,13 +319,13 @@ class User
       if (!preg_match($passwordRegex, $password)) {
         throw new Exception(
           '
-              <p class="text-left"><strong>Senha</strong> não é forte o suficiente. As seguintes regras devem ser obedecidas:</p>
+              <p class="text-left"><strong>Senha</strong> não é forte o suficiente. Ela deve conter pelo menos:</p>
               <ul class="text-left">
-                <li>Deve ter no mínimo 8 caracteres;</li>
-                <li>Pelo menos 1 letra minúscula;</li>
-                <li>Pelo menos 1 letra maiúscula;</li>
-                <li>Pelo menos 1 dígito (0-9);</li>
-                <li>Pelo menos 1 caractere especial dentre <strong>@$!%*?&\.</strong>.</li>
+                <li>8 caracteres;</li>
+                <li>1 letra minúscula;</li>
+                <li>1 letra maiúscula;</li>
+                <li>1 dígito (0-9);</li>
+                <li>1 caractere especial <strong>(@$!%*?&\.)</strong>.</li>
               </ul>
             ',
           400
@@ -364,6 +376,8 @@ class User
 
 
 
+
+
   /**
    * Método responsável por retornar o privilégio do usuário
    *
@@ -399,7 +413,6 @@ class User
 
 
 
-
   /**
    * Método responsável por retornar a data de registro do usuário
    * @param string $registerDate
@@ -419,6 +432,42 @@ class User
   {
     $this->registerDate = $registerDate;
   }
+
+
+
+
+
+  /**
+   * Método responsável por retornar o status de primeiro acesso do usuário
+   *
+   * @return string
+   */
+  public function getFirstAccess(): string
+  {
+    return $this->firstAccess;
+  }
+
+  /**
+   * Método responsável por atribuir um status de primeiro acesso ao usuário
+   * @param string $firstAccess
+   * @return void
+   */
+  public function setFirstAccess(string $firstAccess): void
+  {
+    try {
+      $validFirstAccess = ["yes", "no"];
+
+      if (!in_array($firstAccess, $validFirstAccess)) {
+        throw new Exception("Status de primeiro acesso de usuário inválido", 400);
+      }
+
+
+      $this->firstAccess = $firstAccess;
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
 
 
 
@@ -445,6 +494,7 @@ class User
       "email" => $this->email,
       "imagePath" => $this->imagePath,
       "privilege" => $this->privilege,
+      "firstAccess" => $this->firstAccess,
       "logged" => true
     ];
   }
@@ -614,6 +664,27 @@ class User
 
 
 
+    /**
+   * Método responsável por atualizar o status de primeiro acesso nas informações de sessão do usuário
+   * @return void
+   */
+  public function updateSessionFirstAccess()
+  {
+
+    try {
+      if ($this->isLogged()) {
+        $_SESSION["user"]["firstAccess"] = $this->firstAccess;
+      } else {
+        throw new Exception("Sessão Expirada", 403);
+      }
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+
   /**
    * Método responsável por retornar o privilégio do usuário
    * @return string
@@ -622,6 +693,21 @@ class User
   {
     try {
       return $this->getLoggedInfo()["privilege"];
+    } catch (Exception $e) {
+      throw new Exception($e->getMessage(), $e->getCode());
+    }
+  }
+
+
+
+  /**
+   * Método responsável por retornar o status de primeiro acesso do usuário
+   * @return string
+   */
+  public function getSessionFirstAccess(): string
+  {
+    try {
+      return $this->getLoggedInfo()["firstAccess"];
     } catch (Exception $e) {
       throw new Exception($e->getMessage(), $e->getCode());
     }

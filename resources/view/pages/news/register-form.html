@@ -32,8 +32,8 @@
             <img id="registerImagePreview" class="w-100 h-100 shadow-sm" src="/image/news/default-image-path.svg"
               alt="Imagem padrão da notícia" style="object-fit: cover;" />
             <span
-              class="overlay news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
-              Alterar imagem da notícia
+              class="overlay text-center news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
+              Alterar imagem da notícia <br/> Dimensões recomendadas: 680 x 360 px
             </span>
             <input id="registerImage" name="registerImage" type="file" style="display: none" />
           </div>
@@ -126,50 +126,34 @@
 </div>
 
 
-
-<!-- Ckeditor Import -->
-<script src="/ckeditor5-41.3.1/build/ckeditor.js"></script>
-
-
-
-<!--Set Ckeditor Container Styles-->
-<style>
-  /* This selector targets the editable element (excluding comments). */
-  .ck-editor__editable_inline:not(.ck-comment__input *) {
-    height: 380px;
-    overflow-y: auto;
-    font-size: 16px;
-    resize: none;
-    border: solid 1.6px #d1d3e2;
-    padding: 8px;
-    color: #5a5c69;
+<script type="importmap">
+  {
+      "imports": {
+          "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+          "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+      }
   }
-</style>
+</script>
+
+
+
+<!-- Ckeditor Config Import -->
+<script type="module" src="/ckeditor5-43.0.0/conf.js"></script>
 
 
 
 <!--Create Register News CK Editor-->
-<script type="module" async>
-
-  const registerEditor = await createRegisterCkEditor("registerBody");
-
+<script type="module">
 
   async function createRegisterCkEditor(id) {
     const element = document.getElementById(id);
-    const editor = await ClassicEditor.create(element, {
-      simpleUpload: {
-        uploadUrl: "/editor/uploader",
-      },
-      image: {
-        upload: {
-          types: ["jpeg", "jpg", "png", "webp", "svg"]
-        }
-      }
-    });
-
+    const editor = await ClassicEditor.create(element, editorConfig);
     window.registerEditor = editor;
     return editor;
   }
+
+
+  const registerEditor = await createRegisterCkEditor("registerBody");
 
 </script>
 
@@ -626,9 +610,14 @@
 
     $("#registerNewsButton").tooltip();
 
+
     $('#registerNewsButton').on('click', () => {
+      $('#registerNewsModal').modal({
+        focus: false
+      });
       $('body').css('overflow-y', 'hidden');
     });
+
 
     $('#registerNewsModal').on('hidden.bs.modal', () => {
 

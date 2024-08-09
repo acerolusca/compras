@@ -1,15 +1,15 @@
 <!--No Administrators Users Table Body-->
-<tr>
+<tr id="userLineContent{{cpf}}">
   <td style="text-align: center; vertical-align: middle;">
     <img
       class="img-profile rounded-circle"
-      style="width: 40px; height: 40px"
+      style="width: 40px; height: 40px; object-fit: cover"
       src="/image/user/{{imagePath}}"
     />
   </td>
-  <td style="text-align: center; vertical-align: middle;">{{fullname}}</td>
-  <td style="text-align: center; vertical-align: middle;">{{email}}</td>
-  <td style="text-align: center; vertical-align: middle;">{{cpf}}</td>
+  <td class="user-fullname" style="text-align: center; vertical-align: middle;">{{fullname}}</td>
+  <td class="user-email" style="text-align: center; vertical-align: middle;">{{email}}</td>
+  <td class="user-cpf" style="text-align: center; vertical-align: middle;">{{cpf}}</td>
   <td style="vertical-align: middle;">
     <div style="display: flex; justify-content: center; gap: 1vw">
 

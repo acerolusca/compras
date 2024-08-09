@@ -278,7 +278,7 @@ class UserApi
      * @param Request $request
      * @return string
      */
-    public static function editPassword($request): string {
+    public static function editPassword(Request $request): string {
 
         try {
 
@@ -299,6 +299,40 @@ class UserApi
                 "message" => $e->getMessage(),
             ]);
         }
+    }
+
+
+
+
+    /**
+     * Método responsável por redefinir a senha do usuário no primeiro acesso
+     *
+     * @param Request $request
+     * @return string
+     */
+    public static function redefineFirstAccessPassword(Request $request) {
+
+        try{
+
+            self::initialize();
+
+            $redefineFirstAccessPasswordData = $request->getPostVars();
+
+            self::$userService->redefineFirstAccessPassword($redefineFirstAccessPasswordData);
+
+            return json_encode([
+                "success" => true,
+                "message" => "Senha redefinida com sucesso!",
+            ]);
+
+        } catch(Exception $e){
+            return json_encode([
+                "success" => false,
+                "message" => $e->getMessage(),
+            ]);
+
+        }
+
     }
 
 }

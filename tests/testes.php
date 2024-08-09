@@ -1,9 +1,9 @@
 <?php
 
 
-$schedulingDate = (new DateTime("")) ?? "";
+$vector = explode(" ", "");
 
-var_dump($schedulingDate);
+var_dump($vector);
 
 
 

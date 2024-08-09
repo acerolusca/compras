@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100 m-0">
 
 <head>
 
@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Acesso administrativo - Login</title>
+    <title>Acesso administrativo</title>
 
 
     <!-- Custom fonts for this template-->
@@ -28,21 +28,9 @@
 
     <!--Css for Login-->
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
 
         body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fc;
-        }
-
-        #loginImageContainer {
-            background-image: url("/sb-admin-2/img/login-background-image.svg");
+            background: linear-gradient(45deg, #224282, #245799, #143169) !important;
         }
 
 
@@ -57,8 +45,8 @@
         }
 
         #loginButton:hover {
-            background-color: #807C7A;
-            border-color: #807C7A;
+            background-color: #858796;
+            border-color: #858796;
             color: #fff;
         }
     </style>
@@ -88,26 +76,27 @@
 
 
 
-<body>
+<body class="d-flex flex-column justify-content-center align-items-center m-0 bg-light">
 
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container border-0 d-flex justify-content-center align-items-center">
 
-        <div class="card o-hidden border-0 shadow-lg my-5 align-items-center">
-            <div class="card-body p-0" style="width: 100%; ">
+        <div class="card o-hidden border-0 shadow-lg d-flex justify-content-center align-items-center my-auto">
 
-                <div class="d-flex flex-column flex-lg-row pb-0">
+            <div class="card-body w-100 d-flex justify-content-center align-items-center p-0 my-auto">
 
-                    <div id="loginImageContainer" class="col-12 col-lg-6 p-5 d-flex align-items-center justify-content-center">
+                <div class="d-flex flex-column flex-lg-row border-0 pb-0">
+
+                    <div id="loginImageContainer" class=" bg-white col-12 col-lg-6 p-5 d-flex align-items-center justify-content-center">
                         <img src="/sb-admin-2/img/logo-compras.svg" width="70%">
                     </div>
 
-                    <div class="col-12 col-lg-6 p-0 d-flex align-items-center">
+                    <div class="col-12 col-lg-6 p-0 d-flex align-items-center" style="background-color: #f2f2f2">
+
                         <div class="form-container p-4 w-100">
 
                             <form id="loginForm" class="user pl-4 pr-4">
                                 <div class="text-center">
-                                    <h1 class="h2 text-gray-900 mb-4 mt-4" style="color: #937F74;">Acesso administrativo
-                                    </h1>
+                                    <h1 class="h2 text-secondary mb-4 mt-4">Acesso Administrativo</h1>
                                 </div>
 
                                 <div class="form-group row">
@@ -126,16 +115,16 @@
 
                                 </div>
 
-                                <div class=" d-flex justify-content-center m-4">
-                                    <button id="loginButton" class="btn btn-user btn-block w-50">Entrar</button>
+                                <div class=" d-flex justify-content-center mt-4 mb-2">
+                                    <button id="loginButton" class="btn btn-user w-100">Entrar</button>
                                 </div>
 
                             </form>
 
-                            <hr class="w-50">
-                            <div class="text-center">
+                            <!--hr class="w-50"-->
+                            <!--div class="text-center">
                                 <a class="small" href="/forgot-password" style="color: #3d3d3f;">Esqueceu a senha?</a>
-                            </div>
+                            </div-->
                         </div>
 
                     </div>
@@ -145,6 +134,10 @@
         </div>
 
     </div>
+
+    <!--div class="d-flex justify-content-center align-items-end pt-5">
+        <img src="/sb-admin-2/img/logo-gov.svg" class="col-6 col-md-3 col-lg-2">
+    </div-->
 
     <!-- Bootstrap core JavaScript-->
     <script src="/sb-admin-2/vendor/jquery/jquery.min.js"></script>
@@ -180,7 +173,7 @@
 
 
 
-    <!--Submit Form-->
+    <!--Submit Login Form-->
     <script>
 
 
@@ -196,18 +189,27 @@
                     Swal.showLoading();
                 },
                 allowOutsideClick: () => !Swal.isLoading(),
+                backdrop: "rgba(0,0,0,0.7)",
+                background: "#f2f2f2",
             });
 
             const response = await submitLogin();
 
             if (response.success) {
-                window.location.href = "/news";
+                window.location.href = "/home";
 
             } else {
                 Swal.fire({
                     title: "Falha ao autenticar!",
                     html: response.message,
                     icon: "error",
+                    iconHtml: `<i class="fas fa-times-circle text-danger"></i>`,
+                    backdrop: "rgba(0,0,0,0.7)",
+                    background: "#f2f2f2",
+                    customClass: {
+                      icon: "custom-icon-class",
+                      confirmButton: "btn-primary"
+                    },
                 });
             }
         });
@@ -234,6 +236,24 @@
                 }
             }
         }
+    </script>
+
+
+
+    <!--Remove Sweet Alert 2 Class From Body-->
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class' && document.body.classList.contains('swal2-height-auto')) {
+                        document.body.classList.remove('swal2-height-auto');
+                    }
+                });
+            });
+        
+            observer.observe(document.body, { attributes: true });
+        });
     </script>
 
 

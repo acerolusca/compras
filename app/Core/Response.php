@@ -106,7 +106,7 @@ class Response {
     public function sendHeaders() {
         http_response_code($this->httpCode);
         foreach ($this->headers as $key => $value) {
-            header($key . ": " . $value);
+            header("$key: $value");
         }
 
         if ($this->content !== null && is_string($this->content)) {

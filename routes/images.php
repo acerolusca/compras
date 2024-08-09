@@ -4,6 +4,11 @@ use \App\Controller\Images;
 use \App\Core\Response;
 
 
+/**
+ * @var \App\Core\Router $obRouter
+ */
+
+
 // ROTA PARA IMAGENS DE USUÁRIOS
 $obRouter->get("/image/user/{relativeImagePath}", [
     function ($relativeImagePath) {

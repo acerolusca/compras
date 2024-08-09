@@ -12,7 +12,7 @@ class RequireLogout {
         try {
 
             if ($user->isLogged()) {
-                $request->getRouter()->redirect("/news");
+                $request->getRouter()->redirect("/home");
             }
             return $next($request);
 

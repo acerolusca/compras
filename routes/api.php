@@ -4,9 +4,14 @@ use \App\Controller\Api;
 use \App\Core\Response;
 
 
+/**
+ * @var \App\Core\Router $obRouter
+ */
+
 
 
 //---------------------------------------- Usuários ------------------------------------------//
+
 
 
 //ROTA PARA LOGIN DE USUÁRIO
@@ -42,6 +47,19 @@ $obRouter->post("/user/edit",[
     ],
     function($request){
         return new Response(200, Api\UserApi::edit($request), "application/json");
+    }
+]);
+
+
+
+
+//ROTA PARA REDEFINIR A SENHA DE UM USUÁRIO NO PRIMEIRO ACESSO
+$obRouter->post("/user/redefine-first-access-password",[
+    "middlewares" => [
+        "requireLogin",
+    ],
+    function($request){
+        return new Response(200, Api\UserApi::redefineFirstAccessPassword($request), "application/json");
     }
 ]);
 

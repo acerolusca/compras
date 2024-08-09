@@ -67,6 +67,7 @@ class UserService
             }
 
             $user->login();
+            
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -101,6 +102,7 @@ class UserService
             $user->setImagePath("default-image-path.svg");
             $user->setPrivilege("editor");
             $user->setRegisterDate((new DateTime())->format("Y-m-d H:i:s"));
+            $user->setFirstAccess("yes");
             $randomPassword = $user->setRandomPassword();
 
 
@@ -337,7 +339,6 @@ class UserService
 
 
 
-
     /**
      * Método responsável por editar a senha de um usuário
      *
@@ -375,6 +376,47 @@ class UserService
 
             return $this->userRepository->update($userFound, $lastCpf);
 
+
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+
+
+    /**
+     * Método responsável por redefinir a senha de um usuário no primeiro acesso
+     *
+     * @param array $redefineFirstAccessPasswordData
+     * @return void
+     */
+    public function redefineFirstAccessPassword(array $redefineFirstAccessPasswordData): void
+    {
+
+        try {
+            $currentPassword = "alrealdyValidatedPassword";
+            $newPassword = $redefineFirstAccessPasswordData["firstAccessNewPassword"] ?? "";
+            $confirmNewPassword = $redefineFirstAccessPasswordData["firstAccessConfirmNewPassword"] ?? "";
+
+            $this->validateNewPasswordData($currentPassword, $newPassword, $confirmNewPassword);
+
+
+            $cpf = (new User())->getLoggedInfo()["cpf"];
+
+            $statement = $this->userRepository->getByCpf($cpf);
+
+            if ($statement->rowCount() == 0) {
+                throw new Exception(
+                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 400
+                );
+            }
+
+            $userFound = $statement->fetchObject(User::class);
+            $userFound->setPassword($newPassword);
+            $userFound->setFirstAccess("no");
+            $this->userRepository->update($userFound, $cpf);
+
+            $userFound->updateSessionFirstAccess();
 
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -593,6 +635,7 @@ class UserService
         $userFound = $statement->fetchObject(User::class);
 
         $newPassword = $userFound->setRandomPassword();
+        $userFound->setFirstAccess("yes");
 
         $this->userRepository->update($userFound, $cpf);
 

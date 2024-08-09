@@ -25,8 +25,8 @@
             <img id="editImagePreview" class="w-100 h-100 shadow-sm" src="" alt="Imagem da notícia"
               style="object-fit: cover;" />
             <span
-              class="overlay news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
-              Alterar imagem da notícia
+              class="overlay news-image-overlay text-center position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
+              Alterar imagem da notícia <br/> Dimensões recomendadas: 680 x 360 px
             </span>
             <input id="editImage" name="editImage" type="file" style="display: none" />
           </div>
@@ -118,27 +118,18 @@
 
 
 <!--Create Edit News CK Editor-->
-<script type="module" async>
-
-  const editEditor = await createEditCkEditor("editBody");
-
+<script  type="module">
 
   async function createEditCkEditor(id) {
     const element = document.getElementById(id);
-    const editor = await ClassicEditor.create(element, {
-      simpleUpload: {
-        uploadUrl: "/editor/uploader",
-      },
-      image: {
-        upload: {
-          types: ["jpeg", "jpg", "png", "webp", "svg"]
-        }
-      }
-    });
+    const editor = await ClassicEditor.create(element, editorConfig);
 
     window.editEditor = editor;
     return editor;
   }
+
+
+  const editEditor = await createEditCkEditor("editBody");
 
 </script>
 
@@ -403,15 +394,16 @@
       const newsId = document.querySelector("#editNewsId").value;
       const newsCardContent = document.querySelector(`#newsCardContent${newsId}`);
       const cardImage = newsCardContent.querySelector(".news-image");
-      const cardTitle = newsCardContent.querySelector(".title");
-      const cardSchedulingDate = newsCardContent.querySelector(".schedule");
+      const cardTitle = newsCardContent.querySelector(".news-title");
+      const cardSchedulingDate = newsCardContent.querySelector(".news-scheduling-date").querySelector("small");
+      const cardSchedulingTime = newsCardContent.querySelector(".news-scheduling-time").querySelector("small");
       const cardHighlightedButton = newsCardContent.querySelector(".highlighted-news-button");
       const cardHighlightedIcon = cardHighlightedButton.querySelector("i");
       const cardVisibleButton = newsCardContent.querySelector(".visible-news-button");
       const cardVisibleIcon = cardVisibleButton.querySelector("i");
 
 
-      //Updating Image
+      //UPDATING IMAGE
       const image = document.querySelector("#editImage");
       if (image.files.length > 0) {
         const imageFile = image.files[0];
@@ -426,13 +418,13 @@
 
 
 
-      //Updating Title
+      //UPDATING IMAGE
       const title = document.querySelector("#editTitle").value;
       cardTitle.innerHTML = title;
 
 
 
-      //Updating SchedulingDate 
+      //UPDATING SCHEDULINGDATE
       var schedulingDate = document.querySelector("#editSchedulingDate").value;
 
       if (schedulingDate != "") {
@@ -440,12 +432,13 @@
 
         const [schedulingDatePart, schedulingTimePart] = schedulingDate.split(" ");
         const [year, month, day] = schedulingDatePart.split("-");
-        cardSchedulingDate.innerHTML = `${day}/${month}/${year} ${schedulingTimePart}`;
+        cardSchedulingDate.innerHTML = `${day}/${month}/${year}`
+        cardSchedulingTime.innerHTML = schedulingTimePart;
       }
 
 
 
-      //Updating Highlighted State
+      //UPDATING HIGHLIGHTED STATUS
       const highlighted = document.querySelector("#editHighlighted").checked;
       cardHighlightedIcon.classList = `highlighted-news-icon fa-star fa-${highlighted ? "solid" : "regular"}`;
       cardHighlightedButton.title = highlighted ? "Remover dos destaques" : "Colocar em destaque";
@@ -453,7 +446,7 @@
 
 
 
-      //Updating Visible State
+      //UPDATING VISIBLE STATUS
       const visible = document.querySelector("#editVisible").checked;
       cardVisibleIcon.classList = `visible-news-icon fa-solid fa-${visible ? "eye" : "eye-slash"}`;
       cardVisibleButton.title = visible ? "Ocultar" : "Tornar visível";
@@ -556,7 +549,6 @@
   $(document).ready(() => {
 
     $('#editNewsModal').on('hidden.bs.modal', () => {
-
       $('body').css('overflow-y', 'scroll');
       $('#editTitleMessage').css('visibility', 'hidden');
       $('#editSummaryMessage').css('visibility', 'hidden');
@@ -575,7 +567,6 @@
 
       $('#editSchedulingDateContainer').css('display', 'none');
       $('#editSchedulingDate').val('');
-
     });
 
   });

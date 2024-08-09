@@ -9,6 +9,7 @@ use \App\Core\Middleware\Queue;
 //INICIA O ROUTER
 $obRouter = new Router(URL);
 
+
 //INCLUI AS ROTAS DE PÁGINAS
 include __DIR__ . "/../routes/pages.php";
 

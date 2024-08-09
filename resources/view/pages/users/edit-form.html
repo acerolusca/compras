@@ -270,8 +270,32 @@
           confirmButton: "btn-primary"
         },
       }).then(() => {
-        window.location.reload();
+        const editModal = document.getElementById("editUserModal");
+        $(editModal).modal("hide");
       });
+
+      const userCpf = document.querySelector("#editLastCpf").value;
+      const userLineContent = document.querySelector(`#userLineContent${userCpf}`);
+      const lineFullname = userLineContent.querySelector(".user-fullname");
+      const lineEmail = userLineContent.querySelector(".user-email");
+      const lineCpf = userLineContent.querySelector(".user-cpf");
+
+
+      //UPDATING FULLNAME
+      const fullname = document.querySelector("#editFullname").value;
+      lineFullname.innerHTML = fullname;
+
+
+      //UPDATING EMAIL
+      const email = document.querySelector("#editEmail").value;
+      lineEmail.innerHTML = email;
+
+
+      //UPDATING CPF
+      const cpf = document.querySelector("#editCpf").value.replace(/[^0-9]/g, "");
+      lineCpf.innerHTML = cpf;
+
+
     } else {
       Swal.fire({
         title: "<h3>Falha ao editar usuário!</h3>",

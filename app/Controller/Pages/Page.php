@@ -90,8 +90,26 @@ class Page
                 "administratorItems" => ""
             ]);
         }
+    }
 
 
+
+
+
+    /**
+     * Método responsável por retornar a modal de redefinição de senha no primeiro acesso
+     *
+     * @return string
+     */
+    private static function getFirstAccess()
+    {
+        $user = new User();
+
+        try {
+           return $user->getSessionFirstAccess() == "yes" ? View::render("pages/page/first-access") : "";
+        } catch (Exception $e){
+            return "";
+        }
     }
 
 
@@ -104,11 +122,12 @@ class Page
      */
     public static function getPage($title, $content)
     {
-        return View::render("pages/index", [
+        return View::render("pages/page/index", [
             "title" => $title,
             "content" => $content,
             "sidebar" => self::getSidebar(),
-            "topbar" => self::getTopbar()
+            "topbar" => self::getTopbar(),
+            "firstAccess" => self::getFirstAccess()
         ]);
     }
 }

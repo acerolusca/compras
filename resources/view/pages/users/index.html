@@ -88,7 +88,8 @@
                 confirmButton: "btn-primary"
               },
             }).then(() => {
-              window.location.reload()
+              const userLineContent= document.querySelector(`#userLineContent${button.dataset.userCpf}`);
+              userLineContent.remove();
             });
       
           } else {

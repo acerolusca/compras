@@ -1,37 +1,42 @@
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/news">
-    <div class="sidebar-brand-icon small-img">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
+    <div class="sidebar-brand-icon small-img d-block d-md-none">
       <img src="/sb-admin-2/img/map-compras.svg" width="50%">
     </div>
-    <div class="sidebar-brand-text mx-1 large-img">
-      <img src="/sb-admin-2/img/logo-compras.svg" width="80%">
+    <div class="sidebar-brand-text mx-1 large-img d-none d-md-block">
+      <img src="/sb-admin-2/img/logo-compras.svg" width="80%" style="filter:brightness(10);">
     </div>
   </a>
 
-
+  <!-- Home -->
+  <li class="nav-item">
+    <a class="nav-link" href="/home">
+      <i class="fas fa-fw fa-house text-white"></i>
+      <span class="text-white">Início</span></a>
+  </li>
 
   <!-- News -->
   <li class="nav-item">
     <a class="nav-link" href="/news">
-      <i class="fas fa-fw fa-newspaper" style="color: #FFFFFF;"></i>
-      <span style="color: #FFFFFF;">Notícias</span></a>
+      <i class="fas fa-fw fa-newspaper text-white"></i>
+      <span class="text-white">Notícias</span></a>
   </li>
 
   {{administratorItems}}
 
 
   <!-- Divider -->
-  <hr class="sidebar-divider my-3">
+  <hr class="sidebar-divider">
 
 
 
   <!-- Logout -->
   <li class="nav-item">
     <a class="nav-link" href="/logout" data-toggle="modal" data-target="#logoutModal">
-      <i class="fas fa-fw fa-sign-out-alt" style="color: #FFFFFF;"></i>
-      <span style="color: #FFFFFF;">Sair</span>
+      <i class="fas fa-fw fa-sign-out-alt text-white"></i>
+      <span class="text-white">Sair</span>
     </a>
   </li>
 
@@ -41,6 +46,13 @@
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 
+
+
+  <div class="d-flex w-100 justify-content-center position-absolute" style="bottom: 4%">
+    <img src="/sb-admin-2/img/logo-ati.svg" >
+  </div>
+
+  
 
 </ul>
 <!-- End of Sidebar -->

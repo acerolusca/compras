@@ -7,7 +7,6 @@ use App\Service\NewsService;
 use App\Repository\NewsRepository;
 
 use App\Database\Database;
-use \Exception;
 
 use \App\Utils\View;
 
