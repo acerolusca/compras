@@ -8,9 +8,9 @@ use App\Core\Response;
 
 class NewsImage {
 
-    public static function getImage($relativeImagePath) {
+    public static function getImage($imageName) {
 
-        $relativeImagePath = "news/$relativeImagePath";
+        $relativeImagePath = "news/$imageName";
         
         [$imageContent, $imageMimeType] = Image::getImage($relativeImagePath);
 

@@ -100,7 +100,7 @@
 
   async function getUserInfo(userCpf) {
     try {
-      const response = await fetch("/user/" + userCpf, {
+      const response = await fetch("/user/info/" + userCpf, {
         method: "GET"
       });
 
@@ -109,7 +109,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente.",
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente.",
       }
     }
   }
@@ -335,7 +335,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente."
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente."
       }
     }
 
@@ -464,7 +464,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente."
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente."
       }
     }
   }

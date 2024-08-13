@@ -10,28 +10,35 @@ use \App\Core\Middleware\Queue;
 $obRouter = new Router(URL);
 
 
-//INCLUI AS ROTAS DE PÁGINAS
-include __DIR__ . "/../routes/pages.php";
 
-
-//INCLUI AS ROTAS DE API's
-include __DIR__ . "/../routes/api.php";
+//INCLUI AS ROTAS PARA API's 
+include __DIR__ . "/../routes/api/index.php";
 
 
 //INCLUI AS ROTAS PARA IMAGENS
-include __DIR__ . "/../routes/images.php";
+include __DIR__ . "/../routes/images/index.php";
+
+
+//INCLUI AS ROTAS DE PÁGINAS
+include __DIR__ . "/../routes/pages/index.php";
 
 
 
-// MIDDLEWARE MAPPING
+
+// DEFINE O MAPEAMENTO DE MIDDLEWARES
 Queue::setMap([
-    "requireLogout" => \App\Core\Middleware\RequireLogout::class,
-    "requireLogin" => \App\Core\Middleware\RequireLogin::class,
-    "requireAdministrator" => \App\Core\Middleware\RequireAdministrator::class
+    "required-logout" => \App\Core\Middleware\RequiredLogout::class,
+    "required-login" => \App\Core\Middleware\RequiredLogin::class,
+    "required-administrator" => \App\Core\Middleware\RequiredAdministrator::class,
+    "required-website-origin" => \App\Core\Middleware\RequiredWebsiteOrigin::class,
+    "required-authorization" => \App\Core\Middleware\RequiredAuthorization::class
 ]);
 
 
+
+// DEFINE O MAPEAMENTO DE MIDDLEWARES PADRÕES (EXECUTADOS EM TODAS AS ROTAS)
 Queue::setDefault([]);
+
 
 
 //IMPRIME O RESPONSE DA ROTA

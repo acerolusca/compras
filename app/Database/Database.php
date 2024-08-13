@@ -110,7 +110,7 @@ class Database
             $this->connection = new PDO("mysql:host=" . self::$host . ";dbname=" . self::$name . ";port=" . self::$port, self::$user, self::$pass);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            throw new Exception("Erro na conexão", $e->getCode());
+            throw new Exception("Serviço indisponível.", 503);
         }
     }
 
@@ -166,7 +166,7 @@ class Database
             $statement->execute($params);
             return $statement;
         } catch (PDOException $e) {
-            throw new Exception($e->getMessage(),intval($e->getMessage()));
+            throw new Exception($e->getMessage(), 503);
         }
     }
 
@@ -194,8 +194,6 @@ class Database
 
 
 
-
-
             //RETORNA O ÚLTIMO ID INSERIDO
             return $this->connection->lastInsertId();
         } catch (Exception $e) {
@@ -219,7 +217,6 @@ class Database
     {
 
         try {
-
 
             //COLUNAS
             $fields = implode(", ", $fields);

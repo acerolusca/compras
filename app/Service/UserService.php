@@ -216,11 +216,16 @@ class UserService
     {
         try {
 
+            if(!is_numeric($cpf)){
+                throw new Exception("Parâmetro de usuário inválido.", 400);
+            }
+
             $statement = $this->userRepository->getByCpf($cpf);
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava editá-lo.", 400
+                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava editá-lo.", 
+                    404
                 );
             }
 
@@ -259,7 +264,8 @@ class UserService
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava editá-lo.", 400
+                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava editá-lo.", 
+                    404
                 );
             }
             
@@ -296,7 +302,8 @@ class UserService
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 400
+                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 
+                    404
                 );
             }
             
@@ -362,7 +369,8 @@ class UserService
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 400
+                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 
+                    404
                 );
             }
 
@@ -407,7 +415,8 @@ class UserService
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 400
+                    "Não houve sucesso ao encontrar os seus dados. É possível que eles tenham sido excluídos do sistema.", 
+                    404
                 );
             }
 
@@ -623,12 +632,16 @@ class UserService
      */
     public function generateNewPassword(string $cpf): string {
 
+        if(!is_numeric($cpf)){
+            throw new Exception("Parâmetro de usuário inválido.", 400);
+        }
 
         $statement = $this->userRepository->getByCpf($cpf);
 
         if ($statement->rowCount() == 0) {
             throw new Exception(
-                "É possível que o usuário tenha sido excluído por outro administrador enquanto você tentava gerar uma nova senha para ele.", 400
+                "É possível que o usuário tenha sido excluído por outro administrador enquanto você tentava gerar uma nova senha para ele.", 
+                404
             );
         }
 
@@ -656,11 +669,16 @@ class UserService
     {
         try {
 
+            if(!is_numeric($cpf)){
+                throw new Exception("Parâmetro de usuário inválido.", 400);
+            }
+
             $statement = $this->userRepository->getByCpf($cpf);
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
-                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava excluí-lo.", 400
+                    "É possível que ele tenha sido excluído por outro administrador enquanto você tentava excluí-lo.", 
+                    404
                 );
             }
 

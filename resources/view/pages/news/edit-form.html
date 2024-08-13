@@ -301,7 +301,7 @@
 
   async function getNewsInfo(newsId) {
     try {
-      const response = await fetch("/news/" + newsId, {
+      const response = await fetch("/news/info/" + newsId, {
         method: "GET"
       });
 
@@ -310,7 +310,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente.",
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente.",
       }
     }
   }
@@ -534,7 +534,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente."
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente."
       };
     }
   }

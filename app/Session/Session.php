@@ -12,14 +12,12 @@ abstract class Session {
 
     /**
      * Método responsável por iniciar uma sessão não ativa 
-     *
      * @return void
      */
     public function init() {
 
         //VERIFICA SE A SESSÃO NÃO ESTÁ ATIVA
         if(session_status() !== PHP_SESSION_ACTIVE){
-
             //INICIA  SESSÃO
            $this->start();
         } else {
@@ -30,12 +28,11 @@ abstract class Session {
 
     /**
      * Método responsável por iniciar a sessão
-     *
      * @return void
      */
     private function start() {
 
-        //DEFINE O E ATRIBUI O NOME DA SESSÃO
+        //DEFINE E ATRIBUI O NOME DA SESSÃO
         $sessionName = sha1("compras_ma" . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
         session_name($sessionName);
         $this->sessionName = $sessionName;

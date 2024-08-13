@@ -105,10 +105,12 @@ class Router {
         //DEFINIÇÃO DOS MIDDLEWARES
         $params["middlewares"] ??= [];
 
-        $params["variables"] = [];
 
 
         //PADRÃO DE VALIDAÇÃO DAS VARIÁVEIS DAS ROTAS
+        $params["variables"] = [];
+
+
         $patternVariable = "/{(.*?)}/";
         if (preg_match_all($patternVariable, $route, $matches)) {
             $route = preg_replace($patternVariable, "(.*?)", $route);
@@ -139,6 +141,7 @@ class Router {
         $xUri = strlen($this->prefix) ? explode($this->prefix, $uri) : [$uri];
 
         //RETORNA A URI SEM PREFIXO
+        //return rtrim(end($xUri), "/");
         return end($xUri);
     }
 
@@ -256,8 +259,8 @@ class Router {
      * @return void
      */
     public function redirect($route) {
-        $url = $this->url . $route;
-        header("Location: " . $url);
+        $url = "$this->url$route";
+        header("Location: $url");
         exit();
     }
 
@@ -275,11 +278,11 @@ class Router {
             $route = $this->getRoute();
 
             if (!isset($route["controller"])) {
-                $notFoundPage = View::render("pages/error/index", [
-                    "code" => 404, 
-                    "message" => "Página não encontrada"
+                $internalServerError = View::render("pages/error/index", [
+                    "code" => 500, 
+                    "message" => "Erro interno"
                 ]);
-                throw new Exception($notFoundPage, 404);
+                throw new Exception($internalServerError, 500);
             }
             
             $args = [];
@@ -292,7 +295,6 @@ class Router {
 
             return (new MiddlewareQueue($route['middlewares'], $route["controller"], $args))->next($this->request);
 
-            //return call_user_func_array($route["controller"], $args);
             
         } catch(Exception $e) {
             return new Response($e->getCode(), $e->getMessage());

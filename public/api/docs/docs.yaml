@@ -1,0 +1,287 @@
+openapi: 3.0.0
+info:
+  title: 'API COMPRAS'
+  version: '1.0'
+paths:
+  /api/news/all:
+    get:
+      tags:
+        - Notícias
+      summary: 'Retorna todas as notícias disponíveis'
+      description: 'Essa API retorna uma lista de todas as notícias disponíveis.'
+      operationId: getAllAvailable
+      responses:
+        '200':
+          description: 'Notícias carregadas com sucesso.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
+                  message: { type: string, example: 'Notícias carregadas com sucesso.' }
+                type: object
+        '204':
+          description: 'Não há notícias disponíveis no momento. Ocorre quando não há notícias cadastradas ou publicadas.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Não há notícias disponíveis no momento.' }
+                type: object
+        '401':
+          description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Acesso negado.' }
+                type: object
+        '503':
+          description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Serviço indisponível.' }
+                type: object
+  /api/news/highlighted:
+    get:
+      tags:
+        - Notícias
+      summary: 'Retorna todas as notícias em destaque disponíveis'
+      description: 'Essa API retorna uma lista de todas as notícias em destaque disponíveis.'
+      operationId: getHighlightedAvailable
+      responses:
+        '200':
+          description: 'Notícias em destaque carregadas com sucesso.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Destaques } }, type: object } }
+                  message: { type: string, example: 'Notícias em destaque carregadas com sucesso.' }
+                type: object
+        '204':
+          description: 'Não há notícias em destaque disponíveis no momento. Ocorre quando não há notícias em destaque cadastradas ou publicadas.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Não há notícias em destaque disponíveis no momento.' }
+                type: object
+        '401':
+          description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Acesso negado.' }
+                type: object
+        '503':
+          description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Serviço indisponível.' }
+                type: object
+  /api/news/regular:
+    get:
+      tags:
+        - Notícias
+      summary: 'Retorna todas as notícias regulares disponíveis'
+      description: 'Essa API retorna uma lista de todas as notícias regulares disponíveis.'
+      operationId: getRegularAvailable
+      responses:
+        '200':
+          description: 'Notícias regulares carregadas com sucesso.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
+                  message: { type: string, example: 'Notícias regulares carregadas com sucesso.' }
+                type: object
+        '204':
+          description: 'Não há notícias regulares disponíveis no momento. Ocorre quando não há notícias regulares cadastradas ou publicadas.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Não há notícias regulares disponíveis no momento.' }
+                type: object
+        '401':
+          description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Acesso negado.' }
+                type: object
+        '503':
+          description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Serviço indisponível.' }
+                type: object
+  '/api/news/info/{id}':
+    get:
+      tags:
+        - Notícias
+      summary: 'Retorna as informações de uma notícia específica disponível'
+      description: 'Essa API retorna as informações de uma notícia específica, de acordo com o ID.'
+      operationId: getInfoAvailable
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID da notícia. Necessário que seja numérico.'
+          required: true
+          schema:
+            type: string
+          example: '10'
+      responses:
+        '200':
+          description: 'Notícia carregada com sucesso.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, body: { type: string, example: 'Texto completo da notícia.' }, image: { type: string, example: /images/noticia.jpg }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' } }, type: object }
+                  message: { type: string, example: 'Notícia carregada com sucesso.' }
+                type: object
+        '400':
+          description: 'Parâmetro de notícia inválido ou não informado. Ocorre se ID enviado como parâmetro for não numérico ou vazio.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Parâmetro de notícia inválido ou não informado.' }
+                type: object
+        '404':
+          description: 'Notícia não está disponível. Ocorre quando ID enviado como parâmetro não corresponde a uma notícia disponível.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Notícia não está disponível.' }
+                type: object
+        '401':
+          description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Acesso negado.' }
+                type: object
+        '503':
+          description: 'Serviço indisponível ou erro ao carregar notícia. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Serviço indisponível.' }
+                type: object
+  '/api/news/search/{searched}':
+    get:
+      tags:
+        - Notícias
+      summary: 'Retorna todas as notícias disponíveis correspondentes à busca'
+      description: 'Essa API retorna uma lista de todas as notícias disponíveis correspondentes à busca.'
+      operationId: search
+      parameters:
+        -
+          name: searched
+          in: path
+          description: 'Parâmetro de busca. Pode ser um fragmento do título, do resumo ou da data de publicação da notícia'
+          required: true
+          schema:
+            type: string
+          example: 'Título da notícia B'
+      responses:
+        '200':
+          description: 'Notícias correspondentes à busca carregadas com successo.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
+                  message: { type: string, example: 'Notícias correspondentes à busca carregadas com successo.' }
+                type: object
+        '204':
+          description: 'Não há notícias correspondentes à busca. Ocorre quando o algoritmo de busca não encontra correspondência entre o parâmetro enviado e as notícias disponíveis.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Não há notícias correspondentes à busca.' }
+                type: object
+        '400':
+          description: 'Parâmetro de busca inválido ou não informado. Ocorre quando o parâmetro de busca for vazio.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Parâmetro de busca inválido ou não informado.' }
+                type: object
+        '401':
+          description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Acesso negado.' }
+                type: object
+        '503':
+          description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: false }
+                  data: { type: string, example: '' }
+                  message: { type: string, example: 'Serviço indisponível.' }
+                type: object
+tags:
+  -
+    name: Notícias
+    description: Notícias

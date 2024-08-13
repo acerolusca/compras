@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 use App\Service\UserService;
 use App\Repository\UserRepository;
 
-use \App\Core\Request;
+use App\Core\Request;
 use App\Database\Database;
 
 use \Exception;

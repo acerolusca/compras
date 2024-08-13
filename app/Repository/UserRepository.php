@@ -96,10 +96,7 @@ class UserRepository
 
             return $this->db->select(["*"], [], $where);
         } catch (Exception $e) {
-            throw new Exception(
-                "Erro ao carregar usuário!", //$e->getMessage()
-                $e->getCode()
-            );
+            throw new Exception("Erro ao carregar usuário!", $e->getCode());
         }
     }
 
@@ -151,10 +148,7 @@ class UserRepository
             return $this->db->update($sets, $where);  
 
         } catch (Exception $e) {
-            throw new Exception(
-                "Erro ao atualizar usuário", 
-                $e->getCode()
-            );
+            throw new Exception("Erro ao atualizar usuário", $e->getCode());
         }
     }
 

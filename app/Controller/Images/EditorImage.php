@@ -8,9 +8,9 @@ use App\Core\Response;
 
 class EditorImage {
 
-    public static function getImage($relativeImagePath) {
+    public static function getImage($imageName) {
 
-        $relativeImagePath = "editor/$relativeImagePath";
+        $relativeImagePath = "editor/$imageName";
         
         [$imageContent, $imageMimeType] = Image::getImage($relativeImagePath);
 

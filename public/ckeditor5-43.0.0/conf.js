@@ -137,7 +137,7 @@ window.editorConfig = {
 		]
 	},
 	simpleUpload: {
-        uploadUrl: "/editor/uploader",
+        uploadUrl: "/news/upload-editor-image",
     },
 	image: {
 		toolbar: ['toggleImageCaption', 'imageTextAlternative', '|', 'resizeImage'],

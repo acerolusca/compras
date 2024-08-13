@@ -161,12 +161,16 @@ class NewsService
     {
         try {
 
+            if(!is_numeric($newsId)){
+                throw new Exception("Parâmetro de notícia inválido.", 400);
+            }
+
             $statement = $this->newsRepository->getById($newsId);
 
             if ($statement->rowCount() == 0) {
                 throw new Exception(
                     "É possível que ela tenha sido excluído por outro usuário enquanto você tentava editá-la.",
-                    400
+                    404
                 );
             }
 
@@ -223,7 +227,7 @@ class NewsService
             if ($statement->rowCount() == 0) {
                 throw new Exception(
                     "É possível que ela tenha sido excluída por outro usuário enquanto você tentava editá-la.",
-                    400
+                    404
                 );
             }
 
@@ -416,7 +420,7 @@ class NewsService
             if ($statement->rowCount() == 0) {
                 throw new Exception(
                     "É possível que ela tenha sido excluída por outro usuário enquanto você tentava excluí-la.",
-                    400
+                    404
                 );
             }
 
@@ -446,7 +450,7 @@ class NewsService
             if ($statement->rowCount() == 0) {
                 throw new Exception(
                     "É possível que ela tenha sido excluída por outro usuário enquanto você tentava mudar o status de destaque.",
-                    400
+                    404
                 );
             }
 
@@ -483,7 +487,7 @@ class NewsService
             if ($statement->rowCount() == 0) {
                 throw new Exception(
                     "É possível que ela tenha sido excluída por outro usuário enquanto você tentava mudar o status de visibilidade.",
-                    400
+                    404
                 );
             }
 
@@ -527,7 +531,6 @@ class NewsService
 
     /**
      * Método responsável por retornar as informações de todas as notícias disponíveis
-     *
      * @return array
      */
     public function getAllAvailable(): array
@@ -560,8 +563,9 @@ class NewsService
             }
 
             return $newsList;
+            
         } catch (Exception $e) {
-            return [];
+            throw new Exception($e->getMessage(), $e->getCode());
         }
     }
 
@@ -639,7 +643,7 @@ class NewsService
                         "summary" => $news->getSummary() ?? "",
                         "image" =>  getenv("URL") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
-                        "category" => "Notícias"
+                        "category" => "Destaques"
                     ];
 
                     array_push($newsList, $news);
@@ -665,13 +669,14 @@ class NewsService
     {
         try {
 
+            if(!is_numeric($newsId) || empty($newsId)){
+                throw new Exception("Parâmetro de notícia inválido ou não informado.", 400);
+            }
+
             $statement = $this->newsRepository->getById($newsId);
 
             if ($statement->rowCount() == 0) {
-                throw new Exception(
-                    "Essa notícia não está mais disponível.",
-                    400
-                );
+                throw new Exception("Essa notícia não está disponível.", 404);
             }
 
             $news = $statement->fetchObject(News::class);
@@ -699,15 +704,17 @@ class NewsService
 
     /**
      * Método responsável por retornar as informações das notícias correspondentes à busca
-     * @param string $searchedData
+     * @param string $searched
      * @return array
      */
-    public function search($searchedData): array
+    public function search(string $searched): array
     {
 
         try {
 
-            $searched = $searchedData["searched"] ?? "";
+            if(empty($searched)){
+                throw new Exception("Parâmetro de busca inválido.", 400);
+            }
 
             $statement = $this->newsRepository->search($searched);
 
@@ -724,7 +731,7 @@ class NewsService
                         "id" => $news->getId() ?? "",
                         "title" => $news->getTitle() ?? "",
                         "summary" => $news->getSummary() ?? "",
-                        "image" =>  "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"), //Colocar domínio depois
+                        "image" =>   getenv("URL") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
                         "category" => "Notícias"
                     ];

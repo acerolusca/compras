@@ -6,19 +6,18 @@ class Enviroment {
 
     /**
      * Método reponsável por adicionar variáveis de ambiente
-     *
      * @param string $dir
      * @return false|void
      */
     public static function load($dir){
         
         //VERIFICA SE O ARQUIVO .ENV EXISTE
-        if(!file_exists($dir)){
+        if(!file_exists("$dir.env")){
             return false;
         }
 
         //RECUPERA O ARQUIVO DE VARIÁVES COMO UM ARRRAY DE LINHAS
-        $lines = file($dir . ".env");
+        $lines = file("$dir.env");
 
 
         //DEFINE AS VARIÁVEIS DE AMBIENTE

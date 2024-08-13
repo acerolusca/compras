@@ -8,9 +8,9 @@ use App\Core\Response;
 
 class UserImage {
 
-    public static function getImage($relativeImagePath) {
+    public static function getImage($imageName) {
 
-        $relativeImagePath = "users/$relativeImagePath";
+        $relativeImagePath = "users/$imageName";
         
         [$imageContent, $imageMimeType] = Image::getImage($relativeImagePath);
 

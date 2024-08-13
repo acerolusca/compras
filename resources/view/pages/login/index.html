@@ -74,8 +74,6 @@
 
 </head>
 
-
-
 <body class="d-flex flex-column justify-content-center align-items-center m-0 bg-light">
 
     <div class="container border-0 d-flex justify-content-center align-items-center">
@@ -134,24 +132,13 @@
         </div>
 
     </div>
+    
 
     <!--div class="d-flex justify-content-center align-items-end pt-5">
         <img src="/sb-admin-2/img/logo-gov.svg" class="col-6 col-md-3 col-lg-2">
     </div-->
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="/sb-admin-2/vendor/jquery/jquery.min.js"></script>
-    <script src="/sb-admin-2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="/sb-admin-2/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="/sb-admin-2/js/sb-admin-2.min.js"></script>
-
-
-    
-    
     <!--Mask-->
     <script>
 
@@ -168,8 +155,6 @@
         });
 
     </script>
-
-
 
 
 
@@ -221,7 +206,7 @@
                 const form = document.querySelector("#loginForm");
                 const formData = new FormData(form);
 
-                const response = await fetch("/login", {
+                const response = await fetch("/user/login", {
                     method: "POST",
                     body: formData,
                 });
@@ -255,7 +240,6 @@
             observer.observe(document.body, { attributes: true });
         });
     </script>
-
 
 
 </body>

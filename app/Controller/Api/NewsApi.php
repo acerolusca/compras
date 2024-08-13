@@ -2,12 +2,12 @@
 
 namespace App\Controller\Api;
 
+
 use App\Service\NewsService;
 use App\Repository\NewsRepository;
-use \App\Core\Request;
+use App\Core\Request;
 use App\Database\Database;
 
-use OpenApi\Attributes as OA;
 
 use \Exception;
 
@@ -110,7 +110,6 @@ class NewsApi
     {
 
         try {
-
             self::initialize();
 
             $data = self::$newsService->getInfo($id);
@@ -275,6 +274,7 @@ class NewsApi
             return json_encode([
                 "url" => $url
             ]);
+            
         } catch (Exception $e) {
             return json_encode([
                 "error" => [
@@ -284,187 +284,4 @@ class NewsApi
         }
     }
 
-
-
-
-    /**
-     * @OA\Get(
-     *      path="/news/available/all",
-     *      operationId="getAllAvailableNews",
-     *      tags={"News"},
-     *      summary="Retorna todas as notícias disponíveis",
-     *      description="Essa API retorna todas as notícias disponíveis. Se ocorrer um erro, uma mensagem de erro será retornada.",
-     *      @OA\Response(
-     *          response=200,
-     *          description="Operação bem-sucedida",
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="success",
-     *                  type="boolean",
-     *                  example=true
-     *              ),
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @OA\Items(
-     *                      type="object",
-     *                      @OA\Property(property="id", type="integer", example=1),
-     *                      @OA\Property(property="title", type="string", example="Notícia de Exemplo"),
-     *                      @OA\Property(property="content", type="string", example="Conteúdo da notícia...")
-     *                  )
-     *              )
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Erro ao encontrar notícias no servidor",
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="success",
-     *                  type="boolean",
-     *                  example=false
-     *              ),
-     *              @OA\Property(
-     *                  property="message",
-     *                  type="integer",
-     *                  example=500
-     *              )
-     *          )
-     *      )
-     * )
-     * 
-     * 
-     * Método responsável por processar a busca  das informações de todas as notícias disponíveis
-     * @return string
-     */
-    public static function getAllAvailable(): string
-    {
-        try {
-
-            self::initialize();
-
-            $data = self::$newsService->getAllAvailable();
-
-            return json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-        } catch (Exception $e) {
-            return json_encode([
-                "success" => false,
-                "message" => $e->getCode()
-            ]);
-        }
-    }
-
-
-
-    /**
-     * Metódo reponsável por processar a busca das informações de todas as notícias em destaque disponíveis
-     * @return string
-     */
-    public static function getHighlightedAvailable(): string
-    {
-        try {
-
-            self::initialize();
-
-            $data = self::$newsService->getHighlightedAvailable();
-
-            return json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-        } catch (Exception $e) {
-            return json_encode([
-                "success" => false,
-                "message" => $e->getCode()
-            ]);
-        }
-    }
-
-
-
-    /**
-     * Método responsável por processar a busca das informações de todas as notícias regulares disponíveis
-     * @return string
-     */
-    public static function getRegularAvailable(): string
-    {
-        try {
-
-            self::initialize();
-
-            $data = self::$newsService->getRegularAvailable();
-
-            return json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-        } catch (Exception $e) {
-            return json_encode([
-                "success" => false,
-                "message" => $e->getCode()
-            ]);
-        }
-    }
-
-
-
-
-    /**
-     * Método responsável por buscar as informações de uma notícia específica a partir do ID
-     * @param string $id
-     * @return string
-     */
-    public static function getInfoAvailable(string $id): string
-    {
-        try {
-
-            self::initialize();
-
-            $data = self::$newsService->getInfoAvailable($id);
-
-            return json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-        } catch (Exception $e) {
-            return json_encode([
-                "success" => false,
-                "message" => $e->getCode()
-            ]);
-        }
-    }
-
-
-
-    /**
-     * Método responsável por processar a busca por uma notícia a partir de algum parâmetro fornecido
-     * @param Request $request
-     * @return string
-     */
-    public static function search(Request $request): string
-    {
-        try {
-
-            self::initialize();
-
-            $searchedData = $request->getQueryParams();
-
-            $data = self::$newsService->search($searchedData);
-
-            return json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-        } catch (Exception $e) {
-            return json_encode([
-                "success" => false,
-                "message" => $e->getCode()
-            ]);
-        }
-    }
 }

@@ -9,7 +9,6 @@ use App\Model\User;
 class Logout {
     /**
      * Método responsável por deslogar o usuário e redirecioná-lo para o login
-     *
      * @return void
      */
     public static function render($request) {
