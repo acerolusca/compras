@@ -131,7 +131,6 @@ class ExternalNewsApi
             ]);
 
             return new Response(200, $response, "application/json");
-
         } catch (Exception $e) {
 
             $response = json_encode([
@@ -149,14 +148,14 @@ class ExternalNewsApi
     /**
      * @OA\Get(
      *     path="/api/news/all",
-     *     summary="Retorna todas as notícias disponíveis",
-     *     description="Essa API retorna uma lista de todas as notícias disponíveis.",
+     *     summary="Retorna todas as notícias cadastradas disponíveis",
+     *     description="Em caso de sucesso e se houver notícias cadastradas disponíveis, essa API as retorna.",
      *     operationId="getAllAvailable",
      *     tags={"Notícias"},
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Notícias carregadas com sucesso.",
+     *         description="Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -166,47 +165,33 @@ class ExternalNewsApi
      *             ),
      *             @OA\Property(
      *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                     @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                     @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
-     *                     @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00"),
-     *                     @OA\Property(property="category", type="string", example="Notícias")
-     *                 ),
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
+     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
+     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
+     *                             @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00Z"),
+     *                             @OA\Property(property="category", type="string", example="Notícias")
+     *                         )
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example=""
+     *                     )
+     *                 }
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Notícias carregadas com sucesso."
+     *                 example="Notícias correspondentes à busca carregadas com sucesso."
      *             )
      *         )
      *     ),
      * 
-     *     @OA\Response(
-     *         response=204,
-     *         description="Não há notícias disponíveis no momento. Ocorre quando não há notícias cadastradas ou publicadas.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="string",
-     *                 example=""
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Não há notícias disponíveis no momento."
-     *             )
-     *         )
-     *     ),
      *     
      *     @OA\Response(
      *         response=401,
@@ -272,7 +257,7 @@ class ExternalNewsApi
                 "message" => count($data) == 0 ? "Não há notícias disponíveis no momento." : "Notícias carregadas com sucesso."
             ]);
 
-            return new Response(count($data) == 0 ? 204 : 200, $response, "application/json");
+            return new Response(200, $response, "application/json");
         } catch (Exception $e) {
 
             $response = json_encode([
@@ -297,7 +282,7 @@ class ExternalNewsApi
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Notícias em destaque carregadas com sucesso.",
+     *         description="Sucesso na operação, mesmo que ainda não haja notícias em destaque cadastradas ou disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -326,28 +311,6 @@ class ExternalNewsApi
      *         )
      *     ),
      * 
-     *     @OA\Response(
-     *         response=204,
-     *         description="Não há notícias em destaque disponíveis no momento. Ocorre quando não há notícias em destaque cadastradas ou publicadas.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="string",
-     *                 example=""
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Não há notícias em destaque disponíveis no momento."
-     *             )
-     *         )
-     *     ),
      *     
      *     @OA\Response(
      *         response=401,
@@ -415,7 +378,7 @@ class ExternalNewsApi
                     "Notícias em destaque carregadas com sucesso."
             ]);
 
-            return new Response(count($data) == 0 ? 204 : 200, $response, "application/json");
+            return new Response(200, $response, "application/json");
         } catch (Exception $e) {
             $response = json_encode([
                 "success" => false,
@@ -439,7 +402,7 @@ class ExternalNewsApi
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Notícias regulares carregadas com sucesso.",
+     *         description="Sucesso na operação, mesmo que ainda não haja notícias regulares cadastradas ou disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -468,28 +431,6 @@ class ExternalNewsApi
      *         )
      *     ),
      * 
-     *     @OA\Response(
-     *         response=204,
-     *         description="Não há notícias regulares disponíveis no momento. Ocorre quando não há notícias regulares cadastradas ou publicadas.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="string",
-     *                 example=""
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Não há notícias regulares disponíveis no momento."
-     *             )
-     *         )
-     *     ),
      *     
      *     @OA\Response(
      *         response=401,
@@ -557,7 +498,7 @@ class ExternalNewsApi
                     "Notícias regulares carregadas com sucesso."
             ]);
 
-            return new Response(count($data) == 0 ? 204 : 200, $response, "application/json");
+            return new Response(200, $response, "application/json");
         } catch (Exception $e) {
 
             $response = json_encode([
@@ -602,13 +543,13 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                 @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                 @OA\Property(property="body", type="string", example="Texto completo da notícia."),
-     *                 @OA\Property(property="image", type="string", example="/images/noticia.jpg"),
-     *                 @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00"),
-    *             ),
+     *                 @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                 @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia."),
+     *                 @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia A", description="Resumo da notícia."),
+     *                 @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Imagem principal da notícia."),
+     *                 @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00", description="Data de publicação da notícia."),
+     *                 @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
@@ -700,7 +641,7 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
      *             ),
      *             @OA\Property(
      *                 property="message",
@@ -762,57 +703,46 @@ class ExternalNewsApi
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Notícias correspondentes à busca carregadas com successo.",
+     *         description="Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=true
+     *                 example=true,
+     *                 description="Booleano que indica se houve ou não sucesso na operação."
      *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                     @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                     @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
-     *                     @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00"),
-     *                     @OA\Property(property="category", type="string", example="Notícias")
+     *         @OA\Property(
+     *             property="data",
+     *             oneOf={
+     *                 @OA\Schema(
+     *                     type="array",
+     *                     description="Array de objetos com as informações das notícias se houver alguma.",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                         @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia."),
+     *                         @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia A", description="Resumo da notícia."),
+     *                         @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Imagem principal da notícia."),
+     *                         @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00", description="Data de publicação da notícia."),
+     *                         @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     *                     )
      *                 ),
-     *             ),
+     *                 @OA\Schema(
+     *                     type="string",
+     *                     example="",
+     *                     description="String vazia se não houver notícias cadastradas ou disponíveis"
+     *                 )
+     *             }
+     *         ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Notícias correspondentes à busca carregadas com successo."
+     *                 example="Notícias correspondentes à busca carregadas com successo.",
      *             )
      *         )
      *     ),
      * 
-     *     @OA\Response(
-     *         response=204,
-     *         description="Não há notícias correspondentes à busca. Ocorre quando o algoritmo de busca não encontra correspondência entre o parâmetro enviado e as notícias disponíveis.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="string",
-     *                 example=""
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Não há notícias correspondentes à busca."
-     *             )
-     *         )
-     *     ),
      * 
      *     @OA\Response(
      *         response=400,
@@ -905,8 +835,7 @@ class ExternalNewsApi
                     "Notícias correspondentes à busca carregadas com successo."
             ]);
 
-            return new Response(count($data) == 0 ? 204 : 200, $response, "application/json");
-
+            return new Response(200, $response, "application/json");
         } catch (Exception $e) {
 
             $response = json_encode([
@@ -918,6 +847,4 @@ class ExternalNewsApi
             return new Response($e->getCode(), $response, "application/json");
         }
     }
-
-
 }

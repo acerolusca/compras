@@ -7,29 +7,19 @@ paths:
     get:
       tags:
         - Notícias
-      summary: 'Retorna todas as notícias disponíveis'
-      description: 'Essa API retorna uma lista de todas as notícias disponíveis.'
+      summary: 'Retorna todas as notícias cadastradas disponíveis'
+      description: 'Em caso de sucesso e se houver notícias cadastradas disponíveis, essa API as retorna.'
       operationId: getAllAvailable
       responses:
         '200':
-          description: 'Notícias carregadas com sucesso.'
+          description: 'Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.'
           content:
             application/json:
               schema:
                 properties:
                   success: { type: boolean, example: true }
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
-                  message: { type: string, example: 'Notícias carregadas com sucesso.' }
-                type: object
-        '204':
-          description: 'Não há notícias disponíveis no momento. Ocorre quando não há notícias cadastradas ou publicadas.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  success: { type: boolean, example: true }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Não há notícias disponíveis no momento.' }
+                  data: { oneOf: [{ type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '2024-08-12T14:00:00Z' }, category: { type: string, example: Notícias } }, type: object } }, { type: string, example: '' }] }
+                  message: { type: string, example: 'Notícias correspondentes à busca carregadas com sucesso.' }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -60,7 +50,7 @@ paths:
       operationId: getHighlightedAvailable
       responses:
         '200':
-          description: 'Notícias em destaque carregadas com sucesso.'
+          description: 'Sucesso na operação, mesmo que ainda não haja notícias em destaque cadastradas ou disponíveis.'
           content:
             application/json:
               schema:
@@ -68,16 +58,6 @@ paths:
                   success: { type: boolean, example: true }
                   data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Destaques } }, type: object } }
                   message: { type: string, example: 'Notícias em destaque carregadas com sucesso.' }
-                type: object
-        '204':
-          description: 'Não há notícias em destaque disponíveis no momento. Ocorre quando não há notícias em destaque cadastradas ou publicadas.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  success: { type: boolean, example: true }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Não há notícias em destaque disponíveis no momento.' }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -108,7 +88,7 @@ paths:
       operationId: getRegularAvailable
       responses:
         '200':
-          description: 'Notícias regulares carregadas com sucesso.'
+          description: 'Sucesso na operação, mesmo que ainda não haja notícias regulares cadastradas ou disponíveis.'
           content:
             application/json:
               schema:
@@ -116,16 +96,6 @@ paths:
                   success: { type: boolean, example: true }
                   data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
                   message: { type: string, example: 'Notícias regulares carregadas com sucesso.' }
-                type: object
-        '204':
-          description: 'Não há notícias regulares disponíveis no momento. Ocorre quando não há notícias regulares cadastradas ou publicadas.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  success: { type: boolean, example: true }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Não há notícias regulares disponíveis no momento.' }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -171,7 +141,7 @@ paths:
               schema:
                 properties:
                   success: { type: boolean, example: true }
-                  data: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, body: { type: string, example: 'Texto completo da notícia.' }, image: { type: string, example: /images/noticia.jpg }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' } }, type: object }
+                  data: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia.', type: string, maxLength: 250, example: 'Resumo da notícia A' }, image: { description: 'Imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data de publicação da notícia.', type: string, format: date-time, example: '2024-08-12T14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object }
                   message: { type: string, example: 'Notícia carregada com sucesso.' }
                 type: object
         '400':
@@ -232,24 +202,14 @@ paths:
           example: 'Título da notícia B'
       responses:
         '200':
-          description: 'Notícias correspondentes à busca carregadas com successo.'
+          description: 'Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: true }
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
+                  success: { description: 'Booleano que indica se houve ou não sucesso na operação.', type: boolean, example: true }
+                  data: { oneOf: [{ description: 'Array de objetos com as informações das notícias se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia.', type: string, maxLength: 250, example: 'Resumo da notícia A' }, image: { description: 'Imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data de publicação da notícia.', type: string, format: date-time, example: '2024-08-12T14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object } }, { description: 'String vazia se não houver notícias cadastradas ou disponíveis', type: string, example: '' }] }
                   message: { type: string, example: 'Notícias correspondentes à busca carregadas com successo.' }
-                type: object
-        '204':
-          description: 'Não há notícias correspondentes à busca. Ocorre quando o algoritmo de busca não encontra correspondência entre o parâmetro enviado e as notícias disponíveis.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  success: { type: boolean, example: true }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Não há notícias correspondentes à busca.' }
                 type: object
         '400':
           description: 'Parâmetro de busca inválido ou não informado. Ocorre quando o parâmetro de busca for vazio.'
