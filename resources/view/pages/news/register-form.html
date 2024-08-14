@@ -220,32 +220,35 @@
 
   //--------------------- Title --------------------//
   document.getElementById("registerTitle").addEventListener("input", function () {
+    alphanumericSymbolMask(this);
+
     if (this.value.length > 100) {
       this.value = this.value.substring(0, 100);
     }
-    if (this.value.length < 10 && this.value.length > 0) {
+    if (this.value.length > 0 && this.value.length < 10 ) {
       document.getElementById("registerTitleMessage").style.visibility = "visible";
     } else {
       document.getElementById("registerTitleMessage").style.visibility = "hidden";
     }
     document.getElementById("registerTitleCounter").innerHTML = this.value.length;
-    alphanumericSymbolMask(this)
+
   });
 
 
   //-------------------- Summary --------------------//
   document.getElementById("registerSummary").addEventListener("input", function () {
+    alphanumericSymbolMask(this);
+
     if (this.value.length > 150) {
       this.value = this.value.substring(0, 150);
     }
 
-    if (this.value.length < 100 && this.value.length > 0) {
+    if (this.value.length > 0 && this.value.length < 100) {
       document.getElementById("registerSummaryMessage").style.visibility = "visible";
     } else {
       document.getElementById("registerSummaryMessage").style.visibility = "hidden";
     }
     document.getElementById("registerSummaryCounter").innerHTML = this.value.length;
-    alphanumericSymbolMask(this)
   });
 
 
@@ -556,14 +559,23 @@
     const form = document.querySelector("#registerNewsForm");
     const formData = new FormData(form);
 
+    let title = document.querySelector("#registerTitle").value;
+    title = title.length > 100 ? title.substring(0, 100) : title;
+    formData.set("registerTitle", title);
+
+
+    let summary = document.querySelector("#registerSummary").value;
+    summary = summary.length > 150 ? title.substring(0, 150) : summary;
+    formData.set("registerSummary", summary);
+
+
+
     let body = registerEditor.getData({ trim: "empty" });
     //let body = decodeHtmlEntities(registerEditor.getData({trim: "empty"}));
     //body = body.replace(/style="[^"]*"/, "");
     //body = body.replace(/class="[^"]*"/, "");
     //body = body.replace(/width="[^"]*"/, "");
     //body = body.replace(/height="[^"]*"/, "");
-
-
     formData.set("registerBody", body);
 
     const registerHighlighted = document.querySelector("#registerHighlighted");
@@ -594,7 +606,7 @@
     } catch (error) {
       return {
         success: false,
-        message: "Erro na conexão. Tente novamente."
+        message: "Erro na conexão. Por favor, recarregue a página e tente novamente."
       };
     }
   }

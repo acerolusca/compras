@@ -139,6 +139,8 @@
 <script>
   //--------------------- Title --------------------//
   document.getElementById("editTitle").addEventListener("input", function () {
+    alphanumericSymbolMask(this);
+
     if (this.value.length > 100) {
       this.value = this.value.substring(0, 100);
     }
@@ -149,11 +151,13 @@
     }
 
     document.getElementById("editTitleCounter").innerHTML = this.value.length;
-    alphanumericSymbolMask(this)
+
   });
 
   //-------------------- Summary --------------------//
   document.getElementById("editSummary").addEventListener("input", function () {
+    alphanumericSymbolMask(this);
+
     if (this.value.length > 150) {
       this.value = this.value.substring(0, 150);
     }
@@ -164,7 +168,6 @@
       document.getElementById("editSummaryMessage").style.visibility = "hidden";
     }
     document.getElementById("editSummaryCounter").innerHTML = this.value.length;
-    alphanumericSymbolMask(this)
   });
 
 </script>
@@ -496,15 +499,25 @@
     const form = document.querySelector("#editNewsForm");
     const formData = new FormData(form);
 
+
+    let title = document.querySelector("#editTitle").value;
+    title = title.length > 100 ? title.substring(0, 100) : title;
+    formData.set("editTitle", title);
+
+
+    let summary = document.querySelector("#editSummary").value;
+    summary = summary.length > 150 ? title.substring(0, 150) : summary;
+    formData.set("editSummary", summary);
+
+
     let body = editEditor.getData({ trim: "empty" });
     //let body = decodeHtmlEntities(editEditor.getData({trim: "empty"}));
     //body = body.replace(/style="[^"]*"/, "");
     //body = body.replace(/class="[^"]*"/, "");
     //body = body.replace(/width="[^"]*"/, "");
     //body = body.replace(/height="[^"]*"/, "");
-
-
     formData.set("editBody", body);
+
 
     const editHighlighted = document.querySelector("#editHighlighted");
     const editHighlightedValue = editHighlighted.checked ? "yes" : "no";

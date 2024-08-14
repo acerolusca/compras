@@ -34,6 +34,16 @@ class UserRepository
 
 
     /**
+     * Método responsável por retornar a instância de Database do UserRepository
+     * @return Database
+     */
+    public function getDb(): Database {
+        return $this->db;
+    }
+
+
+
+    /**
      * Método responsável por inserir um usuário no banco de dados
      *
      * @param User $user

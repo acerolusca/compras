@@ -231,7 +231,7 @@ class News
 
 
             if (strlen($summary) < 100 || strlen($summary) > 150) {
-                throw new Exception("<strong>Resumo da notícia</strong> deve ter entre 100 e 150 catacteres.", 400);
+                throw new Exception("<strong>Resumo da notícia</strong> deve ter entre 100 e 150 caracteres.", 400);
             }
 
             $this->summary = $summary;

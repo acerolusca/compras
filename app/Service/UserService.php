@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Model\User;
 use App\Repository\UserRepository;
+use App\Repository\NewsRepository;
+use App\Database\Database;
 use App\Utils\View;
 use App\Communication\Email;
 
@@ -251,12 +253,14 @@ class UserService
     /**
      * Método responsável pela edição das informações de um usuário
      * @param array $userEditData
-     * @return boolean
+     * @return void
      */
-    public function edit(array $userEditData): bool
+    public function edit(array $userEditData): void
     {
-        try {
 
+        $newsRepository = new NewsRepository(new Database("news"));
+
+        try {
             //GARANTE QUE A CHAVE "editLastCpf" ESTEJA DEFINIDA EM $userEditData
             $userEditData["editLastCpf"] ??= "";
 
@@ -274,12 +278,30 @@ class UserService
             $userFound = $statement->fetchObject(User::class);
 
             $lastCpf = $userFound->getCpf();
+            $lastUsername = $userFound->getUsername();
 
+            // ATUALIZA USUÁRIO
             $this->setDataOnUserFound($userEditData, $userFound);
+            $this->userRepository->getDb()->beginTransaction();
+            $this->userRepository->update($userFound, $lastCpf);
 
-            return $this->userRepository->update($userFound, $lastCpf);
+
+            // ATUALIZA O AUTOR NA TABELA NOTÍCIAS QUANDO UM USUÁRIO É EDITADO
+            $newUsername = $userFound->getUsername();
+            $newsRepository->getDb()->beginTransaction();
+            $newsRepository->updateAuthor($lastUsername, $newUsername);
+
+
+            //COMITTA AS ALTERAÇÕES NO BANCO
+            $this->userRepository->getDb()->commit();
+            $newsRepository->getDb()->commit();
 
         } catch (Exception $e) {
+
+            // DESFAZ AS ALTERAÇÕES NO BANCO
+            $this->userRepository->getDb()->rollBack();
+            $newsRepository->getDb()->rollBack();
+
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }
@@ -292,6 +314,8 @@ class UserService
      * @return boolean (Indica se usuário continua logado ou não)
      */
     public function editProfile(array $userProfileData): bool {
+
+        $newsRepository = new NewsRepository(new Database("news"));
 
         try {
 
@@ -316,6 +340,7 @@ class UserService
             $lastCpf = $userFound->getCpf();
             $lastEmail = $userFound->getEmail();
             $imageCurrentName = $userFound->getImagePath();
+            $lastUsername = $userFound->getUsername();
 
             if(!empty($imageTmpName)){
                 $userFound->validateProfileImage($imageTmpName);
@@ -323,11 +348,22 @@ class UserService
                 $userFound->setImagePath($newImageName);
                 $userFound->updateSessionImagePath();
             }
-
+            
+            // ATUALIZA USUÁRIO
             $this->setDataOnUserFound($userProfileData, $userFound);
-
+            $this->userRepository->getDb()->beginTransaction();
             $this->userRepository->update($userFound, $lastCpf);
 
+            // ATUALIZA O AUTOR NA TABELA NOTÍCIAS QUANDO UM USUÁRIO É EDITADO
+            $newUsername = $userFound->getUsername();
+            $newsRepository->getDb()->beginTransaction();
+            $newsRepository->updateAuthor($lastUsername, $newUsername);
+
+            //COMITTA AS ALTERAÇÕES NO BANCO
+            $this->userRepository->getDb()->commit();
+            $newsRepository->getDb()->commit();
+
+            //ATUALIZA OS DADOS DE SESSÃO DO USUÁRIO
             $userFound->updateSessionFullname();
             $userFound->updateSessionUsername();
             $userFound->updateSessionEmail();
@@ -340,6 +376,10 @@ class UserService
             return true;
 
         } catch (Exception $e) {
+            // DESFAZ AS ALTERAÇÕES NO BANCO
+            $this->userRepository->getDb()->rollBack();
+            $newsRepository->getDb()->rollBack();
+
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }
@@ -494,7 +534,7 @@ class UserService
             $data = $this->removePrefixFromArrayKeys($prefix, $data);
 
 
-            //LABELS DAS PROPRIEDADES QUE DEVEM SER ÙNICAS
+            //LABELS DAS PROPRIEDADES QUE DEVEM SER ÚNICAS
             $uniquePropertyLabels = [
                 "username" => "nome de usuário",
                 "email" => "email",
@@ -554,7 +594,7 @@ class UserService
         try{
             $getterMethod = "get". ucfirst($property);
             if (!method_exists($user, $getterMethod)) {
-                throw new Exception("Método $getterMethod não foi definido!" , 400);     
+                throw new Exception("Erro interno." , 500);     
             }
             return $user->$getterMethod();
         } catch (Exception $e) {    
@@ -575,7 +615,7 @@ class UserService
         try{
             $setterMethod = "set". ucfirst($property);
             if (!method_exists($user, $setterMethod)) {
-                throw new Exception("Método $setterMethod não foi definido!" , 400);     
+                throw new Exception("Erro interno." , 500);     
             }
             return $user->$setterMethod($value);
         } catch (Exception $e) {    

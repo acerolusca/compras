@@ -33,6 +33,17 @@ class NewsRepository
 
 
 
+
+    /**
+     * Método responsável por retornar a instância de Database do NewsRepository
+     * @return Database
+     */
+    public function getDb(): Database {
+        return $this->db;
+    }
+
+
+
     /**
      * Método responsável por inserir uma notícia no banco de dados
      *
@@ -127,6 +138,31 @@ class NewsRepository
 
         } catch (Exception $e) {
             throw new Exception("Erro ao atualizar notícia.", $e->getCode());
+        }
+    }
+
+
+
+
+    /**
+     * Método responsável por atualizar o autor da notícia
+     * @param string $lastAuthor
+     * @param string $newAuthor
+     * @return boolean
+     */
+    public function updateAuthor(string $lastAuthor, string $newAuthor): bool {
+        try {
+
+            $sets = [
+                "author" => $newAuthor
+            ];
+
+            $where = ["author = " => $lastAuthor];
+
+            return $this->db->update($sets, $where);  
+
+        } catch (Exception $e) {
+            throw new Exception("Erro ao atualizar usuário como autor de notícias.", $e->getCode());
         }
     }
 
