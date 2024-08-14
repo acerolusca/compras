@@ -8,18 +8,18 @@ paths:
       tags:
         - Notícias
       summary: 'Retorna todas as notícias cadastradas disponíveis'
-      description: 'Em caso de sucesso e se houver notícias cadastradas disponíveis, essa API as retorna.'
+      description: 'API responsável por retornar todas as notícias cadastradas disponíveis, caso haja alguma.'
       operationId: getAllAvailable
       responses:
         '200':
-          description: 'Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.'
+          description: 'Sucesso na operação, mesmo se não houver notícias cadastradas disponíveis.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: true }
-                  data: { oneOf: [{ type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '2024-08-12T14:00:00Z' }, category: { type: string, example: Notícias } }, type: object } }, { type: string, example: '' }] }
-                  message: { type: string, example: 'Notícias correspondentes à busca carregadas com sucesso.' }
+                  success: { description: "Booleano com valor de 'true' indicando sucesso na operação.", type: boolean, example: true }
+                  data: { oneOf: [{ description: 'Array de objetos com informações das notícias cadastradas disponíveis, se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia com mínimo de 10 e máximo de 100 caracteres.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia com mínimo de 100 e máximo de 150 caracteres.', type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { description: 'Caminho para a imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data e hora da publicação da notícia em formato brasileiro.', type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object } }, { description: 'String vazia caso não haja notícias cadastradas disponíveis.', type: string, example: '' }] }
+                  message: { oneOf: [{ description: 'Mensagem de sucesso caso haja notícias cadastradas disponíveis.', type: string, example: 'Notícias carregadas com sucesso.' }, { description: 'Mensagem indicando que não há notícias cadastradas disponíveis.', type: string, example: 'Não há notícias disponíveis no momento.' }] }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -27,9 +27,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Acesso negado.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado.', type: string, example: 'Acesso negado.' }
                 type: object
         '503':
           description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
@@ -37,27 +37,27 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Serviço indisponível.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { oneOf: [{ description: 'Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.', type: string, example: 'Serviço indisponível.' }, { description: 'Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias.', type: string, example: 'Erro ao carregar notícias.' }] }
                 type: object
   /api/news/highlighted:
     get:
       tags:
         - Notícias
       summary: 'Retorna todas as notícias em destaque disponíveis'
-      description: 'Essa API retorna uma lista de todas as notícias em destaque disponíveis.'
+      description: 'API responsável por retornar todas as notícias em destaque disponíveis, caso haja alguma.'
       operationId: getHighlightedAvailable
       responses:
         '200':
-          description: 'Sucesso na operação, mesmo que ainda não haja notícias em destaque cadastradas ou disponíveis.'
+          description: 'Sucesso na operação, mesmo que ainda não haja notícias em destaque disponíveis.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: true }
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Destaques } }, type: object } }
-                  message: { type: string, example: 'Notícias em destaque carregadas com sucesso.' }
+                  success: { description: "Booleano com valor de 'true' indicando sucesso na operação.", type: boolean, example: true }
+                  data: { oneOf: [{ description: 'Array de objetos com informações das notícias em destaque disponíveis, se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia com mínimo de 10 e máximo de 100 caracteres.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia com mínimo de 100 e máximo de 150 caracteres.', type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { description: 'Caminho para a imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data e hora da publicação da notícia em formato brasileiro.', type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Destaques } }, type: object } }, { description: 'String vazia caso não haja notícias em destaque disponíveis.', type: string, example: '' }] }
+                  message: { oneOf: [{ description: 'Mensagem de sucesso caso haja notícias em destaque disponíveis.', type: string, example: 'Notícias em destaque carregadas com sucesso.' }, { description: 'Mensagem indicando que não há notícias em destaque disponíveis.', type: string, example: 'Não há notícias em destaque disponíveis no momento.' }] }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -65,9 +65,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Acesso negado.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado.', type: string, example: 'Acesso negado.' }
                 type: object
         '503':
           description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
@@ -75,27 +75,27 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Serviço indisponível.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { oneOf: [{ description: 'Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.', type: string, example: 'Serviço indisponível.' }, { description: 'Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias.', type: string, example: 'Erro ao carregar notícias.' }] }
                 type: object
   /api/news/regular:
     get:
       tags:
         - Notícias
       summary: 'Retorna todas as notícias regulares disponíveis'
-      description: 'Essa API retorna uma lista de todas as notícias regulares disponíveis.'
+      description: 'API responsável por retornar todas as notícias regulares disponíveis, caso haja alguma..'
       operationId: getRegularAvailable
       responses:
         '200':
-          description: 'Sucesso na operação, mesmo que ainda não haja notícias regulares cadastradas ou disponíveis.'
+          description: 'Sucesso na operação, mesmo que ainda não haja notícias regulares disponíveis.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: true }
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, title: { type: string, maxLength: 100, example: 'Título da notícia' }, summary: { type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { type: string, example: Notícias } }, type: object } }
-                  message: { type: string, example: 'Notícias regulares carregadas com sucesso.' }
+                  success: { description: "Booleano com valor de 'true' indicando sucesso na operação.", type: boolean, example: true }
+                  data: { oneOf: [{ description: 'Array de objetos com informações das notícias regulares disponíveis, se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia com mínimo de 10 e máximo de 100 caracteres.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia com mínimo de 100 e máximo de 150 caracteres.', type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { description: 'Caminho para a imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data e hora da publicação da notícia em formato brasileiro.', type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object } }, { description: 'String vazia caso não haja notícias regulares disponíveis.', type: string, example: '' }] }
+                  message: { oneOf: [{ description: 'Mensagem de sucesso caso haja notícias regulares disponíveis.', type: string, example: 'Notícias regulares carregadas com sucesso.' }, { description: 'Mensagem indicando que não há notícias regulares disponíveis.', type: string, example: 'Não há notícias regulares disponíveis no momento.' }] }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -103,9 +103,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Acesso negado.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado.', type: string, example: 'Acesso negado.' }
                 type: object
         '503':
           description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
@@ -113,16 +113,16 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Serviço indisponível.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { oneOf: [{ description: 'Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.', type: string, example: 'Serviço indisponível.' }, { description: 'Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias.', type: string, example: 'Erro ao carregar notícias.' }] }
                 type: object
   '/api/news/info/{id}':
     get:
       tags:
         - Notícias
       summary: 'Retorna as informações de uma notícia específica disponível'
-      description: 'Essa API retorna as informações de uma notícia específica, de acordo com o ID.'
+      description: 'API responsável por retornar as informações de uma notícia específica, de acordo com o ID.'
       operationId: getInfoAvailable
       parameters:
         -
@@ -135,14 +135,14 @@ paths:
           example: '10'
       responses:
         '200':
-          description: 'Notícia carregada com sucesso.'
+          description: 'Sucesso na operação.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: true }
-                  data: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia.', type: string, maxLength: 250, example: 'Resumo da notícia A' }, image: { description: 'Imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data de publicação da notícia.', type: string, format: date-time, example: '2024-08-12T14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object }
-                  message: { type: string, example: 'Notícia carregada com sucesso.' }
+                  success: { description: "Booleano com valor de 'true' indicando sucesso na operação.", type: boolean, example: true }
+                  data: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia com mínimo de 10 e máximo de 100 caracteres.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia com mínimo de 100 e máximo de 150 caracteres.', type: string, maxLength: 250, example: 'Resumo da notícia' }, body: { description: 'Corpo da notícia com tags HTML', type: string, example: '<p>Corpo da notícia</p>' }, image: { description: 'Caminho para a imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data e hora da publicação da notícia em formato brasileiro.', type: string, format: date-time, example: '12/08/2024 14:00:00' } }, type: object }
+                  message: { description: 'Mensagem de sucesso indicando que a notícia foi encontrada.', type: string, example: 'Notícia carregada com sucesso.' }
                 type: object
         '400':
           description: 'Parâmetro de notícia inválido ou não informado. Ocorre se ID enviado como parâmetro for não numérico ou vazio.'
@@ -150,19 +150,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Parâmetro de notícia inválido ou não informado.' }
-                type: object
-        '404':
-          description: 'Notícia não está disponível. Ocorre quando ID enviado como parâmetro não corresponde a uma notícia disponível.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Notícia não está disponível.' }
+                  success: { description: "Booleano com o valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia uma vez que não há dados para retornar', type: string, example: '' }
+                  message: { description: 'Mensagem de erro indicando algum problema com o ID enviado como parâmetro.', type: string, example: 'Parâmetro de notícia inválido ou não informado.' }
                 type: object
         '401':
           description: 'Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.'
@@ -170,9 +160,19 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Acesso negado.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de erro indicando que a requisição foi feita por um servidor não autorizado.', type: string, example: 'Acesso negado.' }
+                type: object
+        '404':
+          description: 'Notícia não está disponível. Ocorre quando ID enviado como parâmetro não corresponde a uma notícia disponível.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de erro indicando que não há notícia disponível correspondente ao ID enviado como parâmetro.', type: string, example: 'Notícia não está disponível.' }
                 type: object
         '503':
           description: 'Serviço indisponível ou erro ao carregar notícia. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
@@ -180,16 +180,16 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Serviço indisponível.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { oneOf: [{ description: 'Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.', type: string, example: 'Serviço indisponível.' }, { description: 'Mensagem de erro ao carregar notícia, indicando que houve algum problema com a query que retorna os dados da notícia.', type: string, example: 'Erro ao carregar notícias.' }] }
                 type: object
   '/api/news/search/{searched}':
     get:
       tags:
         - Notícias
       summary: 'Retorna todas as notícias disponíveis correspondentes à busca'
-      description: 'Essa API retorna uma lista de todas as notícias disponíveis correspondentes à busca.'
+      description: 'API responsável por retornar as informações de todas as notícias disponíveis correspondentes à busca.'
       operationId: search
       parameters:
         -
@@ -202,14 +202,14 @@ paths:
           example: 'Título da notícia B'
       responses:
         '200':
-          description: 'Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.'
+          description: 'Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícias disponíveis.'
           content:
             application/json:
               schema:
                 properties:
-                  success: { description: 'Booleano que indica se houve ou não sucesso na operação.', type: boolean, example: true }
-                  data: { oneOf: [{ description: 'Array de objetos com as informações das notícias se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia.', type: string, maxLength: 250, example: 'Resumo da notícia A' }, image: { description: 'Imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data de publicação da notícia.', type: string, format: date-time, example: '2024-08-12T14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object } }, { description: 'String vazia se não houver notícias cadastradas ou disponíveis', type: string, example: '' }] }
-                  message: { type: string, example: 'Notícias correspondentes à busca carregadas com successo.' }
+                  success: { description: "Booleano o com valor de 'true' indicando sucesso na operação.", type: boolean, example: true }
+                  data: { oneOf: [{ description: 'Array de objetos com as informações das notícias correspondentes à busca, se houver alguma.', type: array, items: { properties: { id: { description: 'Identificador da notícia.', type: integer, example: 1 }, title: { description: 'Título da notícia com mínimo de 10 e máximo de 100 caracteres.', type: string, maxLength: 100, example: 'Título da notícia A' }, summary: { description: 'Resumo da notícia com mínimo de 100 e máximo de 150 caracteres.', type: string, maxLength: 250, example: 'Resumo da notícia' }, image: { description: 'Caminho para a imagem principal da notícia.', type: string, example: 'https://compras/image/news/default-image-path.svg' }, date: { description: 'Data e hora da publicação da notícia em formato brasileiro.', type: string, format: date-time, example: '12/08/2024 14:00:00' }, category: { description: 'Categoria da notícia.', type: string, example: Notícias } }, type: object } }, { description: 'String vazia se não houver correspondência entre o parâmetro de busca e as notícias disponíveis', type: string, example: '' }] }
+                  message: { oneOf: [{ description: 'Mensagem de sucesso caso haja alguma notícia disponível correspondente ao parâmetro de busca.', type: string, example: 'Notícias correspondentes à busca carregadas com successo.' }, { description: 'Mensagem indicando que não há notícias disponíveis correspondentes ao parâmetro de busca.', type: string, example: 'Não há notícias correspondentes à busca.' }] }
                 type: object
         '400':
           description: 'Parâmetro de busca inválido ou não informado. Ocorre quando o parâmetro de busca for vazio.'
@@ -227,9 +227,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Acesso negado.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { description: 'Mensagem de erro indicando que a requisição foi feita por um servidor não autorizado.', type: string, example: 'Acesso negado.' }
                 type: object
         '503':
           description: 'Serviço indisponível ou erro ao carregar notícias. Ocorre em caso de falha na conexão com o banco de dados ou na execução de uma consulta.'
@@ -237,9 +237,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  success: { type: boolean, example: false }
-                  data: { type: string, example: '' }
-                  message: { type: string, example: 'Serviço indisponível.' }
+                  success: { description: "Booleano com valor de 'false' indicando erro na operação.", type: boolean, example: false }
+                  data: { description: 'String vazia, uma vez que não há dados para retonar.', type: string, example: '' }
+                  message: { oneOf: [{ description: 'Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.', type: string, example: 'Serviço indisponível.' }, { description: 'Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias.', type: string, example: 'Erro ao carregar notícias.' }] }
                 type: object
 tags:
   -

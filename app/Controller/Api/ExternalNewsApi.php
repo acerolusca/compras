@@ -149,45 +149,60 @@ class ExternalNewsApi
      * @OA\Get(
      *     path="/api/news/all",
      *     summary="Retorna todas as notícias cadastradas disponíveis",
-     *     description="Em caso de sucesso e se houver notícias cadastradas disponíveis, essa API as retorna.",
+     *     description="API responsável por retornar todas as notícias cadastradas disponíveis, caso haja alguma.",
      *     operationId="getAllAvailable",
      *     tags={"Notícias"},
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.",
+     *         description="Sucesso na operação, mesmo se não houver notícias cadastradas disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=true
+     *                 example=true,
+     *                 description="Booleano com valor de 'true' indicando sucesso na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 oneOf={
      *                     @OA\Schema(
      *                         type="array",
+     *                         description="Array de objetos com informações das notícias cadastradas disponíveis, se houver alguma.",
      *                         @OA\Items(
      *                             type="object",
-     *                             @OA\Property(property="id", type="integer", example=1),
-     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
-     *                             @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00Z"),
-     *                             @OA\Property(property="category", type="string", example="Notícias")
+     *                             @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia com mínimo de 10 e máximo de 100 caracteres."),
+     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia", description="Resumo da notícia com mínimo de 100 e máximo de 150 caracteres."),
+     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Caminho para a imagem principal da notícia."),
+     *                             @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00", description="Data e hora da publicação da notícia em formato brasileiro."),
+     *                             @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
      *                         )
      *                     ),
      *                     @OA\Schema(
      *                         type="string",
-     *                         example=""
+     *                         example="",
+     *                         description="String vazia caso não haja notícias cadastradas disponíveis."
      *                     )
      *                 }
      *             ),
+     * 
+     *             
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Notícias correspondentes à busca carregadas com sucesso."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Notícias carregadas com sucesso.",
+     *                         description="Mensagem de sucesso caso haja notícias cadastradas disponíveis.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Não há notícias disponíveis no momento.",
+     *                         description="Mensagem indicando que não há notícias cadastradas disponíveis."
+     *                     )
+     *                 }
      *             )
      *         )
      *     ),
@@ -201,17 +216,20 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Acesso negado."
+     *                 example="Acesso negado.",
+     *                 description="Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado."
      *             )
      *         )
      *     ),
@@ -225,17 +243,29 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Serviço indisponível."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Serviço indisponível.",
+     *                         description="Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Erro ao carregar notícias.",
+     *                         description="Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias."
+     *                     )
+     *                 }                
      *             )
      *         )
      *     )
@@ -276,37 +306,58 @@ class ExternalNewsApi
      * @OA\Get(
      *     path="/api/news/highlighted",
      *     summary="Retorna todas as notícias em destaque disponíveis",
-     *     description="Essa API retorna uma lista de todas as notícias em destaque disponíveis.",
+     *     description="API responsável por retornar todas as notícias em destaque disponíveis, caso haja alguma.",
      *     operationId="getHighlightedAvailable",
      *     tags={"Notícias"},
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Sucesso na operação, mesmo que ainda não haja notícias em destaque cadastradas ou disponíveis.",
+     *         description="Sucesso na operação, mesmo que ainda não haja notícias em destaque disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=true
+     *                 example=true,
+     *                 description="Booleano com valor de 'true' indicando sucesso na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                     @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                     @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
-     *                     @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00"),
-     *                     @OA\Property(property="category", type="string", example="Destaques")
-     *                 ),
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="array",
+     *                         description="Array de objetos com informações das notícias em destaque disponíveis, se houver alguma.",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia com mínimo de 10 e máximo de 100 caracteres."),
+     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia", description="Resumo da notícia com mínimo de 100 e máximo de 150 caracteres."),
+     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Caminho para a imagem principal da notícia."),
+     *                             @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00", description="Data e hora da publicação da notícia em formato brasileiro."),
+     *                             @OA\Property(property="category", type="string", example="Destaques", description="Categoria da notícia.")
+     *                         )
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="",
+     *                         description="String vazia caso não haja notícias em destaque disponíveis."
+     *                     )
+     *                 }
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Notícias em destaque carregadas com sucesso."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Notícias em destaque carregadas com sucesso.",
+     *                         description="Mensagem de sucesso caso haja notícias em destaque disponíveis.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Não há notícias em destaque disponíveis no momento.",
+     *                         description="Mensagem indicando que não há notícias em destaque disponíveis."
+     *                     )
+     *                 }
      *             )
      *         )
      *     ),
@@ -320,17 +371,20 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Acesso negado."
+     *                 example="Acesso negado.",
+     *                 description="Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado."
      *             )
      *         )
      *     ),
@@ -344,17 +398,29 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Serviço indisponível."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Serviço indisponível.",
+     *                         description="Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Erro ao carregar notícias.",
+     *                         description="Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias."
+     *                     )
+     *                 }                
      *             )
      *         )
      *     )
@@ -396,37 +462,58 @@ class ExternalNewsApi
      * @OA\Get(
      *     path="/api/news/regular",
      *     summary="Retorna todas as notícias regulares disponíveis",
-     *     description="Essa API retorna uma lista de todas as notícias regulares disponíveis.",
+     *     description="API responsável por retornar todas as notícias regulares disponíveis, caso haja alguma..",
      *     operationId="getRegularAvailable",
      *     tags={"Notícias"},
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Sucesso na operação, mesmo que ainda não haja notícias regulares cadastradas ou disponíveis.",
+     *         description="Sucesso na operação, mesmo que ainda não haja notícias regulares disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=true
+     *                 example=true,
+     *                 description="Booleano com valor de 'true' indicando sucesso na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia"),
-     *                     @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia"),
-     *                     @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg"),
-     *                     @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00"),
-     *                     @OA\Property(property="category", type="string", example="Notícias")
-     *                 ),
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="array",
+     *                         description="Array de objetos com informações das notícias regulares disponíveis, se houver alguma.",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia com mínimo de 10 e máximo de 100 caracteres."),
+     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia", description="Resumo da notícia com mínimo de 100 e máximo de 150 caracteres."),
+     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Caminho para a imagem principal da notícia."),
+     *                             @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00", description="Data e hora da publicação da notícia em formato brasileiro."),
+     *                             @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     *                         )
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="",
+     *                         description="String vazia caso não haja notícias regulares disponíveis."
+     *                     )
+     *                 }
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Notícias regulares carregadas com sucesso."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Notícias regulares carregadas com sucesso.",
+     *                         description="Mensagem de sucesso caso haja notícias regulares disponíveis.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Não há notícias regulares disponíveis no momento.",
+     *                         description="Mensagem indicando que não há notícias regulares disponíveis."
+     *                     )
+     *                 }
      *             )
      *         )
      *     ),
@@ -440,17 +527,20 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Acesso negado."
+     *                 example="Acesso negado.",
+     *                 description="Mensagem de acesso negado indicando que a requisição foi feita por um servidor não autorizado."
      *             )
      *         )
      *     ),
@@ -464,17 +554,29 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Serviço indisponível."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Serviço indisponível.",
+     *                         description="Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Erro ao carregar notícias.",
+     *                         description="Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias."
+     *                     )
+     *                 }                
      *             )
      *         )
      *     )
@@ -517,7 +619,7 @@ class ExternalNewsApi
      * @OA\Get(
      *     path="/api/news/info/{id}",
      *     summary="Retorna as informações de uma notícia específica disponível",
-     *     description="Essa API retorna as informações de uma notícia específica, de acordo com o ID.",
+     *     description="API responsável por retornar as informações de uma notícia específica, de acordo com o ID.",
      *     operationId="getInfoAvailable",
      *     tags={"Notícias"},
      * 
@@ -532,28 +634,31 @@ class ExternalNewsApi
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Notícia carregada com sucesso.",
+     *         description="Sucesso na operação.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=true
+     *                 example=true,
+     *                 description="Booleano com valor de 'true' indicando sucesso na operação."                 
      *             ),
+     * 
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
-     *                 @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia."),
-     *                 @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia A", description="Resumo da notícia."),
-     *                 @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Imagem principal da notícia."),
-     *                 @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00", description="Data de publicação da notícia."),
-     *                 @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     *                 @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia com mínimo de 10 e máximo de 100 caracteres."),
+     *                 @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia", description="Resumo da notícia com mínimo de 100 e máximo de 150 caracteres."),
+     *                 @OA\Property(property="body", type="string", example="<p>Corpo da notícia</p>", description="Corpo da notícia com tags HTML"), 
+     *                 @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Caminho para a imagem principal da notícia."),
+     *                 @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00", description="Data e hora da publicação da notícia em formato brasileiro."),
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Notícia carregada com sucesso."
+     *                 example="Notícia carregada com sucesso.",
+     *                 description="Mensagem de sucesso indicando que a notícia foi encontrada."
      *             )
      *         )
      *     ),
@@ -566,17 +671,46 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com o valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia uma vez que não há dados para retornar"
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Parâmetro de notícia inválido ou não informado."
+     *                 example="Parâmetro de notícia inválido ou não informado.",
+     *                 description="Mensagem de erro indicando algum problema com o ID enviado como parâmetro."
+     *             )
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="string",
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Acesso negado.",
+     *                 description="Mensagem de erro indicando que a requisição foi feita por um servidor não autorizado."
      *             )
      *         )
      *     ),
@@ -589,40 +723,20 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."               
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Notícia não está disponível."
-     *             )
-     *         )
-     *     ),
-     *     
-     *     @OA\Response(
-     *         response=401,
-     *         description="Acesso negado. Ocorre se a requisição for originada de um servidor não autorizado.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="string",
-     *                 example=""
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Acesso negado."
+     *                 example="Notícia não está disponível.",
+     *                 description="Mensagem de erro indicando que não há notícia disponível correspondente ao ID enviado como parâmetro."
      *             )
      *         )
      *     ),
@@ -636,17 +750,29 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
      *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Serviço indisponível."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Serviço indisponível.",
+     *                         description="Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Erro ao carregar notícias.",
+     *                         description="Mensagem de erro ao carregar notícia, indicando que houve algum problema com a query que retorna os dados da notícia."
+     *                     )
+     *                 }                
      *             )
      *         )
      *     )
@@ -688,7 +814,7 @@ class ExternalNewsApi
      * @OA\Get(
      *     path="/api/news/search/{searched}",
      *     summary="Retorna todas as notícias disponíveis correspondentes à busca",
-     *     description="Essa API retorna uma lista de todas as notícias disponíveis correspondentes à busca.",
+     *     description="API responsável por retornar as informações de todas as notícias disponíveis correspondentes à busca.",
      *     operationId="search",
      *     tags={"Notícias"},
      * 
@@ -703,42 +829,54 @@ class ExternalNewsApi
      *     
      *     @OA\Response(
      *         response=200,
-     *         description="Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícia disponível.",
+     *         description="Sucesso na operação, mesmo que não seja encontrada correspondência entre parâmetro de busca e notícias disponíveis.",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
      *                 example=true,
-     *                 description="Booleano que indica se houve ou não sucesso na operação."
+     *                 description="Booleano o com valor de 'true' indicando sucesso na operação."
      *             ),
-     *         @OA\Property(
-     *             property="data",
-     *             oneOf={
-     *                 @OA\Schema(
-     *                     type="array",
-     *                     description="Array de objetos com as informações das notícias se houver alguma.",
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
-     *                         @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia."),
-     *                         @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia A", description="Resumo da notícia."),
-     *                         @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Imagem principal da notícia."),
-     *                         @OA\Property(property="date", type="string", format="date-time", example="2024-08-12T14:00:00", description="Data de publicação da notícia."),
-     *                         @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     * 
+     *             @OA\Property(
+     *                 property="data",
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="array",
+     *                         description="Array de objetos com as informações das notícias correspondentes à busca, se houver alguma.",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1, description="Identificador da notícia."),
+     *                             @OA\Property(property="title", type="string", maxLength=100, example="Título da notícia A", description="Título da notícia com mínimo de 10 e máximo de 100 caracteres."),
+     *                             @OA\Property(property="summary", type="string", maxLength=250, example="Resumo da notícia", description="Resumo da notícia com mínimo de 100 e máximo de 150 caracteres."),
+     *                             @OA\Property(property="image", type="string", example="https://compras/image/news/default-image-path.svg", description="Caminho para a imagem principal da notícia."),
+     *                             @OA\Property(property="date", type="string", format="date-time", example="12/08/2024 14:00:00", description="Data e hora da publicação da notícia em formato brasileiro."),
+     *                             @OA\Property(property="category", type="string", example="Notícias", description="Categoria da notícia.")
+     *                         )
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="",
+     *                         description="String vazia se não houver correspondência entre o parâmetro de busca e as notícias disponíveis"
      *                     )
-     *                 ),
-     *                 @OA\Schema(
-     *                     type="string",
-     *                     example="",
-     *                     description="String vazia se não houver notícias cadastradas ou disponíveis"
-     *                 )
-     *             }
-     *         ),
+     *                 }
+     *             ),
+     * 
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Notícias correspondentes à busca carregadas com successo.",
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Notícias correspondentes à busca carregadas com successo.",
+     *                         description="Mensagem de sucesso caso haja alguma notícia disponível correspondente ao parâmetro de busca.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Não há notícias correspondentes à busca.",
+     *                         description="Mensagem indicando que não há notícias disponíveis correspondentes ao parâmetro de busca.",
+     *                     )
+     *                 }           
      *             )
      *         )
      *     ),
@@ -776,17 +914,20 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Acesso negado."
+     *                 example="Acesso negado.",
+     *                 description="Mensagem de erro indicando que a requisição foi feita por um servidor não autorizado."
      *             )
      *         )
      *     ),
@@ -800,17 +941,29 @@ class ExternalNewsApi
      *             @OA\Property(
      *                 property="success",
      *                 type="boolean",
-     *                 example=false
+     *                 example=false,
+     *                 description="Booleano com valor de 'false' indicando erro na operação."
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="string",
-     *                 example=""
+     *                 example="",
+     *                 description="String vazia, uma vez que não há dados para retonar."
      *             ),
      *             @OA\Property(
      *                 property="message",
-     *                 type="string",
-     *                 example="Serviço indisponível."
+     *                 oneOf={
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Serviço indisponível.",
+     *                         description="Mensagem de serviço indisponível, indicando que houve falha na conexão com o banco de dados.",
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="Erro ao carregar notícias.",
+     *                         description="Mensagem de erro ao carregar notícias, indicando que houve algum problema com a query que retorna os dados das notícias."
+     *                     )
+     *                 }                
      *             )
      *         )
      *     )

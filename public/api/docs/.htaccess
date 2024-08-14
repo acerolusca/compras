@@ -1,6 +1,6 @@
 <Files "*">
     AuthType Basic
     AuthName "Restrito"
-    AuthUserFile "C:/Apache2.4.58/bin/swagger-compras.htpasswd"
+    AuthUserFile "C:/Apache2.4.58/bin/swagger-api-compras.htpasswd"
     Require valid-user
 </Files>
