@@ -256,9 +256,13 @@ class UserService
      * @return void
      */
     public function edit(array $userEditData): void
-    {
-
+    {   
+        //INICIA TRANSAÇÃO NA TABELA DE USUÁRIOS
+        $this->userRepository->getDb()->beginTransaction();
+        
+        //INICIA TRANSAÇÃO NA TABELA DE NOTÍCIAS
         $newsRepository = new NewsRepository(new Database("news"));
+        $newsRepository->getDb()->beginTransaction();
 
         try {
             //GARANTE QUE A CHAVE "editLastCpf" ESTEJA DEFINIDA EM $userEditData
@@ -282,7 +286,7 @@ class UserService
 
             // ATUALIZA USUÁRIO
             $this->setDataOnUserFound($userEditData, $userFound);
-            $this->userRepository->getDb()->beginTransaction();
+
             $this->userRepository->update($userFound, $lastCpf);
 
 
@@ -314,8 +318,13 @@ class UserService
      * @return boolean (Indica se usuário continua logado ou não)
      */
     public function editProfile(array $userProfileData): bool {
+        
+        //INICIA TRANSAÇÃO NA TABELA DE USUÁRIOS
+        $this->userRepository->getDb()->beginTransaction();
 
+        //INICIA TRANSAÇÃO NA TABELA DE NOTÍCIAS
         $newsRepository = new NewsRepository(new Database("news"));
+        $newsRepository->getDb()->beginTransaction();
 
         try {
 
@@ -351,12 +360,10 @@ class UserService
             
             // ATUALIZA USUÁRIO
             $this->setDataOnUserFound($userProfileData, $userFound);
-            $this->userRepository->getDb()->beginTransaction();
             $this->userRepository->update($userFound, $lastCpf);
 
             // ATUALIZA O AUTOR NA TABELA NOTÍCIAS QUANDO UM USUÁRIO É EDITADO
             $newUsername = $userFound->getUsername();
-            $newsRepository->getDb()->beginTransaction();
             $newsRepository->updateAuthor($lastUsername, $newUsername);
 
             //COMITTA AS ALTERAÇÕES NO BANCO
@@ -376,6 +383,7 @@ class UserService
             return true;
 
         } catch (Exception $e) {
+
             // DESFAZ AS ALTERAÇÕES NO BANCO
             $this->userRepository->getDb()->rollBack();
             $newsRepository->getDb()->rollBack();

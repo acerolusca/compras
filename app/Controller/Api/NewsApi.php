@@ -81,9 +81,6 @@ class NewsApi
 
             self::initialize();
 
-            var_dump($request->getPostVars());
-            exit;
-
             $newsRegisterData = $request->getPostVars();
             $newsRegisterData["imageTmpName"] = $_FILES["registerImage"]["tmp_name"] ?? "";
 

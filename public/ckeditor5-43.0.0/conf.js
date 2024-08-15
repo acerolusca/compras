@@ -28,9 +28,11 @@ import {
 	SimpleUploadAdapter,
 	Underline,
 	Undo
-} from 'ckeditor5';
+} from "ckeditor5";
 
-import translations from 'ckeditor5/translations/pt-br.js';
+
+import translations from "pt-br";
+
 
 window.ClassicEditor = ClassicEditor;
 

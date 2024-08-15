@@ -500,16 +500,6 @@
     const formData = new FormData(form);
 
 
-    let title = document.querySelector("#editTitle").value;
-    title = title.length > 100 ? title.substring(0, 100) : title;
-    formData.set("editTitle", title);
-
-
-    let summary = document.querySelector("#editSummary").value;
-    summary = summary.length > 150 ? title.substring(0, 150) : summary;
-    formData.set("editSummary", summary);
-
-
     let body = editEditor.getData({ trim: "empty" });
     //let body = decodeHtmlEntities(editEditor.getData({trim: "empty"}));
     //body = body.replace(/style="[^"]*"/, "");

@@ -54,7 +54,7 @@ class View {
         //CHAVES DO ARRAY DE VARIÁVEIS
         $keys = array_keys($vars);
         $keys = array_map(function($key){
-            return "{{" . $key. "}}";
+            return "{{" . $key . "}}";
         }, $keys);
 
 

@@ -174,7 +174,7 @@ class News
             }
 
 
-            if (strlen($title) < 10 || strlen($title) > 100) {
+            if (mb_strlen($title) < 10 || mb_strlen($title) > 100) {
                 throw new Exception("<strong>Título da notícia</strong> deve ter entre 10 e 100 catacteres.", 400);
             }
 
@@ -230,7 +230,7 @@ class News
             }
 
 
-            if (strlen($summary) < 100 || strlen($summary) > 150) {
+            if (mb_strlen($summary) < 100 || mb_strlen($summary) > 150) {
                 throw new Exception("<strong>Resumo da notícia</strong> deve ter entre 100 e 150 caracteres.", 400);
             }
 
