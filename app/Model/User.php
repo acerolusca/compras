@@ -839,7 +839,7 @@ class User
     try {
 
       //EXCLUI A IMAGEM ATUAL, SE EXISTIR
-      if ($currentName != "default-image-path.svg" && file_exists("$path/$currentName")) {
+      if ($currentName != getenv("DEFAULT_USER_IMAGE_PATH") && file_exists("$path/$currentName")) {
         unlink("$path/$currentName");
       }
       //GERA UM NOME RANDÔMICO PARA A IMAGEM

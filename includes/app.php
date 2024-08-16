@@ -22,12 +22,10 @@ Database::config(
 );
 
 
-//DEFINE A CONSTANTE DE URL
-define("URL",getenv("URL"));
-
 
 //DEFINE AS CONSTANTES DAS PÁGINAS
 View::init([
-    "URL" => URL
+    "URL" => getenv("URL"),
+    "DEFAULT_NEWS_IMAGE_PATH" => getenv("DEFAULT_NEWS_IMAGE_PATH")
 ]);
 

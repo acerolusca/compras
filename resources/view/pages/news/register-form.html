@@ -29,7 +29,7 @@
           class="d-flex flex-column justify-content-around position-relative px-1 px-md-5 py-3">
 
           <div id="registerImageContainer" class="w-100 position-relative rounded overflow-hidden mb-1 ">
-            <img id="registerImagePreview" class="w-100 h-100 shadow-sm" src="/image/news/default-image-path.svg"
+            <img id="registerImagePreview" class="w-100 h-100 shadow-sm" src="/image/news/{{DEFAULT_NEWS_IMAGE_PATH}}"
               alt="Imagem padrão da notícia" style="object-fit: cover;" />
             <span
               class="overlay text-center news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
@@ -633,7 +633,7 @@
 
 
       $('#registerImage').val('');
-      $('#registerImagePreview').attr('src', '/image/news/default-image-path.svg');
+      $('#registerImagePreview').attr('src', '/image/news/{{DEFAULT_NEWS_IAMGE_PATH}}');
       $('#registerTitle').val('');
       $('#registerSummary').val('');
       registerEditor.setData('');

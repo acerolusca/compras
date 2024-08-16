@@ -62,10 +62,10 @@ class NewsService
             $imageTmpName = $newsRegisterData["imageTmpName"];
             if (!empty($imageTmpName)) {
                 $news->validateImage($imageTmpName);
-                $newImageName = $news->saveImage($imageTmpName, "default-image-path.svg");
+                $newImageName = $news->saveImage($imageTmpName, getenv("DEFAULT_NEWS_IMAGE_PATH"));
                 $news->setImagePath($newImageName);
             } else {
-                $news->setImagePath("default-image-path.svg");
+                $news->setImagePath(getenv("DEFAULT_NEWS_IMAGE_PATH"));
             }
 
 
@@ -128,7 +128,7 @@ class NewsService
                 $news = [
                     "id" => $news->getId() ?? "",
                     "title" => $news->getTitle() ?? "",
-                    "imagePath" =>  "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
+                    "imagePath" =>  "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH")),
                     "author" => $news->getAuthor() ?? "",
                     "schedulingDate" =>  explode(" ", $schedulingDate)[0] ?? "",
                     "schedulingTime" => explode(" ", $schedulingDate)[1] ?? "",
@@ -194,7 +194,7 @@ class NewsService
             $newsInfo["title"] = $news->getTitle() ?? "";
             $newsInfo["summary"] = $news->getSummary() ?? "";
             $newsInfo["body"] = $news->getBody() ?? "";
-            $newsInfo["imagePath"] = "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg");
+            $newsInfo["imagePath"] = "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH"));
             $newsInfo["author"] = $news->getAuthor() ?? "";
             $newsInfo["registerDate"] = $news->getRegisterDate() ?? "";
             $newsInfo["schedulingDate"] = $schedulingNotAllowed ? "" : $schedulingDate->format("Y-m-d\TH:i");
@@ -553,7 +553,7 @@ class NewsService
                         "id" => $news->getId() ?? "",
                         "title" => $news->getTitle() ?? "",
                         "summary" => $news->getSummary() ?? "",
-                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
+                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH")),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
                         "category" => $news->getHighlighted() == "yes" ?  "Destaques" : "Notícias"
                     ];
@@ -598,7 +598,7 @@ class NewsService
                         "id" => $news->getId() ?? "",
                         "title" => $news->getTitle() ?? "",
                         "summary" => $news->getSummary() ?? "",
-                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
+                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH")),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
                         "category" => "Notícias"
                     ];
@@ -641,7 +641,7 @@ class NewsService
                         "id" => $news->getId() ?? "",
                         "title" => $news->getTitle() ?? "",
                         "summary" => $news->getSummary() ?? "",
-                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
+                        "image" =>  getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH")),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
                         "category" => "Destaques"
                     ];
@@ -690,7 +690,7 @@ class NewsService
             $newsInfo["title"] = $news->getTitle() ?? "";
             $newsInfo["summary"] = $news->getSummary() ?? "";
             $newsInfo["body"] = $this->addPrefixToImageSrc($news->getBody() ?? "", getenv("URL_IP"));
-            $newsInfo["image"] = getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg");
+            $newsInfo["image"] = getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH"));
             $newsInfo["date"] = $schedulingDate;;
 
             return $newsInfo;
@@ -733,7 +733,7 @@ class NewsService
                         "id" => $news->getId() ?? "",
                         "title" => $news->getTitle() ?? "",
                         "summary" => $news->getSummary() ?? "",
-                        "image" =>   getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? "default-image-path.svg"),
+                        "image" =>   getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH")),
                         "date" =>  $schedulingDate->format("d/m/Y H:i:s"),
                         "category" => "Notícias"
                     ];

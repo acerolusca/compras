@@ -101,7 +101,7 @@ class UserService
             $user->setCpf($userRegisterData["registerCpf"] ?? "");
             $this->ensureIsUnique("cpf", $user->getCpf(), "CPF");
 
-            $user->setImagePath("default-image-path.svg");
+            $user->setImagePath(getenv("DEFAULT_USER_IMAGE_PATH"));
             $user->setPrivilege("editor");
             $user->setRegisterDate((new DateTime())->format("Y-m-d H:i:s"));
             $user->setFirstAccess("yes");
@@ -239,7 +239,7 @@ class UserService
             $userInfo["username"] = $user->getUsername() ?? "";
             $userInfo["email"] = $user->getEmail() ?? "";
             $userInfo["cpf"] = $user->getCpf() ?? "";
-            $userInfo["imagePath"] = $user->getImagePath() ?? "default-image-path.svg";
+            $userInfo["imagePath"] = $user->getImagePath() ?? getenv("DEFAULT_USER_IMAGE_PATH");
 
             return $userInfo;
 

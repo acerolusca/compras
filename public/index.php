@@ -7,7 +7,7 @@ use \App\Core\Middleware\Queue;
 
 
 //INICIA O ROUTER
-$obRouter = new Router(URL);
+$obRouter = new Router(getenv("URL"));
 
 
 
