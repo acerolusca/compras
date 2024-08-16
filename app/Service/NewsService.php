@@ -716,6 +716,8 @@ class NewsService
                 throw new Exception("Parâmetro de busca inválido.", 400);
             }
 
+            $searched = urldecode($searched);
+
             $statement = $this->newsRepository->search($searched);
 
             $newsList = [];

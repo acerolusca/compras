@@ -33,20 +33,16 @@ class RequiredWebsiteOrigin {
 
 
 
-    public function handleTeste($request, $next) {
-
-        $origin = $_SERVER["HTTP_ORIGIN"] ?? "";
-        $referer = $_SERVER["HTTP_REFERER"] ?? "";
-
+    public function handleTewste($request, $next) {
         try {
 
-            throw new Exception(json_encode(["origin" => $origin, "referer" => $referer]), 401);
+            throw new Exception("Loucura", 401);
 
         } catch (Exception $e) { 
 
             $content = json_encode([
                 "success" => false,
-                "data" => "",
+                "data" => $_SERVER,
                 "message" => $e->getMessage()
             ]);
 

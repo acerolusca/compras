@@ -975,7 +975,7 @@ class ExternalNewsApi
     public static function search(string $searched): Response
     {
         try {
-
+        
             self::initialize();
 
             $data = self::$newsService->search($searched);
@@ -989,6 +989,7 @@ class ExternalNewsApi
             ]);
 
             return new Response(200, $response, "application/json");
+
         } catch (Exception $e) {
 
             $response = json_encode([
