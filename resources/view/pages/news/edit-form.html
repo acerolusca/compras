@@ -250,7 +250,6 @@
         reader.onload = function (event) {
           const imageUrl = event.target.result;
           editImageElement.src = imageUrl;
-          //profilePhoto.style.backgroundImage = "url('" + imageUrl + "')";
         };
 
         reader.readAsDataURL(file);
@@ -394,7 +393,7 @@
           }
   
         } else {
-          newsObject["image"] = "/image/news/{{DEFAULT_NEWS_IMAGE_PATH}}";
+          newsObject["image"] = document.getElementById("editImagePreview").src;
         }
     
         // TÍTULO
