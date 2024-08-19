@@ -33,7 +33,7 @@
               alt="Imagem padrão da notícia" style="object-fit: cover;" />
             <span
               class="overlay text-center news-image-overlay position-absolute text-white d-flex align-items-center justify-content-center w-100 h-100">
-              Alterar imagem da notícia <br/> Dimensões recomendadas: 680 x 360 px
+              Alterar imagem da notícia <br /> Dimensões recomendadas: 680 x 360 px
             </span>
             <input id="registerImage" name="registerImage" type="file" style="display: none" />
           </div>
@@ -114,8 +114,12 @@
 
           </div>
 
-          <button id="registerNewsSubmitButton" class="btn btn-primary container-fluid mt-5">Cadastrar
-            notícia</button>
+          <button id="previewRegisterNewsSubmitButton" class="btn btn-warning container-fluid mt-5">Pré-visualizar notícia
+          </button>
+
+          <button id="registerNewsSubmitButton" class="btn btn-primary container-fluid mt-4">Cadastrar
+            notícia
+          </button>
 
         </form>
 
@@ -144,7 +148,7 @@
 
 <!--Create Register News CK Editor-->
 <script type="module">
-  
+
 
   async function createRegisterCkEditor(id) {
     const element = document.getElementById(id);
@@ -159,7 +163,7 @@
 </script>
 
 
- 
+
 <!--Masks Functions-->
 <script>
   //------------------- General Mask for News Inputs -------------------//
@@ -226,7 +230,7 @@
     if (this.value.length > 100) {
       this.value = this.value.substring(0, 100);
     }
-    if (this.value.length > 0 && this.value.length < 10 ) {
+    if (this.value.length > 0 && this.value.length < 10) {
       document.getElementById("registerTitleMessage").style.visibility = "visible";
     } else {
       document.getElementById("registerTitleMessage").style.visibility = "hidden";
@@ -478,6 +482,107 @@
 </script>
 
 
+
+<!--Preview Register News-->
+<script>
+
+  function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+  }
+
+  function transformSchedulingDate(schedulingDate){
+    schedulingDate = schedulingDate.replace(/\T/g, " ") + ":00";
+    const [schedulingDatePart, schedulingTimePart] = schedulingDate.split(" ");
+    const [year, month, day] = schedulingDatePart.split("-");
+    return `${day}/${month}/${year} ${schedulingTimePart}`;
+}
+
+  const previewRegisterNewsSubmitButton = document.querySelector("#previewRegisterNewsSubmitButton");
+
+  previewRegisterNewsSubmitButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+
+    const newsObject = {};
+
+    //IMAGEM
+    const imageInput = document.querySelector("#registerImage");
+
+      if (imageInput.files.length > 0) {
+
+        const image = imageInput.files[0];
+
+        if (image.size <= 5000000) {
+          const readFileAsBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target.result);
+              reader.onerror = () => reject(new Error("Falha ao carregar imagem"));
+              reader.readAsDataURL(file);
+            });
+          };
+  
+          newsObject["image"] = await readFileAsBase64(image);
+
+        } else {
+          newsObject["image"] = "/image/news/{{DEFAULT_NEWS_IMAGE_PATH}}";
+        }
+
+      } else {
+        newsObject["image"] = "/image/news/{{DEFAULT_NEWS_IMAGE_PATH}}";
+      }
+  
+      // TÍTULO
+      newsObject["title"] = document.querySelector("#registerTitle").value;
+  
+      // RESUMO
+      newsObject["summary"] = document.querySelector("#registerSummary").value;
+  
+      // CORPO
+      newsObject["body"] = registerEditor.getData({ trim: "empty" });
+  
+      // DATA
+      const schedulingDateCheckbox = document.querySelector("#registerSchedulingDateCheckbox");
+      const schedulingDate = document.querySelector("#registerSchedulingDate").value; 
+      const now = new Date();
+  
+      newsObject["date"] = !schedulingDateCheckbox.checked || schedulingDate === "" ?
+          `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR')}`:
+          transformSchedulingDate(schedulingDate);
+  
+      // LOCAL STORAGE
+      const uniqueId = generateUniqueId();
+      localStorage.setItem(uniqueId, JSON.stringify(newsObject));
+  
+      // REDIRECIONAMENTO
+      window.open(`/news/preview/${uniqueId}`, "blank");
+
+    } catch (error) {
+        document.getElementById("registerNewsModal").style.display = "block";
+
+        Swal.fire({
+        title: "<h3>Problemas com a pré-visualização!</h3>",
+        html: "<p>Não foi possível carregar a imagem da notícia. Tente novamente mais tarde.</p>",
+        icon: "error",
+        iconHtml: '<i class="fas fa-times-circle text-danger"></i>',
+        backdrop: "rgba(0,0,0,0.7)",
+        background: "#f2f2f2",
+        customClass: {
+          icon: "custom-icon-class",
+          confirmButton: "btn-primary"
+        },
+      }).then(() => {
+        document.getElementById("registerNewsModal").style.display = "block";
+      });
+
+    }
+  });
+
+</script>
+
+
+
 <!--Submit Register News Form-->
 <script>
 
@@ -562,11 +667,6 @@
 
 
     let body = registerEditor.getData({ trim: "empty" });
-    //let body = decodeHtmlEntities(registerEditor.getData({trim: "empty"}));
-    //body = body.replace(/style="[^"]*"/, "");
-    //body = body.replace(/class="[^"]*"/, "");
-    //body = body.replace(/width="[^"]*"/, "");
-    //body = body.replace(/height="[^"]*"/, "");
     formData.set("registerBody", body);
 
     const registerHighlighted = document.querySelector("#registerHighlighted");
@@ -633,7 +733,7 @@
 
 
       $('#registerImage').val('');
-      $('#registerImagePreview').attr('src', '/image/news/{{DEFAULT_NEWS_IAMGE_PATH}}');
+      $('#registerImagePreview').attr('src', '/image/news/{{DEFAULT_NEWS_IMAGE_PATH}}');
       $('#registerTitle').val('');
       $('#registerSummary').val('');
       registerEditor.setData('');

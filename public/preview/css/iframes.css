@@ -1,0 +1,473 @@
+/* styles.css */
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style: none;
+  font-family: "Public Sans", sans-serif;
+  text-wrap: wrap;
+}
+
+:root {
+  --white: #ffffff;
+  --black: #3c3c3c;
+  --gray-1: #747474;
+  --gray-2: #c5c5c5;
+  --gray-3: #f8f9fa;
+  --blue: #224282;
+  --light-blue: #1e59a5;
+  --dark-blue: #143169;
+
+  --background: #ffffff;
+  --secondary-background: #f8f9fa;
+  --text: #3c3c3c;
+}
+
+a {
+  cursor: pointer;
+  color: var(--light-blue);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+iframe,
+.PaginaBorda {
+  width: 100% !important;
+}
+
+
+
+body {
+  background: transparent !important;
+  width: 100% !important;
+  overflow: hidden;
+}
+
+#body {
+  display: flex !important;
+  justify-content: center !important;
+  float: unset !important;
+  width: unset !important;
+  min-height: unset !important;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 1vw;
+  border-spacing: 0;
+}
+
+.TabDadosFundo {
+  border: 1px solid var(--gray-2);
+  border-top: 3px solid var(--blue);
+  border-bottom: 3px solid var(--blue);
+}
+
+.TabPainelFundo tr {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/*
+.TabPainelFundo tr .tabela-date {
+  width: 50%;
+}*/
+
+.PaginaRadio tbody td {
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.5em;
+}
+
+.PaginaRadio tbody td label {
+  font-size: 1.4vw;
+}
+
+.PaginaRadio tbody td input {
+  width: unset;
+}
+
+.PaginaRadio tbody {
+  row-gap: 0.5em;
+  column-gap: 2vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.tabela-select-radio {
+  width: 50% !important;
+}
+
+.TabDadosCabecalho {
+  background-color: var(--secondary-background);
+  color: var(--text);
+  padding: 0.5em;
+  border: 1px solid var(--gray-2);
+  font-size: 1.1vw;
+}
+
+td {
+  background-color: var(--background);
+  color: var(--text);
+  padding: 0.5em;
+  border: 1px solid var(--gray-2);
+  align-content: center;
+}
+
+.TabDadosPaginacao {
+  margin-left: auto;
+  margin-right: auto;
+  text-decoration: none;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--gray-2);
+  border-collapse: separate;
+}
+.TabDadosPaginacao td {
+  height: 1.5em;
+  padding: 0.5em;
+}
+
+.TabDadosPaginacao td,
+.TabelaFormCampoLabel td,
+.PaginaLink tr {
+  border: 0;
+}
+
+.PaginaLink td a {
+  color: var(--text);
+}
+
+.PaginaLink td {
+  width: 1.5em;
+  text-align: center;
+  border-left: 1px solid var(--gray-2);
+  border-right: 1px solid var(--gray-2);
+  cursor: pointer;
+}
+
+.PaginaLink td a:hover,
+.PaginaLink span:hover {
+  text-decoration: none;
+}
+
+.PaginaLink td:hover {
+  background-color: var(--gray-3);
+}
+
+.TabDadosPaginacao td:hover {
+  background-color: var(--gray-3);
+}
+
+.TabDadosPaginacao a:hover {
+  text-decoration: none !important;
+}
+
+fieldset {
+  border: 1px solid var(--gray-2);
+  border-radius: 2px;
+  padding: 2vw;
+  background-color: var(--white);
+}
+
+fieldset legend {
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 1vw;
+  font-size: 1.6vw;
+  border-radius: 5px;
+}
+
+.TabelaFormCampoLabel {
+  border: 0;
+  width: auto;
+  text-align: unset;
+}
+
+fieldset tbody {
+  /*
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8vw;
+  row-gap: 1vw;
+  */
+
+  display: flex;
+  flex-direction: row;
+  column-gap: 2vw;
+}
+
+fieldset tr {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 1vw;
+}
+
+fieldset td {
+  padding: 0;
+}
+
+fieldset td input,
+fieldset td select {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  padding-block: unset;
+  padding-inline: unset;
+  padding: 0.5em;
+  font-size: 1.2vw;
+
+  border: 1px solid var(--gray-2);
+  border-radius: 5px;
+  transform: none;
+}
+
+.PaginaRotuloLabel {
+  font-size: 1.4vw;
+  text-wrap: nowrap;
+}
+
+fieldset td input:focus,
+fieldset td select:focus {
+  outline: none;
+  /*outline: 2px solid var(--blue);*/
+  font-size: 1.2vw;
+  box-sizing: border-box;
+  transform: none;
+}
+
+input:-internal-autofill-selected {
+  background-color: var(--background) !important;
+}
+
+.PaginaButton {
+  appearance: none;
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 1vw;
+  font-size: 1.2vw;
+  border-radius: 5px;
+  outline: 0;
+  border: 0;
+  margin: 0.5em 0.5em 2em 0em;
+  cursor: pointer;
+}
+
+.PaginaButton:hover {
+  background-color: var(--dark-blue);
+}
+
+.rich-calendar-exterior {
+  position: absolute;
+  z-index: 99;
+  top: 30px;
+  left: unset !important;
+}
+
+.rich-calendar-exterior tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  border-color: inherit;
+  border: 1px solid var(--gray-2);
+}
+
+.rich-calendar-exterior tr {
+  display: table-row;
+}
+
+.rich-calendar-exterior td {
+  border-collapse: separate;
+  text-indent: initial;
+  border-spacing: 2px;
+  padding: 0.6em;
+  border: 1px solid var(--gray-2);
+}
+
+.rich-calendar-footer,
+.rich-calendar-header {
+  background-color: var(--gray-3);
+}
+
+.rich-calendar-header td {
+  background-color: var(--blue);
+  color: var(--white);
+  font-weight: 500;
+  border: 0;
+  text-align: center;
+}
+
+.rich-calendar-tool-close {
+  border-left: 1px solid var(--gray-3) !important;
+}
+
+.tabela-date,
+.tabela-date span {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.tabela-date {
+  justify-content: space-between;
+}
+
+.tabela-date input {
+  font-size: 1.1em;
+}
+.rich-calendar-button {
+  position: absolute;
+  right: 0.25em;
+  height: 2em;
+  cursor: pointer;
+}
+
+.rich-calendar-button:hover {
+  transform: scale(1.05);
+}
+
+/*SIGA---------------------------------*/
+
+.rich-mpnl-ovf-hd {
+  display: none;
+}
+
+#header_ma {
+  background-image: none !important;
+  background-color: var(--blue);
+  border-radius: 10px 10px 0px 0px;
+}
+
+#header_ma .newHeader {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2vw;
+}
+
+#header_ma .titulo {
+  color: var(--white);
+  font-size: 1.4vw;
+}
+
+#login {
+  border: 1px solid var(--gray-2);
+  border-radius: 0px 0px 10px 10px;
+  padding: 2vw;
+  background-color: var(--white);
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2vw;
+}
+
+#loginForm .PaginaLink {
+  color: var(--gray-2);
+  font-weight: 400;
+}
+
+#loginForm .login {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 8vw;
+}
+
+#loginForm .login .aviso {
+  border-left: 1px solid var(--gray-2);
+  padding: 1vw 0vw 1vw 2vw;
+  height: 100%;
+}
+
+#loginForm .login .form,
+#loginForm .login .aviso {
+  width: 50%;
+}
+
+#loginForm .login .form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1vw;
+}
+
+#loginForm .login .form h3 {
+  font-size: 2.2vw;
+  padding-bottom: 1vw;
+}
+
+#loginForm .login .form .iconLogin,
+#loginForm .login .form .iconSenha {
+  display: flex;
+  height: 2em;
+  width: 2em;
+  background-color: var(--blue);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px 0px 0px 5px;
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+}
+
+#loginForm .login .form .iconLogin {
+  background-image: url("../images/icon-user-white.svg");
+}
+
+#loginForm .login .form .iconSenha {
+  background-image: url("../images/icon-key-white.svg");
+}
+
+#loginForm .login .form label {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5em;
+  position: relative;
+}
+
+#loginForm .login .form label i {
+  font-size: 1.4vw;
+  text-wrap: nowrap;
+  font-style: normal;
+}
+
+#loginForm .login .form input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  box-sizing: border-box;
+  padding-block: unset;
+  padding-inline: unset;
+  padding: 0.5em;
+  padding: 0.5em;
+  padding-left: 3em;
+  font-size: 1.2vw;
+  border: 1px solid var(--gray-2);
+  border-radius: 0px 5px 5px 0px;
+  transform: none;
+  outline: none;
+}
+
+#loginForm .login .form .BarraAcaoBotaoLogin {
+  appearance: none;
+  width: 100%;
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 1vw;
+  font-size: 1.2vw;
+  border-radius: 5px;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+}

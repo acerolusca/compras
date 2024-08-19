@@ -46,7 +46,7 @@
 
             <img src="" class="news-image col-12 col-lg-4 p-0">
 
-            <div class="d-flex flex-column justify-content-center col-12 col-lg-5 p-3">
+            <div class="info d-flex flex-column justify-content-center col-12 col-lg-4 p-3">
                 <h5 class="news-title text-dark w-100 pb-1" 
                     style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                 </h5>
@@ -63,7 +63,7 @@
             </div>
 
             <div
-                class="d-flex flex-wrap flex-lg-nowrap justify-content-center col-12 col-lg-3 p-3 align-items-lg-start">
+                class="d-flex flex-wrap flex-lg-nowrap justify-content-center col-12 col-lg-4 p-3 align-items-lg-start">
 
                 <button type="button" class="delete-news-button btn text-dark" data-placement="bottom"
                     title="Excluir notícia">
@@ -73,6 +73,10 @@
                 <button type="button" class="edit-news-button btn text-dark" data-placement="bottom"
                     title="Editar notícia" data-toggle="modal" data-target="#editNewsModal">
                     <i class="fas fa-pencil-alt"></i>
+                </button>
+
+                <button type="button" class="preview-news-button btn text-dark" data-placement="bottom" title="Visualizar">
+                    <i class="fas fa-external-link-alt"></i>
                 </button>
 
                 <button type="button" class="highlighted-news-button btn text-dark" data-placement="bottom">
@@ -148,6 +152,7 @@
                 //IMAGEM
                 const newsImage = clone.querySelector('.news-image');
                 newsImage.src = news.imagePath;
+                newsImage.onclick = function () { window.open(`/news/preview/${newsId}`, '_blank'); };
 
 
                 //TÍTULO, AUTOR E DATA DE REGISTRO/AGENDAMENTO
@@ -155,6 +160,8 @@
                 clone.querySelector(".news-author").innerHTML += news.author;
                 clone.querySelector(".news-scheduling-date").querySelector("small").innerHTML += news.schedulingDate;
                 clone.querySelector(".news-scheduling-time").querySelector("small").innerHTML += news.schedulingTime;
+                const info = clone.querySelector('.info');
+                info.onclick = function () { window.open(`/news/preview/${newsId}`, '_blank'); };
 
 
                 //BOTÃO DE DELEÇÃO
@@ -171,7 +178,6 @@
                 editButton.addEventListener("click", async (event) => {
                     event.preventDefault();
                     fillEditNewsForm(newsId);
-
                 });
                 $(editButton).tooltip();
                 $(editButton).on("click", () => {
@@ -180,6 +186,12 @@
                         focus: false
                     });
                 });
+
+
+                //BOTÃO DE PREVIEW
+                const previewButton = clone.querySelector('.preview-news-button');
+                previewButton.onclick = function () { window.open(`/news/preview/${newsId}`, '_blank'); };
+                $(previewButton).tooltip();
 
 
                 //BOTÃO DE MUDANÇA DE STATUS DE DESTAQUE

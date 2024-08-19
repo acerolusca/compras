@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Visualização de notícia</title>
+    <link rel="shortcut icon" href="./imagens/mini-logo-gov.jpg">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!--<script> src="bootstrap-5.3.3/dist/js/bootstrap.bundle.js"</script>-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="/preview/bootstrap-5.3.3/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/preview/css/custom.css">
+    <link rel="stylesheet" href="/preview/css/noticia-default.css">
+    <script src="https://kit.fontawesome.com/e0dce92a85.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <main class="w-100 d-flex flex-column align-items-center" id="main">
+        <!--nav-bar-->
+        <nav id="top-bar" class="w-100 py-3 px-0 position-fixed z-3" style="background-color: var(--blue);">
+            <div class="container-md d-flex flex-row justify-content-between align-items-center">
+                <!--logo gov ma-->
+                <div class="col-3 col-md-2 col-lg-1">
+                    <img src="/preview/images/logo-gov.svg" alt="Logo Governo do Maranhão" class="w-100">
+                </div>
+                <!--top-bar options-->
+                <div id="top-bar-options" class="gap-4 d-none d-lg-flex">
+                    <a href="http://www.ouvidorias.ma.gov.br/Ouvidorias/publico/Manifestacao/RegistrarManifestacao.aspx?ReturnUrl=%2fOuvidorias%2f"
+                        target="_blank">
+                        <h6 class="fw-light">Ouvidoria</h6>
+                    </a>
+                    <a href="https://www.transparencia.ma.gov.br/" target="_blank">
+                        <h6 class="fw-light">Transparência</h6>
+                    </a>
+                    <a href="http://www.e-sic.ma.gov.br/sistema/site/index.aspx?ReturnUrl=%2fsistema%2f"
+                        target="_blank">
+                        <h6 class="fw-light">Órgãos do Governo</h6>
+                    </a>
+                    <a href="https://sso.acesso.gov.br/login?client_id=portal-logado.estaleiro.serpro.gov.br&authorization_id=18fdf29f270"
+                        target="_blank">
+                        <h6 class="fw-light">Login do cidadão</h6>
+                    </a>
+                </div>
+                <!--acessibility-->
+                <div class="d-flex gap-1">
+                    <button type="button" class="btn btn-outline-light btn-acessibility" onclick="changeContrast()"><img
+                            src="/preview/images/contrast-icon.svg" alt="contraste"></button>
+                    <button type="button" class="btn btn-outline-light btn-acessibility"
+                        onclick="fontSizeChange('zoomUp')"><img src="/preview/images/zoom-up-icon.svg"
+                            alt="aumentar fonte"></button>
+                    <button type="button" class="btn btn-outline-light btn-acessibility"
+                        onclick="fontSizeChange('zoomDown')"><img src="/preview/images/zoom-down-icon.svg"
+                            alt="diminur fonte"></button>
+                </div>
+            </div>
+        </nav>
+        <div class="w-100 d-flex p" id="top-bar-space"></div>
+        <!--header-->
+        <header class="w-100 d-flex flex-column pt-0 pt-sm-4 row-gap-4" style="background-color: var(--background);">
+            <!--logo e search-bar-->
+            <div class="container-md d-flex flex-row justify-content-between align-items-center py-3 py-lg-0"
+                id="header-logo-search">
+                <img id="logo-compras" src="/preview/images/logo-compras.svg" alt="Logo Compras MA"
+                    class="logo-default col-4 col-lg-3">
+                <div class="col-lg-4 col-6">
+                    <div class="input-group d-none d-lg-flex">
+                        <input id="search-input" type="text" class="form-control" placeholder="Pesquisar notícias"
+                            aria-label="Pesquisa notícias" aria-describedby="basic-addon1">
+                        <span class="input-group-text" id="basic-addon1" style="background-color: var(--blue);"><i
+                                class="fa-solid fa-magnifying-glass" style="color: var(--white);"></i></span>
+                    </div>
+                </div>
+                <div class="d-flex d-lg-none menu-icon" style="width: 12%;" onclick="openCloseMenu()"><img class="w-100"
+                        src="/preview/images/menu-icon.svg" alt="Menu"></div>
+            </div>
+
+
+            <section class="h-100 w-100 position-fixed top-0 start-0 z-3 flex-column" id="menu-mobile"
+                style="background-color: var(--background); display: none; overflow-y: scroll;">
+                <div class="w-100" id="header-menu-mobile"></div>
+
+                <div class="w-100 d-flex flex-column flex-md-row align-items-center gap-4 py-3"
+                    id="navbar-mobile-content">
+
+                </div>
+
+            </section>
+            <!--menu-->
+            <section class="navbar navbar-expand-sm navbar-sticky d-none d-lg-flex py-0 position-relative"
+                id="primary-menu">
+                <div class="collapse navbar-collapse container-md " id="navbarContent">
+                    <ul class="navbar-nav w-100 d-flex justify-content-between">
+                        <li id="inicio" class="main-nav nav-item has-dropdown">
+                            <div class="btn-light nav-dropdown"><a class="py-4 px-1 w-100"><span>Início</span></a></div>
+                        </li>
+                        <li id="institucional" class="main-nav nav-item has-dropdown">
+                            <div class="btn-light nav-dropdown dropdown-toggle py-4 px-1" data-bs-toggle="dropdown"
+                                aria-expanded="false"><span>Institucional</span></div>
+                            <ul class="dropdown-menu w-100 rounded-bottom">
+                                <li class="nav-item dropdown-item current"><a class="py-2 px-1 w-100"><span>Sobre o
+                                            Portal de Compras</span></a></li>
+                            </ul>
+                        </li>
+                        <li id="compras" class="main-nav nav-item has-dropdown">
+                            <div class="btn-light nav-dropdown dropdown-toggle py-4 px-1" data-bs-toggle="dropdown"
+                                aria-expanded="false"><span>Compras</span></div>
+                            <ul class="dropdown-menu w-100">
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Plano de
+                                            compras</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Editais de
+                                            Licitações</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Compras
+                                            Direta</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Ata de Registo de
+                                            Preços</span></a></li>
+                            </ul>
+                        </li>
+                        <li id="noticias" class="main-nav nav-item has-dropdown nav-item-active">
+                            <div class="btn-light nav-dropdown"><a class="py-4 px-1 w-100"><span>Notícias</span></a>
+                            </div>
+                        </li>
+                        <li id="legislacao" class="main-nav nav-item has-dropdown">
+                            <div class="btn-light nav-dropdown dropdown-toggle py-4 px-1" data-bs-toggle="dropdown"
+                                aria-expanded="false"><span>Legislação</span></div>
+                            <ul class="dropdown-menu w-100">
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Legislação
+                                            Federal</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Legislação
+                                            Estadual</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Regulamento da Nova
+                                            Lei de Licitações e Contratos</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Consultas
+                                            Públicas</span></a></li>
+                            </ul>
+                        </li>
+                        <li id="manuais" class="main-nav nav-item has-dropdown">
+                            <div class="btn-light nav-dropdown dropdown-toggle py-4 px-1" data-bs-toggle="dropdown"
+                                aria-expanded="false"><span>Manuais e Contatos</span></div>
+                            <ul class="dropdown-menu w-100">
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Perguntas
+                                            Frequentes</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Contatos</span></a>
+                                </li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Para
+                                            Servidores</span></a></li>
+                                <li class="nav-item dropdown-item"><a class="py-2 px-1 w-100"><span>Para
+                                            Fornecedores</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="btn-primary nav-item nav-btn text-center" id="siga" style="border: 0px;"><a
+                                class="py-2 px-1 w-100 h-100 align-content-center"><span
+                                    style="color: var(--white)">Acesso ao SIGA</span></a></li>
+                    </ul>
+                </div>
+            </section>
+
+        </header>
+        <!--main-content-->
+        <div class="w-100" id="main-content" style="background-color: var(--background)">
+
+            <div id="news-error-message" class="flex-row justify-content-center align-items-center m-5" style="display: none">
+                <i class="fas fa-times-circle text-danger" style="font-size:x-large"> &nbsp;</i>
+                <div  class="fw-bold">Erro ao buscar o conteúdo da notícia. Por favor, tente novamente mais tarde.</div>
+            </div>
+
+            <section id="default-news" class="container-md d-flex flex-column py-4 py-lg-5 row-gap-4"
+                style="background-color: var(--background); overflow-x: hidden;">
+                <span class="site-path fw-lighter d-flex" style="column-gap: 4px;"><a>Início</a> > <a>Notícias</a> > <p id="default-news-link-title" class="fw-lighter"></p></span>
+
+                <p id="default-news-date"></p>
+                <h1 id="default-news-title" class="fw-bold"></h1>
+                <h4 id="default-news-summary"></h4>
+
+                <img id="default-news-image" class="w-100 object-fit-cover rounded" src="" alt="Banner notícia">
+
+                <div id="default-news-body" class="d-flex flex-column gap-3 mt-0">
+
+                </div>
+            </section>
+
+        </div>
+        <!--fim main-content-->
+
+        <!--logos links-->
+        <footer class="w-100 d-flex flex-column mt-0" style="background-color: var(--secondary-background)">
+            <section class="w-100 d-flex flex-column row-gap-4 align-items-center py-4 py-md-5">
+                <div class="container-md d-flex flex-row align-items-center justify-content-between">
+                    <a class="logo-footer"
+                        href="http://www.ouvidorias.ma.gov.br/Ouvidorias/publico/Manifestacao/RegistrarManifestacao.aspx?ReturnUrl=%2fOuvidorias%2f"
+                        target="_blank"><img src="/preview/images/eouv.svg" alt="Marca e-OUV" class="w-100"></a>
+                    <a class="logo-footer"
+                        href="http://www.e-sic.ma.gov.br/sistema/site/index.aspx?ReturnUrl=%2fsistema%2f"
+                        target="_blank"><img src="/preview/images/esic.svg" alt="Marca e-SIC" class="w-100"></a>
+                    <a class="logo-footer" href="https://www.transparencia.ma.gov.br/" target="_blank"><img
+                            src="/preview/images/portal-transparencia.svg" alt="Marca Portal da Transparência"
+                            class="w-100"></a>
+                    <a class="logo-footer" href="https://www.portaldoservidor.ma.gov.br/" target="_blank"><img
+                            src="/preview/images/sead.svg" alt="Marca SEAD" class="w-100"></a>
+                </div>
+            </section>
+
+            <!--footer-->
+            <section class="w-100 d-flex flex-column row-gap-4 align-items-center py-4 py-md-5"
+                style="background-color: var(--blue)">
+                <div class="container-md d-flex"><a class="col-4 col-lg-2" href="#"><img
+                            src="/preview/images/logo-gov.svg" alt="Marca Governo MA" class="w-100"></a></div>
+                <div
+                    class="container-md d-flex flex-column flex-lg-row row-gap-4 row-gap-lg-2 justify-content-between align-items-start align-items-lg-end">
+                    <p style="color: var(--white)">Avenida Jerônimo de Albuquerque, S/N, <br>
+                        Centro Administrativo do Governo do Estado do Maranhão, <br>
+                        Palácio Henrique de La Rocque, Segundo Andar. <br>
+                        Segunda a Sexta-Feira <br>
+                        Horário: 13h às 19h <br>
+                        E-mail: ascomculturama@gmail.com
+                    </p>
+                    <div class="d-flex flex-row gap-2 gap-lg-1 mw-100 mw-lg-50">
+                        <a class="social w-100" href="https://www.facebook.com/governodomaranhao"><img
+                                src="/preview/images/facebook.svg" alt="Facebook" class="w-100"></a>
+                        <a class="social w-100" href="https://twitter.com/GovernoMA"><img
+                                src="/preview/images/twitter.svg" alt="Twitter" class="w-100"></a>
+                        <a class="social w-100" href="https://www.instagram.com/governoma/"><img
+                                src="/preview/images/instagram.svg" alt="Instagram" class="w-100"></a>
+                        <a class="social w-100" href="https://www.tiktok.com/@governoma"><img
+                                src="/preview/images/tiktok.svg" alt="Tiktok" class="w-100"></a>
+                        <a class="social w-100" href="https://www.youtube.com/governoma"><img
+                                src="/preview/images/youtube.svg" alt="YouTube" class="w-100"></a>
+                        <a class="social w-100" href="https://t.me/GovernoMA"><img src="/preview/images/telegram.svg"
+                                alt="Telegram" class="w-100"></a>
+                        <a class="social w-100" href="https://www.whatsapp.com/channel/0029VaF6q7296H4Ig20mCg40"><img
+                                src="/preview/images/whatsapp.svg" alt="WhatsApp" class="w-100"></a>
+                    </div>
+                </div>
+                </div>
+            </section>
+        </footer>
+
+        <!--VLIBRAS-->
+        <!--div vw="" class="enabled"
+            style="left: initial; right: 0px; top: 50%; bottom: initial; transform: translateY(calc(-50% - 10px));">
+            <div vw-access-button="" class="active"><img class="access-button" data-src="assets/access_icon.svg"
+                    alt="Conteúdo acessível em Libras usando o VLibras Widget com opções dos Avatares Ícaro, Hosana ou Guga."
+                    src="https://vlibras.gov.br/app//assets/access_icon.svg">
+                <img class="pop-up" data-src="assets/access_popup.jpg"
+                    alt="Conteúdo acessível em Libras usando o VLibras Widget com opções dos Avatares Ícaro, Hosana ou Guga."
+                    src="https://vlibras.gov.br/app//assets/access_popup.jpg">
+            </div>
+            <div vw-plugin-wrapper="">
+                <div vp="">
+                    <div vp-box=""></div>
+                    <div vp-message-box=""></div>
+                    <div vp-settings=""></div>
+                    <div vp-dictionary=""></div>
+                    <div vp-settings-btn=""></div>
+                    <div vp-info-screen=""></div>
+                    <div vp-suggestion-screen=""></div>
+                    <div vp-translator-screen=""></div>
+                    <div vp-main-guide-screen=""></div>
+                    <div vp-suggestion-button=""></div>
+                    <div vp-rate-box=""></div>
+                    <div vp-change-avatar=""></div>
+                    <div vp-additional-options=""></div>
+                    <div vp-controls=""></div>
+                    <span vp-click-blocker=""></span>
+                </div>
+            </div>
+        </div-->
+    </main>
+
+
+
+
+    <script>
+
+        //MENU
+        function openCloseMenu() {
+            if (document.getElementById("menu-mobile").classList.contains("open")) {
+                document.getElementById("menu-mobile").classList.remove("open");
+                document.getElementById("menu-mobile").style.display = "none";
+                document.getElementById("main").style.height = "unset";
+                document.getElementById("main").style.overflow = "auto";
+            } else {
+                document.getElementById("menu-mobile").classList.add("open");
+                document.getElementById("menu-mobile").style.display = "flex";
+                document.getElementById("main").style.height = "100vh";
+                document.getElementById("main").style.overflow = "clip";
+            }
+        }
+
+        //BOTÕES DE ACESSIBILIDADE
+        function acessibilityBtns() {
+            document.querySelectorAll(".btn-acessibility").forEach((btnAcessibility) => {
+                btnAcessibility.addEventListener("mouseover", function () {
+                    btnAcessibility.firstChild.style.filter = "invert(1)";
+                });
+
+                btnAcessibility.addEventListener("mouseout", function () {
+                    btnAcessibility.firstChild.style.filter = "invert(0)";
+                });
+            });
+        }
+
+        //NAVEGAÇÃO
+        function navDropdown() {
+            document.querySelectorAll(".has-dropdown").forEach((navDropdown) => {
+                if (navDropdown.querySelector(".dropdown-menu") !== null) {
+                    navDropdown.addEventListener("mouseover", function () {
+                        navDropdown.querySelector(".nav-dropdown").classList.add("show");
+                        navDropdown.querySelector(".nav-dropdown").ariaExpanded = "true";
+                        navDropdown.querySelector(".dropdown-menu").classList.add("show");
+                        navDropdown
+                            .querySelector(".dropdown-menu")
+                            .setAttribute("data-bs-popper", "none");
+                    });
+
+                    navDropdown.addEventListener("mouseout", function () {
+                        navDropdown.querySelector(".nav-dropdown").classList.remove("show");
+                        navDropdown.querySelector(".nav-dropdown").ariaExpanded = "false";
+                        navDropdown.querySelector(".dropdown-menu").classList.remove("show");
+                        navDropdown
+                            .querySelector(".dropdown-menu")
+                            .setAttribute("data-bs-popper", "unset");
+                    });
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            acessibilityBtns();
+            navDropdown();
+
+            topBarSpace = document.getElementById("top-bar").clientHeight;
+            document.getElementById("top-bar-space").style.height = topBarSpace + "px";
+
+        });
+
+        //CONTRASTE
+        var contrasteCount = parseInt(localStorage.getItem("contrasteCount")) || 0;
+        function contrast() {
+            // Alterna entre os temas com base no contador
+            if (contrasteCount % 2 == 1) {
+                // Tema escuro
+                document.documentElement.style.setProperty("--background", "#3C3C3C");
+                document.documentElement.style.setProperty("--text", "#ffffff");
+                document.documentElement.style.setProperty(
+                    "--secondary-background",
+                    "#4f4f4f"
+                );
+                document.getElementById("logo-compras").src =
+                    "/preview/images/logo-compras-branca.svg";
+            } else {
+                // Tema claro
+                document.documentElement.style.setProperty("--background", "#ffffff");
+                document.documentElement.style.setProperty("--text", "#3C3C3C");
+                document.documentElement.style.setProperty(
+                    "--secondary-background",
+                    "#F8F9FA"
+                );
+                document.getElementById("logo-compras").src = "/preview/images/logo-compras.svg";
+                document.getElementById("main").classList.add("light");
+            }
+        }
+        
+        function changeContrast() {
+            contrasteCount += 1;
+            localStorage.setItem("contrasteCount", contrasteCount);
+            contrast();
+        }
+        contrast();
+
+        //ZOOM
+        var zoomLimit = 0;
+        function fontSizeChange(zoomType) {
+            document
+                .querySelectorAll("p, a, li, h1, h2, h3, h4, h5, h6, span, input")
+                .forEach((textElement, index) => {
+                    var textElementFontSize = window
+                        .getComputedStyle(textElement)
+                        .getPropertyValue("font-size");
+                    var newTextElementFontSize = parseInt(textElementFontSize.slice(0, -2));
+                    if (zoomType == "zoomUp" && zoomLimit < 5) {
+                        textElement.style.fontSize = newTextElementFontSize + 1 + "px";
+                        if (index == 0) {
+                            zoomLimit += 1;
+                        }
+                    }
+                    if (zoomType == "zoomDown" && zoomLimit > -3) {
+                        textElement.style.fontSize = newTextElementFontSize - 1 + "px";
+                        if (index == 0) {
+                            zoomLimit -= 1;
+                        }
+                    }
+                });
+        }
+
+
+        //NOTÍCIA
+        function transformRegisterDate(registerDate) {
+            const [registerDatePart, registerTimePart] = registerDate.split(" ");
+            const [year, month, day] = registerDatePart.split("-");
+            return `${day}/${month}/${year} ${registerTimePart}`;
+        }
+        
+        function transformSchedulingDate(schedulingDate){
+            schedulingDate = schedulingDate.replace(/\T/g, " ") + ":00";
+            const [schedulingDatePart, schedulingTimePart] = schedulingDate.split(" ");
+            const [year, month, day] = schedulingDatePart.split("-");
+            return `${day}/${month}/${year} ${schedulingTimePart}`;
+        }
+        
+        function createNewsFromLocalStorage(id){
+
+            var newsObject = JSON.parse(localStorage.getItem(id));
+            document.getElementById("default-news-link-title").innerHTML = newsObject.title;
+            document.getElementById("default-news-date").innerHTML = `<i class='fas fa-calendar-days'></i> &nbsp ${newsObject.date}`;
+            document.getElementById("default-news-title").innerHTML = newsObject.title;
+            document.getElementById("default-news-summary").innerHTML = newsObject.summary;
+            document.getElementById("default-news-image").src = newsObject.image;
+            document.getElementById("default-news-body").innerHTML = newsObject.body;
+            localStorage.removeItem(id);
+        }
+
+        async function getNewsInfo(id) {
+
+            try {
+                let response = await fetch(`/news/info/${id}`, {
+                    method: "GET",
+                });
+
+                return await response.json();
+
+            } catch (error) {
+                return {
+                    success: false,
+                    message:
+                        "Não foi possível carregar a notícia. Tente novamente mais tarde.",
+                };
+            }
+        }
+        
+        function createNewsFromDatabase(response) {
+
+            if(response.success){
+                var registerDate = response.data.registerDate;
+                var schedulingDate = response.data.schedulingDate;
+    
+                var date = schedulingDate != "" ? transformSchedulingDate(schedulingDate) : transformRegisterDate(registerDate);
+                document.getElementById("default-news-link-title").innerHTML = response.data.title;
+                document.getElementById("default-news-date").innerHTML = `<i class='fas fa-calendar-days'></i> &nbsp ${date}`;
+                document.getElementById("default-news-title").innerHTML = response.data.title;
+                document.getElementById("default-news-summary").innerHTML =response.data.summary;
+                document.getElementById("default-news-image").src = response.data.imagePath;
+                document.getElementById("default-news-body").innerHTML = response.data.body;
+
+            } else {
+                document.getElementById("news-error-message").style.display = "flex";
+                document.getElementById("default-news").remove();
+            }
+
+
+        }
+       
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            var url = window.location.href;
+            var urlParts = url.split("/news/preview/", 2);
+            var id = urlParts[1];
+
+            if(localStorage.getItem(id)){
+                createNewsFromLocalStorage(id);
+            } else {
+                let response = await getNewsInfo(id);
+                createNewsFromDatabase(response);
+            }
+        });
+
+    </script>
+
+
+    <!--script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script-->
+    <!--script> new window.VLibras.Widget('https://vlibras.gov.br/app'); </script-->
+
+</body>

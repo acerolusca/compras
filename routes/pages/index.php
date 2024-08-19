@@ -49,6 +49,20 @@ $obRouter->get("/news",  [
 
 
 
+//ROTA PARA PREVIEW DE NOTÍCIA
+$obRouter->get("/news/preview/{id}",  [
+    "middlewares" => [
+        "required-login",
+    ],
+    function () {
+        return new Response(200, Pages\Preview::render());
+    }
+]);
+
+
+
+
+
 //ROTA PARA VIEW DE USUÁRIOS
 $obRouter->get("/users",[
     "middlewares" => [
@@ -85,17 +99,6 @@ $obRouter->get("/logout",[
         return new Response(200, Pages\Logout::render($request));
     }
 ]);
-
-
-
-
-//ROTA PARA DOCUMENTAÇÃO DE API's
-// $obRouter->get("/api/docs",[
-//     function(){
-//         return new Response(200, Pages\ApiDocs::render());
-//     }
-// ]);
-
 
 
 

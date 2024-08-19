@@ -210,7 +210,6 @@ class NewsService
     }
 
 
-
     /**
      * Método responsável pela edição das informações de uma notícia
      * @param array $newsEditData
@@ -681,9 +680,15 @@ class NewsService
 
             $news = $statement->fetchObject(News::class);
 
+            $schedulingDate = new DateTime($news->getSchedulingDate());
+            $now = new DateTime();
+            $visible = ($news->getVisible() ?? "no") == "yes";
 
-            $schedulingDate = (new DateTime($news->getSchedulingDate() ?? ""))->format("d/m/Y H:i:s") ?? "";
 
+            if (!($schedulingDate <= $now && $visible)){
+                throw new Exception("Essa notícia não está disponível.", 404);
+            }
+            
             $newsInfo = [];
 
             $newsInfo["id"] = $news->getId() ?? "";
@@ -691,7 +696,7 @@ class NewsService
             $newsInfo["summary"] = $news->getSummary() ?? "";
             $newsInfo["body"] = $this->addPrefixToImageSrc($news->getBody() ?? "", getenv("URL_IP"));
             $newsInfo["image"] = getenv("URL_IP") . "/image/news/" . ($news->getImagePath() ?? getenv("DEFAULT_NEWS_IMAGE_PATH"));
-            $newsInfo["date"] = $schedulingDate;;
+            $newsInfo["date"] = $schedulingDate->format("d/m/Y H:i:s") ?? "";
 
             return $newsInfo;
         } catch (Exception $e) {
